@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def race_view(request):
+    return render(request,"race/templates/race.html")
