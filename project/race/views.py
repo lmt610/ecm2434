@@ -1,4 +1,4 @@
 from django.shortcuts import render
 
 def race_view(request):
-    return render(request,"race/templates/race.html")
+    return render(request,"race/race.html")
