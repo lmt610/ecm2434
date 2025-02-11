@@ -1,0 +1,58 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'race/race_styles.css' %}">
+    
+    <!-- Leaflet mapping plugin-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+</head>
+
+<body>
+    <header>
+        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
+        <p id="pageTitle">ExePLORE</p>
+    </header>
+    <main>
+        {% block content %}
+        <div class="title">Races!</div>
+        <div id="map">
+            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+            <script>
+                // Initialize the map centred on exeter university
+                var map = L.map('map').setView([50.736577, -3.532512], 14.5);  
+        
+                // Set the OpenStreetMap tile layer
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+            </script>
+        </div>
+        <div class="menu">
+            <p id="routePOIs">{{race.title}}</p>
+            <button id="leaderboard">Leaderboards</button>
+            <div id="status">
+                {% if race.completed%}
+                <p>Completed!</p>
+                {% else %}
+                <p>You havn't exsplored this route yet!</p>
+                {% endif %}
+            </div>
+            <div class="time">
+                <img src="" alt="">
+                {% if race.time%}
+                <p>Personal Best Time: {{race.time}}</p>
+                {% else %}
+                <p>Personal Best Time: No time found</p>
+                {% endif %}
+            </div>
+                <div class="actionButtons">
+                <button style="background-color: red;">RACE!!</button>
+                <button style="background-color: gold;">Time Trial</button>
+                <button style="background-color: forestgreen;">ExePLORE</button>
+            </div>
+        </div>
+        {% endblock %}
+    </main>
+
+</body>
+
