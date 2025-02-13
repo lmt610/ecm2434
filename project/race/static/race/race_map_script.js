@@ -45,7 +45,7 @@ function initializeMap(raceData) {
         [raceData.start.lat, raceData.start.lng],
         [raceData.end.lat, raceData.end.lng]
     ]);
-    map.fitBounds(bounds);
+    map.fitBounds(bounds, { padding: [0, 10] });
 }
 
 // Check if raceData exists and initialize the map
