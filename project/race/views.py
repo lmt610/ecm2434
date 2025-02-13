@@ -1,4 +1,5 @@
 import json
+from .models import Location
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -22,12 +23,15 @@ def calculate_distance(request):
         data = json.loads(request.body)
         user_lat, user_lon = float(data["latitude"]), float(data["longitude"])
 
-        place = Location.objects.first()
-        place_lat, place_lon = place.latitud, place.longitude
+        #Example of getting a stored location in the db
+        place = Location.objects.first() #change to fetch the correct place
+        place_lat, place_lon = place.latitude, place.longitude
 
+        #calculate distance using Haversine
         distance = haversine(user_lat, user_lon, place_lat, place_lon)
 
-        threshold = 5
+        #check if distance is within threshold (e.g., 20m)
+        threshold = 0.02
         if distance <= threshold:
             return JsonResponse({"status": "within range", "distance": round(distance, 2)})
         else:
