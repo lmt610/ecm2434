@@ -281,7 +281,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === 'success') {
-                        // You could add a success notification here
+                        //success notification
                         console.log(`${settingName} updated successfully`);
                     } else {
                         // Revert the toggle if there was an error
@@ -296,7 +296,7 @@
             });
         });
     
-        // Tab switching functionality (keep this from your existing code)
+        // Tab switching functionality
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 // Update navigation items
@@ -314,7 +314,7 @@
             });
         });
     
-        // Modal functionality (keep this from your existing code)
+        // Modal functionality
         function showDeleteConfirmation() {
             document.getElementById('deleteConfirmation').style.display = 'flex';
         }
