@@ -23,3 +23,13 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     if hasattr(instance, 'user_profile'):
         instance.user_profile.save()
+
+class UserSettings(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    location_tracking = models.BooleanField(default=True)
+    show_on_leaderboard = models.BooleanField(default=True)
+    route_notifications = models.BooleanField(default=True)
+    achievement_notifications = models.BooleanField(default=True)
+    
+    def __str__(self):
+        return f"{self.user.username}'s settings"
