@@ -6,3 +6,9 @@ venv/
 
 # Ignore Python cache files
 __pycache__/
+
+# Ignore temporary drive upload files
+driveupload/
+
+# Ignore temporary drive upload files
+.tmp.driveupload

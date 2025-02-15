@@ -1,18 +1,97 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title>ExePLORE - Sign Up</title>
+    <link rel="stylesheet" href="{% static 'users/register_styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Sign Up</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Sign Up</button>
-    </form>
-    <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+    <header>
+        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
+        <p id="pageTitle">ExePLORE</p>
+    </header>
+
+    <main class="signup-container">
+        <div class="signup-card">
+            <div class="card-header">
+                <h1>Create Account</h1>
+                <p>Join ExePLORE and start your sustainable journey</p>
+            </div>
+
+            <div class="card-content">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="id_username">Username</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <div class="error-message">
+                            {{ form.username.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_email">Email</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="error-message">
+                            {{ form.email.errors }}
+                        </div>
+                        {% endif %}
+                        <span class="field-hint">We'll never share your email with anyone else.</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password">Password</label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                        <div class="error-message">
+                            {{ form.password.errors }}
+                        </div>
+                        {% endif %}
+                        <span class="field-hint">Must be at least 8 characters long</span>
+                    </div>
+
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="terms-agreement">
+                        <p>By creating an account, you agree to our <a href="#" class="text-link">Terms of Service</a> and <a href="#" class="text-link">Privacy Policy</a></p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Create Account</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-footer">
+                <p>Already have an account? <a href="{% url 'login' %}" class="text-link">Sign In</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="signup-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 ExePLORE. University of Exeter</p>
+            <div class="legal-links">
+                <a href="#" class="text-link">Privacy Policy</a>
+                <a href="#" class="text-link">Terms of Service</a>
+                <a href="#" class="text-link">Help</a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
