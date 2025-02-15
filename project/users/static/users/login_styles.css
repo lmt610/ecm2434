@@ -1,0 +1,236 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: forestgreen;
+    color: white;
+    width: 100%;
+    height: 10vh;
+}
+
+header p {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+}
+
+header img {
+    height: 6vh;
+}
+
+/* Main Container */
+.login-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* Login Card */
+.login-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    padding: 24px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #fafafa;
+}
+
+.card-header h1 {
+    margin: 0;
+    color: #2D5A27;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.card-header p {
+    margin: 8px 0 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.card-content {
+    padding: 24px;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.form-group input {
+    width: calc(100% - 24px);
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #2D5A27;
+    box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.1);
+}
+
+/* Error Messages */
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.message.error {
+    background-color: #fde8e8;
+    color: #dc3545;
+    border: 1px solid #fad7d7;
+}
+
+.message.success {
+    background-color: #e8f5e8;
+    color: #2D5A27;
+    border: 1px solid #d7e7d7;
+}
+
+/* Button Styles */
+.form-actions {
+    margin-top: 24px;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 12px 24px;
+    background-color: #2D5A27;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #234820;
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Card Footer */
+.card-footer {
+    padding: 20px 24px;
+    text-align: center;
+    background-color: #fafafa;
+    border-top: 1px solid #e0e0e0;
+}
+
+.card-footer p {
+    margin: 0;
+    color: #666;
+}
+
+/* Links */
+.text-link {
+    color: #2D5A27;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.text-link:hover {
+    color: #234820;
+    text-decoration: underline;
+}
+
+/* Footer */
+.login-footer {
+    padding: 20px;
+    background-color: white;
+    border-top: 1px solid #e0e0e0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-content p {
+    margin: 0;
+    color: #666;
+}
+
+.legal-links {
+    display: flex;
+    gap: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-card {
+        margin: 10px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .legal-links {
+        justify-content: center;
+    }
+}
