@@ -1,0 +1,335 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExePLORE - Settings</title>
+    <link rel="stylesheet" href="{% static 'race/race_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'users/settings_styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
+        <p id="pageTitle">ExePLORE</p>
+    </header>
+
+    <div class="settings-wrapper">
+        <!-- Settings Navigation -->
+        <nav class="settings-nav">
+            <div class="nav-item active" data-tab="account">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Account
+            </div>
+            <div class="nav-item" data-tab="privacy">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Privacy
+            </div>
+            <div class="nav-item" data-tab="notifications">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                Notifications
+            </div>
+            <div class="nav-item" data-tab="about">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                About
+            </div>
+        </nav>
+
+        <!-- Settings Content -->
+        <main class="settings-content">
+            <!-- Account Tab -->
+            <div class="settings-tab active" id="account">
+                <div class="settings-header">
+                    <h1>Account Settings</h1>
+                    <p>Manage your account settings and preferences</p>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2>Profile Information</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" value="{{ user.username }}" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" value="{{ user.email }}" disabled>
+                            <button class="btn-secondary">Change Email</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2>Security</h2>
+                    </div>
+                    <div class="card-content">
+                        <form method="POST" action="{% url 'change_password' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-primary">Change Password</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="settings-card danger-zone">
+                    <div class="card-header">
+                        <h2>Danger Zone</h2>
+                    </div>
+                    <div class="card-content">
+                        <p class="warning-text">Once you delete your account, there is no going back. Please be certain.</p>
+                        <button class="btn-danger" onclick="showDeleteConfirmation()">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy Tab -->
+            <div class="settings-tab" id="privacy">
+                <div class="settings-header">
+                    <h1>Privacy Settings</h1>
+                    <p>Control your privacy and location settings</p>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2>Location Services</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="setting-toggle">
+                            <span>Allow location tracking while using the app</span>
+                            <label class="switch">
+                                <input type="checkbox" 
+                                       name="location_tracking" 
+                                       {% if settings.location_tracking %}checked{% endif %}>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <p class="setting-description">Required for tracking your routes and calculating completion times</p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2>Activity Visibility</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="setting-toggle">
+                            <span>Show my activities on leaderboards</span>
+                            <label class="switch">
+                                <input type="checkbox" 
+                                       name="show_on_leaderboard" 
+                                       {% if settings.show_on_leaderboard %}checked{% endif %}>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Tab -->
+            <div class="settings-tab" id="notifications">
+                <div class="settings-header">
+                    <h1>Notification Settings</h1>
+                    <p>Manage your notification preferences</p>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2>Route Notifications</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="setting-toggle">
+                            <span>New route alerts</span>
+                            <label class="switch">
+                                <input type="checkbox" 
+                                       name="route_notifications" 
+                                       {% if settings.route_notifications %}checked{% endif %}>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="setting-toggle">
+                            <span>Achievement notifications</span>
+                            <label class="switch">
+                                <input type="checkbox" 
+                                       name="achievement_notifications" 
+                                       {% if settings.achievement_notifications %}checked{% endif %}>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Tab -->
+            <div class="settings-tab" id="about">
+                <div class="settings-header">
+                    <h1>About ExePLORE</h1>
+                    <p>Information about the application and legal notices</p>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2>Application Information</h2>
+                    </div>
+                    <div class="card-content">
+                        <p>ExePLORE is a University of Exeter application designed to promote sustainability and green spaces by tracking walking routes across campus.</p>
+                        <p>Version: 1.0.0</p>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <div class="card-header">
+                        <h2>Legal Information</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="legal-links">
+                            <a href="#" class="text-link">Privacy Policy</a>
+                            <a href="#" class="text-link">Terms of Service</a>
+                            <a href="#" class="text-link">Data Protection</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div id="deleteConfirmation" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Delete Account</h2>
+                <button class="close-button" onclick="hideDeleteConfirmation()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-icon">⚠️</div>
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <p>The following data will be permanently deleted:</p>
+                <ul>
+                    <li>Your profile and personal information</li>
+                    <li>All activity history and achievements</li>
+                    <li>Points and rankings</li>
+                    <li>Saved routes and preferences</li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="hideDeleteConfirmation()">Cancel</button>
+                <form method="POST" action="{% url 'delete_account' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Update navigation items
+                document.querySelectorAll('.nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                item.classList.add('active');
+
+                // Update content
+                const tabId = item.getAttribute('data-tab');
+                document.querySelectorAll('.settings-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Modal functionality
+        function showDeleteConfirmation() {
+            document.getElementById('deleteConfirmation').style.display = 'flex';
+        }
+
+        function hideDeleteConfirmation() {
+            document.getElementById('deleteConfirmation').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('deleteConfirmation');
+            if (event.target == modal) {
+                hideDeleteConfirmation();
+            }
+        }
+
+        // Add CSRF token to all fetch requests
+        function getCsrfToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+    
+        // Toggle switch functionality
+        document.querySelectorAll('.setting-toggle input[type="checkbox"]').forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                const settingName = e.target.getAttribute('name');
+                const value = e.target.checked;
+                
+                fetch('/toggle-setting/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': getCsrfToken(),
+                    },
+                    body: `setting=${settingName}&value=${value}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        //success notification
+                        console.log(`${settingName} updated successfully`);
+                    } else {
+                        // Revert the toggle if there was an error
+                        e.target.checked = !value;
+                        console.error('Failed to update setting');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    e.target.checked = !value;
+                });
+            });
+        });
+    
+        // Tab switching functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Update navigation items
+                document.querySelectorAll('.nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                item.classList.add('active');
+    
+                // Update content
+                const tabId = item.getAttribute('data-tab');
+                document.querySelectorAll('.settings-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    
+        // Modal functionality
+        function showDeleteConfirmation() {
+            document.getElementById('deleteConfirmation').style.display = 'flex';
+        }
+    
+        function hideDeleteConfirmation() {
+            document.getElementById('deleteConfirmation').style.display = 'none';
+        }
+    
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('deleteConfirmation');
+            if (event.target == modal) {
+                hideDeleteConfirmation();
+            }
+        }
+    </script>
+</body>
+</html>
