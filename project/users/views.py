@@ -91,6 +91,17 @@ def increment_points(request):
     return JsonResponse({'success': False, 'error': 'Invalid request method.'})
 
 @login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, 'Your account has been successfully deleted.')
+        return redirect('home')
+    return redirect('settings')
+
+User = get_user_model()
+
+@login_required
 def settings_view(request):
     try:
         user_settings = UserSettings.objects.get(user=request.user)
