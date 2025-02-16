@@ -12,6 +12,19 @@ from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
+def get_user_settings(request):
+    try:
+        user_settings = UserSettings.objects.get(user=request.user)
+    except UserSettings.DoesNotExist:
+        user_settings = UserSettings.objects.create(
+            user=request.user,
+            location_tracking=True,
+            show_on_leaderboard=True,
+            route_notifications=True,
+            achievement_notifications=True
+        )
+    return user_settings
+
 def home(request):
     return render(request, 'users/home.html')
 
