@@ -90,21 +90,6 @@ def increment_points(request):
 
 @login_required
 def settings_view(request):
-    return render(request, 'users/settings.html')
-
-@login_required
-def delete_account(request):
-    if request.method == 'POST':
-        user = request.user
-        user.delete()
-        messages.success(request, 'Your account has been successfully deleted.')
-        return redirect('home')
-    return redirect('settings')
-
-User = get_user_model()
-
-@login_required
-def settings_view(request):
     try:
         user_settings = UserSettings.objects.get(user=request.user)
     except UserSettings.DoesNotExist:
@@ -129,11 +114,20 @@ def change_password(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('settings')
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Your password was successfully updated!'
+            })
         else:
-            messages.error(request, 'Please correct the error below.')
-    return redirect('settings')
+            # Convert form errors to simple dict with error messages
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = str(error_list[0])  # Convert to string and take first error
+            return JsonResponse({
+                'status': 'error',
+                'errors': errors
+            }, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 @login_required
 def delete_account(request):
