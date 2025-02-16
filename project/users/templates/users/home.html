@@ -10,7 +10,7 @@
         <a href="{% url 'login' %}">Sign In</a> or
         <a href="{% url 'register' %}">Register</a>
     </p>
-    {% if messages %}
+        {% if messages %}
 		<div>
 		{% for message in messages %}
 			<div>
@@ -19,5 +19,6 @@
 		{% endfor %}
 		</div>
 	{% endif %}
+	
 </body>
 </html>
