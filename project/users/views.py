@@ -101,8 +101,7 @@ def delete_account(request):
 
 User = get_user_model()
 
-@login_required
-def settings_view(request):
+def get_user_settings(request):
     try:
         user_settings = UserSettings.objects.get(user=request.user)
     except UserSettings.DoesNotExist:
@@ -113,15 +112,19 @@ def settings_view(request):
             route_notifications=True,
             achievement_notifications=True
         )
-    
+    return user_settings
+ 
+
+@login_required
+def settings_view(request):
     context = {
         'user': request.user,
-        'settings': user_settings,
+        'settings': get_user_settings(request),
     }
     return render(request, 'users/settings.html', context)
 
 @login_required
-def change_password(request):
+def change_password(request): 
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -130,7 +133,12 @@ def change_password(request):
             messages.success(request, 'Your password was successfully updated!')
             return redirect('settings')
         else:
-            return render(request, 'users/settings.html', {"form": form})
+            context = {
+                'user': request.user,
+                'settings': get_user_settings(request),
+                'form': form
+            }
+            return render(request, 'users/settings.html', context)
     return redirect('settings')
 
 @login_required
