@@ -38,3 +38,22 @@ def calculate_distance(request):
             return JsonResponse({"status": "within range", "distance": round(distance, 2)})
         
     return JsonResponse({"error": "Invalid request"}, status = 400)
+
+
+
+from .models import LeaderboardEntry
+
+def leaderboard(request):
+    """Returns the leaderboard sorted by completion time"""
+    leaderboard_entries = LeaderboardEntry.objects.order_by("completion_time")[:10]  # Top 10 times
+    data = [
+        {
+            "user": entry.user.username,
+            "race": entry.race.title,
+            "time": entry.completion_time,
+            "date": entry.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+        for entry in leaderboard_entries
+    ]
+    return JsonResponse({"leaderboard": data})
+
