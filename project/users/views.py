@@ -93,13 +93,6 @@ def settings_view(request):
     return render(request, 'users/settings.html')
 
 @login_required
-def change_password(request):
-    if request.method == 'POST':
-        # Implement password change logic here
-        pass
-    return redirect('settings')
-
-@login_required
 def delete_account(request):
     if request.method == 'POST':
         user = request.user
