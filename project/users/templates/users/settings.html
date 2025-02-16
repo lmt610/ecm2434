@@ -69,36 +69,7 @@
                     <div class="card-content">
                         <form method="POST" action="{% url 'change_password' %}">
                             {% csrf_token %}
-							<div class="form-group">
-								<label>Old Password</label>
-								<input name="old_password" type="password">
-								{% if form.old_password.errors %}
-									 <div class="error-message">
-										 {{ form.old_password.errors }}
-									 </div>
-								 {% endif %}
-							</div>
-							<div class="form-group">
-								<label>New Password</label>
-								<input name="new_password1" type="password">
-								{% if form.new_password1.errors %}
-									 <div class="error-message">
-										 {{ form.new_password1.errors }}
-									 </div>
-								 {% endif %}
-							</div>							
-							<div class="form-group">
-								<label>Confirm New Password</label>
-								<input name="new_password2" type="password">
-								{% if form.new_password2.errors %}
-									 <div class="error-message">
-										 {{ form.new_password2.errors }}
-									 </div>
-								 {% endif %}
-							</div>
-							<div class="form-actions">
-								<button type="submit" class="btn-primary">Change Password</button>
-							</div>
+                            <button type="button" class="btn-primary" onclick="showPasswordModal()">Change Password</button>
                         </form>
                     </div>
                 </div>
@@ -609,7 +580,7 @@
                 showDeleteButton.addEventListener('click', showDeleteConfirmation);
             }
         
-            const showPasswordButton = document.querySelector('.card-content .btn-primary');
+            const showPasswordButton = document.querySelector('.settings-card .btn-primary');
             if (showPasswordButton) {
                 showPasswordButton.addEventListener('click', showPasswordModal);
             }
