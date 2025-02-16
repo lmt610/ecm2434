@@ -7,6 +7,8 @@ from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
+from django.core.validators import EmailValidator
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -119,15 +121,8 @@ def change_password(request):
                 'message': 'Your password was successfully updated!'
             })
         else:
-            # Convert form errors to simple dict with error messages
-            errors = {}
-            for field, error_list in form.errors.items():
-                errors[field] = str(error_list[0])  # Convert to string and take first error
-            return JsonResponse({
-                'status': 'error',
-                'errors': errors
-            }, status=400)
-    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+            return render(request, 'users/settings.html', {"form": form})
+    return redirect('settings')
 
 @login_required
 def delete_account(request):
@@ -143,9 +138,14 @@ def update_email(request):
     if request.method == 'POST':
         new_email = request.POST.get('email')
         if new_email:
-            request.user.email = new_email
-            request.user.save()
-            messages.success(request, 'Email updated successfully!')
+            email_validator = EmailValidator()
+            try:
+                email_validator(new_email)
+                request.user.email = new_email
+                request.user.save()
+                messages.success(request, 'Email updated successfully!')
+            except ValidationError:
+                messages.error(request, "Please provide a valid email")
         else:
             messages.error(request, 'Please provide a valid email.')
     return redirect('settings')
@@ -166,3 +166,4 @@ def toggle_setting(request):
             pass
             
     return JsonResponse({'status': 'error'}, status=400)
+

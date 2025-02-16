@@ -583,3 +583,10 @@ input:checked + .slider:before {
 .danger-zone {
     border: 1px solid #dc3545;
 }
+
+/* Errors*/
+.error-message {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
