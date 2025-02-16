@@ -69,7 +69,7 @@
                     <div class="card-content">
                         <form method="POST" action="{% url 'change_password' %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn-primary">Change Password</button>
+                            <button type="button" class="btn-primary" onclick="showPasswordModal()">Change Password</button>
                         </form>
                     </div>
                 </div>
@@ -580,7 +580,7 @@
                 showDeleteButton.addEventListener('click', showDeleteConfirmation);
             }
         
-            const showPasswordButton = document.querySelector('.card-content .btn-primary');
+            const showPasswordButton = document.querySelector('.settings-card .btn-primary');
             if (showPasswordButton) {
                 showPasswordButton.addEventListener('click', showPasswordModal);
             }
