@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'tasks',
     'race',
+    'teams',
     ]
 
 MIDDLEWARE = [
