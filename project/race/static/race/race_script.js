@@ -11,7 +11,26 @@ function updateTimer() {
 }
 
 function resetRace() {
-    location.reload();
+    let elapsed = Math.floor((Date.now() - startTime) / 1000);
+
+    // Send time to the backend before reloading
+    fetch('/update-race-time/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(),
+        },
+        body: JSON.stringify({ time_taken: elapsed })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Time submitted:", data);
+        location.reload(); // Reload page after successful submission
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        location.reload(); // Still reload even if an error occurs
+    });
 }
 
 // Placeholder for Dynamic Map
@@ -79,6 +98,59 @@ function sendLocation(lat, lon) {
         } else {
             alert("You are out of the range.")
         }
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+function createRace(title, startId, endId) {
+    fetch('/create-race/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(),
+        },
+        body: JSON.stringify({
+            title: title,
+            start_id: startId,
+            end_id: endId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            console.log("Race created with ID:", data.race_id);
+            localStorage.setItem("currentRaceId", data.race_id);
+        } else {
+            console.error("Error creating race:", data.message);
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+function updateRaceTime(startTime, endTime) {
+    const raceId = localStorage.getItem("currentRaceId"); //get stored race ID
+
+    if (!raceId) {
+        console.error("No active race found.");
+        return;
+    }
+
+    fetch('/update-race-time/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'applciation/json',
+            'X-CSRFToken': getCSRFToken(),
+        },
+        body: JSON.stringify({
+            race_id:raceId,
+            start_time: new Date(startTime).toISOString(),
+            end_time:new Date(endTime).toISOString()
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data.message);
+        location.reload(); //reload after updating
     })
     .catch(error => console.error("Error:", error));
 }
