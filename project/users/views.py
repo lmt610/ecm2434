@@ -7,6 +7,8 @@ from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
+from django.core.validators import EmailValidator
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -139,7 +141,7 @@ def change_password(request):
             messages.success(request, 'Your password was successfully updated!')
             return redirect('settings')
         else:
-            messages.error(request, 'Please correct the error below.')
+            return render(request, 'users/settings.html', {"form": form})
     return redirect('settings')
 
 @login_required
@@ -156,9 +158,14 @@ def update_email(request):
     if request.method == 'POST':
         new_email = request.POST.get('email')
         if new_email:
-            request.user.email = new_email
-            request.user.save()
-            messages.success(request, 'Email updated successfully!')
+            email_validator = EmailValidator()
+            try:
+                email_validator(new_email)
+                request.user.email = new_email
+                request.user.save()
+                messages.success(request, 'Email updated successfully!')
+            except ValidationError:
+                messages.error(request, "Please provide a valid email")
         else:
             messages.error(request, 'Please provide a valid email.')
     return redirect('settings')
