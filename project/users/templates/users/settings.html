@@ -67,7 +67,10 @@
                         <h2>Security</h2>
                     </div>
                     <div class="card-content">
-                        <button type="button" class="btn-primary">Change Password</button>
+                        <form method="POST" action="{% url 'change_password' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-primary">Change Password</button>
+                        </form>
                     </div>
                 </div>
 

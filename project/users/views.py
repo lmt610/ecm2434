@@ -7,6 +7,8 @@ from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
+from django.core.validators import EmailValidator
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -100,15 +102,19 @@ def settings_view(request):
             route_notifications=True,
             achievement_notifications=True
         )
-    
+    return user_settings
+ 
+
+@login_required
+def settings_view(request):
     context = {
         'user': request.user,
-        'settings': user_settings,
+        'settings': get_user_settings(request),
     }
     return render(request, 'users/settings.html', context)
 
 @login_required
-def change_password(request):
+def change_password(request): 
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -143,9 +149,14 @@ def update_email(request):
     if request.method == 'POST':
         new_email = request.POST.get('email')
         if new_email:
-            request.user.email = new_email
-            request.user.save()
-            messages.success(request, 'Email updated successfully!')
+            email_validator = EmailValidator()
+            try:
+                email_validator(new_email)
+                request.user.email = new_email
+                request.user.save()
+                messages.success(request, 'Email updated successfully!')
+            except ValidationError:
+                messages.error(request, "Please provide a valid email")
         else:
             messages.error(request, 'Please provide a valid email.')
     return redirect('settings')
