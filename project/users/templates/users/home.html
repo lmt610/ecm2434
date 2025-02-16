@@ -10,5 +10,15 @@
         <a href="{% url 'login' %}">Sign In</a> or
         <a href="{% url 'register' %}">Register</a>
     </p>
+	{% if messages %}
+		<div>
+		{% for message in messages %}
+			<div>
+				{{ message }}
+			</div>
+		{% endfor %}
+		</div>
+	{% endif %}
+
 </body>
 </html>
