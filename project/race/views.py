@@ -10,9 +10,13 @@ from django.contrib.auth.decorators import login_required
 from math import radians, sin, cos, sqrt, atan2
 
 @login_required
-def race_view(request, race_id):
-    race = get_object_or_404(Race, id=race_id)
-    return render(request,"race/race.html", {"race": race})
+def race_view(request, race_id=None):
+    if race_id is None:
+        races = Race.objects.all()
+        return render(request,"race/race-menu.html", {"races": races})
+    else:
+        race = get_object_or_404(Race, id=race_id)
+        return render(request,"race/race.html", {"race": race})
 
 #haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):

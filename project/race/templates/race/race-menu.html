@@ -1,0 +1,36 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'race/race_menu_styles.css' %}">
+
+        <!-- Leaflet mapping plugin-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <!-- Font Awesome for map race icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <header>
+        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
+        <p id="pageTitle">ExePLORE</p>
+    </header>
+    <main>
+        <div class="raceMenu">
+            <div class="row">
+                {% for race in races %}
+                <a class="raceOption" href="{% url 'race_detail' race.id %}">
+                    <div class="raceOption">
+                        {{ race.title }}
+                    </div>
+                    <div class="map">
+                        
+                    </div>
+                </a>
+                {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                        </div><div class="row">
+                {% endif %}
+            {% endfor%}
+        </div>
+    </main>
+
+</body>
+
