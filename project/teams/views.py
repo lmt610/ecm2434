@@ -65,19 +65,6 @@ def reject_join_request(request, pk, request_id):
 def is_superuser(user):
     return user.is_superuser
 
-@user_passes_test(is_superuser) 
-def create_team(request):
-    if request.method == 'POST':
-        form = TeamForm(request.POST)
-        if form.is_valid():
-            team = form.save(commit=False)
-            team.admin = request.user
-            team.save()
-            return redirect('team_list')  
-    else:
-        form = TeamForm()
-    return render(request, 'teams/create_team.html', {'form': form})
-
 def leaderboard(request):
     teams = Team.objects.order_by('-points')  # order by points 
     return render(request, 'teams/leaderboard.html', {'teams' : teams})
