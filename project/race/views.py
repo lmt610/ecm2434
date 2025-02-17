@@ -8,9 +8,9 @@ from django.views.decorators.csrf import csrf_exempt
 
 from math import radians, sin, cos, sqrt, atan2
 
-def race_view(request):
-    race = get_object_or_404(Race, id=race.id)
-    return render(request,"race/race.html")
+def race_view(request, race_id):
+    race = get_object_or_404(Race, id=race_id)
+    return render(request,"race/race.html", {"race": race})
 
 #haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):
