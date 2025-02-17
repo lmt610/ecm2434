@@ -123,13 +123,15 @@ def change_password(request):
                 'message': 'Your password was successfully updated!'
             })
         else:
-            context = {
-                'user': request.user,
-                'settings': get_user_settings(request),
-                'form': form
-            }
-            return render(request, 'users/settings.html', context)
-    return redirect('settings')
+            # Convert form errors to simple dict with error messages
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = str(error_list[0])  # Convert to string and take first error
+            return JsonResponse({
+                'status': 'error',
+                'errors': errors
+            }, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 @login_required
 def delete_account(request):
@@ -173,4 +175,3 @@ def toggle_setting(request):
             pass
             
     return JsonResponse({'status': 'error'}, status=400)
-

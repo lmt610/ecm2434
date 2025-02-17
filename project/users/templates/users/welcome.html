@@ -16,15 +16,15 @@
 	<li>Enter location code</li>
     </ul>
 
-{% if messages %}
-	<div>
-	{% for message in messages %}
+    {% if messages %}
 		<div>
-			{{ message }}
+		{% for message in messages %}
+			<div>
+				{{ message }}
+			</div>
+		{% endfor %}
 		</div>
-	{% endfor %}
-	</div>
-{% endif %}
+	{% endif %}
 
 </body>
 </html>
