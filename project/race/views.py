@@ -5,9 +5,11 @@ from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 from math import radians, sin, cos, sqrt, atan2
 
+@login_required
 def race_view(request, race_id):
     race = get_object_or_404(Race, id=race_id)
     return render(request,"race/race.html", {"race": race})
