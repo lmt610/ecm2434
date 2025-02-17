@@ -105,21 +105,6 @@ def increment_points(request):
 
 @login_required
 def settings_view(request):
-    try:
-        user_settings = UserSettings.objects.get(user=request.user)
-    except UserSettings.DoesNotExist:
-        user_settings = UserSettings.objects.create(
-            user=request.user,
-            location_tracking=True,
-            show_on_leaderboard=True,
-            route_notifications=True,
-            achievement_notifications=True
-        )
-    return user_settings
- 
-
-@login_required
-def settings_view(request):
     context = {
         'user': request.user,
         'settings': get_user_settings(request),
