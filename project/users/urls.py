@@ -7,6 +7,7 @@ urlpatterns = [
     path('register/', register, name='register'),
     path('welcome/', welcome, name='welcome'),
     path('tasks/', include('tasks.urls')),
+    path('teams/', include('teams.urls')),
     path('increment-points/', increment_points, name='increment_points'),
     path('settings/', settings_view, name='settings'),
     path('change-password/', change_password, name='change_password'),
