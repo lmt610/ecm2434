@@ -41,19 +41,24 @@ def calculate_distance(request):
 
 
 
+from django.http import JsonResponse
 from .models import LeaderboardEntry
+from collections import defaultdict
 
 def leaderboard(request):
-    """Returns the leaderboard sorted by completion time"""
-    leaderboard_entries = LeaderboardEntry.objects.order_by("completion_time")[:10]  # Top 10 times
-    data = [
-        {
+    """Returns the leaderboard grouped by race and sorted by completion time"""
+    
+    # Fetch all leaderboard entries, sorted by race first, then by completion time
+    leaderboard_entries = LeaderboardEntry.objects.order_by("race", "completion_time")
+
+    # Group results by race
+    race_leaderboard = defaultdict(list)
+
+    for entry in leaderboard_entries:
+        race_leaderboard[entry.race.title].append({
             "user": entry.user.username,
-            "race": entry.race.title,
             "time": entry.completion_time,
             "date": entry.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-        }
-        for entry in leaderboard_entries
-    ]
-    return JsonResponse({"leaderboard": data})
+        })
 
+    return JsonResponse({"leaderboard": dict(race_leaderboard)})
