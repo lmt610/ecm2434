@@ -65,7 +65,7 @@ class RegisterViewTest(TestCase):
         response = self.client.post('/register/', valid_form)
         new_user = User.objects.get(username=valid_form["username"])
         
-        self.assertTrue(new_user.is_authenticated)
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
         self.assertEqual(valid_form["email"], new_user.email)
         hashPrefix = "pbkdf2_sha256$"
         self.assertEqual(hashPrefix, new_user.password[:len(hashPrefix)]) 
