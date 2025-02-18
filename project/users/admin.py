@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Profile
-# username: admin, password: password
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'other_field', 'points')
     search_fields = ('user__username', 'other_field')

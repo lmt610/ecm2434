@@ -10,9 +10,13 @@ from django.contrib.auth.decorators import login_required
 from math import radians, sin, cos, sqrt, atan2
 
 @login_required
-def race_view(request):
-    race = get_object_or_404(Race, id=race.id)
-    return render(request,"race/race.html")
+def race_view(request, race_id=None):
+    if race_id is None:
+        races = Race.objects.all()
+        return render(request,"race/race-menu.html", {"races": races})
+    else:
+        race = get_object_or_404(Race, id=race_id)
+        return render(request,"race/race.html", {"race": race})
 
 #haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -27,15 +31,15 @@ def haversine(lat1, lon1, lat2, lon2):
 def calculate_distance(request):
     if request.method == "POST":
         data = json.loads(request.body)
+        print("\n\n")
+        print(data)
+        print("\n\n")
         user_lat, user_lon = float(data["latitude"]), float(data["longitude"])
-
-        #Example of getting a stored location in the db
-        place = Location.objects.first() #change to fetch the correct place
-        place_lat, place_lon = place.latitude, place.longitude
-
+        place_lat, place_lon = float(data["startLatitude"]), float(data["startLongitude"])
+        print(user_lat, user_lon, place_lat, place_lon)
         #calculate distance using Haversine
         distance = haversine(user_lat, user_lon, place_lat, place_lon)
-
+        print(distance)
         #check if distance is within threshold (e.g., 20m)
         threshold = 0.02
         if distance <= threshold:

@@ -1,11 +1,81 @@
-{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExePLORE - Login</title>
+    <link rel="stylesheet" href="{% static 'users/login_styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
+        <p id="pageTitle">ExePLORE</p>
+    </header>
 
-{% block content %}
-<form method="POST" novalidate>
-	{% csrf_token %}
-	<h2>Login</h2>
-	{{form.as_p}}
-	<input type="submit" value="Login" />
-</form>
+    <main class="login-container">
+        <div class="login-card">
+            <div class="card-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in to continue your ExePLORE journey</p>
+            </div>
 
-{% endblock content%}
+            <div class="card-content">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="id_username">Username</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <div class="error-message">
+                            {{ form.username.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_password">Password</label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                        <div class="error-message">
+                            {{ form.password.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Sign In</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="card-footer">
+                <p>Don't have an account? <a href="{% url 'register' %}" class="text-link">Sign Up</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="login-footer">
+        <div class="footer-content">
+            <p>&copy; 2025 ExePLORE. University of Exeter</p>
+            <div class="legal-links">
+                <a href="#" class="text-link">Privacy Policy</a>
+                <a href="#" class="text-link">Terms of Service</a>
+                <a href="#" class="text-link">Help</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

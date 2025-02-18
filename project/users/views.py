@@ -1,11 +1,29 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import login, authenticate
-from .forms import LoginForm
+from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegistrationForm
-from .models import Profile
+from django.http import JsonResponse
+from .forms import LoginForm, UserRegistrationForm
+from .models import Profile, UserSettings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import PasswordChangeForm
+from django.core.validators import EmailValidator
+from django.core.exceptions import ValidationError
 
+User = get_user_model()
+
+def get_user_settings(request):
+    try:
+        user_settings = UserSettings.objects.get(user=request.user)
+    except UserSettings.DoesNotExist:
+        user_settings = UserSettings.objects.create(
+            user=request.user,
+            location_tracking=True,
+            show_on_leaderboard=True,
+            route_notifications=True,
+            achievement_notifications=True
+        )
+    return user_settings
 
 def home(request):
     return render(request, 'users/home.html')
@@ -83,4 +101,77 @@ def increment_points(request):
             }
         return JsonResponse(response_data)
 
-    return JsonResponse({'success': False, 'error': 'Invalid request method.'})    
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+@login_required
+def settings_view(request):
+    context = {
+        'user': request.user,
+        'settings': get_user_settings(request),
+    }
+    return render(request, 'users/settings.html', context)
+
+@login_required
+def change_password(request): 
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Your password was successfully updated!'
+            })
+        else:
+            # Convert form errors to simple dict with error messages
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = str(error_list[0])  # Convert to string and take first error
+            return JsonResponse({
+                'status': 'error',
+                'errors': errors
+            }, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, 'Your account has been successfully deleted.')
+        return redirect('home')
+    return redirect('settings')
+
+@login_required
+def update_email(request):
+    if request.method == 'POST':
+        new_email = request.POST.get('email')
+        if new_email:
+            email_validator = EmailValidator()
+            try:
+                email_validator(new_email)
+                request.user.email = new_email
+                request.user.save()
+                messages.success(request, 'Email updated successfully!')
+            except ValidationError:
+                messages.error(request, "Please provide a valid email")
+        else:
+            messages.error(request, 'Please provide a valid email.')
+    return redirect('settings')
+
+@login_required
+def toggle_setting(request):
+    if request.method == 'POST':
+        setting_name = request.POST.get('setting')
+        value = request.POST.get('value') == 'true'
+        
+        try:
+            user_settings = UserSettings.objects.get(user=request.user)
+            if hasattr(user_settings, setting_name):
+                setattr(user_settings, setting_name, value)
+                user_settings.save()
+                return JsonResponse({'status': 'success'})
+        except UserSettings.DoesNotExist:
+            pass
+            
+    return JsonResponse({'status': 'error'}, status=400)

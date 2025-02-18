@@ -1,0 +1,7 @@
+<h1>Team List</h1>
+
+<ul>
+    {% for team in teams %}
+        <li><a href="{% url 'team_detail' team.pk %}">{{ team.name }}</a></li>
+    {% endfor %}
+</ul>
