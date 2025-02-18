@@ -16,7 +16,14 @@ class UserRegistrationForm(forms.ModelForm):
 
     def clean_password(self):
         password = self.cleaned_data.get("password")
-        if not password or len(password)<8:
+        if password and len(password)<8:
             raise forms.ValidationError("Password must be at least 8 characters")
 
         return password
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if email and User.objects.filter(email=email).exists():
+            raise forms.ValidationError("A user with that email already exists")
+
+        return email
