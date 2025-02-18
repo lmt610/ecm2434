@@ -25,26 +25,42 @@ class LoginViewTest(TestCase):
 
     def test_wrong_username(self):
         response = self.client.post("/login/", {"username": "wrongUsername", "password":self.__USER_PASSWORD})
-        self.assert_login_failed(response)        
+        self.assert_login_failed(response, "Invalid username or password")        
 
     def test_wrong_password(self):
         response = self.client.post("/login/", {"username": self.__USER_NAME, "password":"wrongPassword"})
-        self.assert_login_failed(response)
+        self.assert_login_failed(response, "Invalid username or password")
+
+    def test_switch_user_passwords(self):
+        user2_password = "otherValidPassword12"
+        user2 = User.objects.create_user(username="otherUser", password=user2_password)
+        
+        response = self.client.post("/login/", {"username": self.__USER_NAME, "password":user2_password})
+        self.assert_login_failed(response, "Invalid username or password")
 
     def test_wrong_form_format(self):
-        wrong_forms = [
+        missing_data_forms = [
             {},
             {"otherAttrib":12},
             {"usr":self.__USER_NAME, "password": self.__USER_PASSWORD},
-            {"username":["harry", 12], "password": {"random":["james", "simon"]}}
-        ] 
-        for form in wrong_forms:
-            response = self.client.post("/login/", form)
-            self.assert_login_failed(response) 
+        ]
+        incorrect_data_forms = [
+            {"username":["harry", 12], "password": {"random":["james", "simon"]}},
+            {"username":"'@``\\'", "password":"\n\n\t\b\b\t\t"}
+        ]
 
-    def assert_login_failed(self, response):
+        for form in missing_data_forms:
+            response = self.client.post("/login/", form)
+            self.assert_login_failed(response, "This field is required") 
+
+        for form in incorrect_data_forms:
+            response = self.client.post("/login/", form)
+            self.assert_login_failed(response, "Invalid username or password")
+
+    def assert_login_failed(self, response, error_message):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.wsgi_request.user.is_authenticated)
+        self.assertContains(response, error_message)
 
 class RegisterViewTest(TestCase):
     def setUp(self):
