@@ -11,16 +11,17 @@ function updateTimer() {
 }
 
 function resetRace() {
-    let elapsed = Math.floor((Date.now() - startTime) / 1000);
-
+    let start_time = new Date(startTime).toISOString();
+    let end_time = Date.now()
+    end_time = new Date(end_time).toISOString();
     // Send time to the backend before reloading
-    fetch('/update-race-time/', {
+    fetch('/race/update-race-time/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(),
         },
-        body: JSON.stringify({ time_taken: elapsed })
+        body: JSON.stringify({ race_id: raceID, start_time: start_time, end_time: end_time})
     })
     .then(response => response.json())
     .then(data => {
@@ -72,7 +73,7 @@ function getCSRFToken() {
     return csrfToken;
 }
 
-function sendLocation(position) {
+function checkStartLocation(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
     fetch('/race/calculate-distance/', {
@@ -81,15 +82,34 @@ function sendLocation(position) {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(), //Include CSRF token
         },
-        body: JSON.stringify({latitude: lat, longitude: lon, startLatitude: raceData.start.lat, startLongitude: raceData.start.lng})
+        body: JSON.stringify({latitude: lat, longitude: lon, targetLatitude: raceData.start.lat, targetLongitude: raceData.start.lng})
     })
     .then(response => response.json())
     .then(data => {
         if (data.status === "within range") {
-            alert("You are within range!")
             return true
         } else {
-            alert("You are out of the range.")
+            return false
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
+function checkEndLocation(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    fetch('/race/calculate-distance/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(), //Include CSRF token
+        },
+        body: JSON.stringify({latitude: lat, longitude: lon, targetLatitude: raceData.end.lat, targetLongitude: raceData.end.lng})
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "within range") {
+            return true
+        } else {
             return false
         }
     })
@@ -97,7 +117,7 @@ function sendLocation(position) {
 }
 
 function createRace(title, startId, endId) {
-    fetch('/create-race/', {
+    fetch('/race/create-race/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -129,7 +149,7 @@ function updateRaceTime(startTime, endTime) {
         return;
     }
 
-    fetch('/update-race-time/', {
+    fetch('/race/update-race-time/', {
         method: 'POST',
         headers: {
             'Content-Type': 'applciation/json',
@@ -175,12 +195,28 @@ function addUserLocationToMap(lat, lon){
 
 function startTimeTrial(){
     if (navigator.geolocation) {
-        if(navigator.geolocation.getCurrentPosition(sendLocation)){
+        if(navigator.geolocation.getCurrentPosition(checkStartLocation)){
+            const timeTrialDiv = document.getElementById('activeTimeTrialView');
+            timeTrialDiv.classList.add('visible')
             startRace()
+        }else{
+            alert("you are not at the start point")
         }   
         
     } else {
         alert("Geolocation is not supported by this browser.")
     }
+}
 
+function endTimeTrial(){
+    if (navigator.geolocation) {
+        if(navigator.geolocation.getCurrentPosition(checkEndLocation)){
+            resetRace()
+            document.getElementById('activeTimeTrialView').classList.remove('visible') 
+        }else{
+            alert("you are not at the end point") 
+        }   
+    } else {
+        alert("Geolocation is not supported by this browser.")
+    }    
 }

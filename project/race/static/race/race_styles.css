@@ -27,6 +27,8 @@ header img{
 
 }
 
+/* main page */
+
 main{
     text-align: center;
     display: grid;
@@ -34,6 +36,7 @@ main{
     grid-template-rows: 2fr 10fr 5fr 5fr;
     gap: 10px;
     margin-top: 10px;
+    z-index: 1;
 }
 
 button{
@@ -132,3 +135,56 @@ button{
 button:hover{
     border: 2px solid black;
 }
+
+/* Time trial view */
+
+#activeTimeTrialView{  
+    position: fixed;
+    top: 0;                  
+    left: 0;                 
+    right: 0;                
+    bottom: 0;              
+    background-color: rgba(0, 0, 0, 0.7);  
+    z-index: 9999;    
+    opacity: 0;              /* Start with transparent */
+    transform: translateY(-100%); /* Start from above the viewport */
+    transition: opacity 1s ease, transform 1s ease; /* Smooth transition */
+}
+
+#activeTimeTrialView.visible {
+    opacity: 1;              /* Fully opaque when visible */
+    transform: translateY(0); /* Move to its normal position */
+}
+
+#activeTimeTrialView button{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 10%;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    width: 30%;
+    aspect-ratio: 20/1;
+    padding: 10px;
+    border: none;
+    color: white;
+ 
+}
+
+button:hover{
+    border: 2px solid black;
+}
+
+#timer{
+    margin-top: 25%;
+    margin-bottom: 10px;
+    justify-self: center;
+    width: 30%;
+    color: black;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 10px;
+    
+}
+/* Exsplore view */
+

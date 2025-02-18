@@ -25,7 +25,7 @@ def populate_database(sender, **kwargs):
             start=loc1,
             end=loc2,
             start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=0.2),
+            end_time=timezone.now() + timezone.timedelta(hours=100),
             is_complete=True
         )
     if not Race.objects.filter(title="Armory (A) to Streatham Court (CQ)").exists():
@@ -34,7 +34,7 @@ def populate_database(sender, **kwargs):
             start=loc2,
             end=loc3,
             start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=0.2),
+            end_time=timezone.now() + timezone.timedelta(hours=100),
             is_complete=True
         )
     if not Race.objects.filter(title="Forum (North) to Physics Entrance").exists():    
@@ -43,7 +43,7 @@ def populate_database(sender, **kwargs):
             start=loc1,
             end=loc4,
             start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=0.2),
+            end_time=timezone.now() + timezone.timedelta(hours=100),
             is_complete=True
         ),
     if not Race.objects.filter(title="Physics Entrance to Armory (A)").exists(): 
@@ -52,7 +52,7 @@ def populate_database(sender, **kwargs):
             start=loc4,
             end=loc2,
             start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=0.2),
+            end_time=timezone.now() + timezone.timedelta(hours=100),
             is_complete=True
         )
     if not Race.objects.filter(title="St Jhons road").exists(): 
@@ -61,7 +61,7 @@ def populate_database(sender, **kwargs):
             start=locX,
             end=locX,
             start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=0.2),
+            end_time=timezone.now() + timezone.timedelta(hours=100),
             is_complete=False
         )
 

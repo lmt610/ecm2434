@@ -31,15 +31,10 @@ def haversine(lat1, lon1, lat2, lon2):
 def calculate_distance(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        print("\n\n")
-        print(data)
-        print("\n\n")
         user_lat, user_lon = float(data["latitude"]), float(data["longitude"])
-        place_lat, place_lon = float(data["startLatitude"]), float(data["startLongitude"])
-        print(user_lat, user_lon, place_lat, place_lon)
+        place_lat, place_lon = float(data["targetLatitude"]), float(data["targetLongitude"])
         #calculate distance using Haversine
         distance = haversine(user_lat, user_lon, place_lat, place_lon)
-        print(distance)
         #check if distance is within threshold (e.g., 20m)
         threshold = 0.02
         if distance <= threshold:
@@ -82,9 +77,10 @@ def update_race_time(request):
     if request.method == "POST":
         data = json.loads(request.body)
         race_id = data.get("race_id")
+        print(race_id)
+        print(data.get("start_time"),data.get("end_time"))
         start_time = parse_datetime(data.get("start_time"))
         end_time = parse_datetime(data.get("end_time"))
-
         try:
             race = Race.objects.get(id=race_id)
 
@@ -96,10 +92,11 @@ def update_race_time(request):
                 #compare times
                 current_pb = (race.end_time - race.start_time).total_seconds()
                 new_time = (end_time - start_time).total_seconds()
+                print(current_pb, new_time)
                 if new_time < current_pb:
                     race.start_time = start_time
                     race.end_time = end_time
-
+            print("setting completion to true")
             race.is_complete = True
             race.save()
 
