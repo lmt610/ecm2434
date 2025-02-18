@@ -26,6 +26,20 @@ header img{
     height: 6vh;
 
 }
+
+.menuBanner{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 5vh;
+    background-color: mediumspringgreen;
+    color: white;
+    font-size: 25px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 .raceMenu{
     width: 80%;
     margin: 0 auto;
@@ -42,13 +56,15 @@ header img{
 
 .raceOption{
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5px;
     width: 45%;  
+    height: min-content;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    text-align: center;
-    box-sizing: border-box;
     text-decoration: none;
     color: black;
 }
@@ -57,14 +73,14 @@ header img{
     width: 45%; 
     background-color: white;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(185, 110, 110, 0.1);
     padding: 20px;
     text-align: center;
 }
 
 .map{
     width: 100%;
+    height: 30vh;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
 }

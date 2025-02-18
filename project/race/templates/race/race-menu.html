@@ -1,11 +1,11 @@
 {% load static %}
 <head>
-    <link rel="stylesheet" href="{% static 'race/race_menu_styles.css' %}">
+    <link rel="stylesheet" href="{% static 'race-menu/race_menu_styles.css' %}">
 
         <!-- Leaflet mapping plugin-->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
         <!-- Font Awesome for map race icons -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
@@ -14,6 +14,7 @@
         <p id="pageTitle">ExePLORE</p>
     </header>
     <main>
+        <div class="menuBanner">Select Race!</div>
         <div class="raceMenu">
             <div class="row">
                 {% for race in races %}
@@ -21,7 +22,7 @@
                     <div class="raceOption">
                         {{ race.title }}
                     </div>
-                    <div class="map">
+                    <div id="map-{{ race.id }}" class="map">
                         
                     </div>
                 </a>
@@ -31,6 +32,22 @@
             {% endfor%}
         </div>
     </main>
+    
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
+    <script>
+        // Django template rendering race data as a JS object
+        const races = [
+            {% for race in races %}
+                {
+                    id: "{{ race.id }}",
+                    start: { lat: {{ race.start.latitude }}, lng: {{ race.start.longitude }} },
+                    end: { lat: {{ race.end.latitude }}, lng: {{ race.end.longitude }} }
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+    </script>
+
+    <script src="{% static 'race-menu/race_menu_map_script.js' %}"></script>
 </body>
 
