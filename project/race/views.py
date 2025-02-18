@@ -5,9 +5,11 @@ from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 
 from math import radians, sin, cos, sqrt, atan2
 
+@login_required
 def race_view(request):
     race = get_object_or_404(Race, id=race.id)
     return render(request,"race/race.html")
@@ -51,6 +53,10 @@ def create_race(request):
         title = data.get("title")
         start_id = data.get("start_id")
         end_id = data.get("end_id")
+
+        for race in Race.objects.all():
+            if start_id == race.start.id and end_id == race.end.id:
+                return JsonResponse({"status": "success", "message": "Race already registered with user", "race_id": race.id})
 
         try:
             start_location = Location.objects.get(id=start_id)
