@@ -13,3 +13,10 @@ class UserRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
+
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
+        if not password or len(password)<8:
+            raise forms.ValidationError("Password must be at least 8 characters")
+
+        return password
