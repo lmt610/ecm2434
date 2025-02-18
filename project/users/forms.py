@@ -8,7 +8,7 @@ class LoginForm(forms.Form):
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
-    email = forms.EmailField(validators=[EmailValidator()])
+    email = forms.EmailField()
 
     class Meta:
         model = User
