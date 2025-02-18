@@ -36,7 +36,7 @@
             <script src="{% static 'race/race_map_script.js' %}"></script>
         </div>
         <div class="menu">
-            <p id="routePOIs">{{ race.title }}</p>
+            <a href="{% url 'race' %}" id="routePOIs">{{ race.title }} ►</a>
             <button id="leaderboard">Leaderboards</button>
             <div id="status">
                 {% if race.is_complete%}
