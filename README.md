@@ -40,7 +40,12 @@ When the server is running, you can view the website at http://127.0.0.1:8000
 You can access the admin panel by going to http://127.0.0.1:8000/admin and logging in with the credentials
 you set up earlier
 
-To run tests (not set up yet):
+To run all tests:
 ```sh
 python project/manage.py test
+```
+
+To run an app's tests:
+```sh
+python project/manage.py test app_name
 ```
