@@ -53,6 +53,11 @@ def create_race(request):
         start_id = data.get("start_id")
         end_id = data.get("end_id")
 
+        #logic added to return an existing race to the frontend if the user enters a previously used start and end combination
+        for race in Race.objects.all():
+            if start_id == race.start.id and end_id == race.end.id:
+                return JsonResponse({"status": "success", "message": "Race already registered with user", "race_id": race.id})
+
         try:
             start_location = Location.objects.get(id=start_id)
             end_location = Location.objects.get(id=end_id)
