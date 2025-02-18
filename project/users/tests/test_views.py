@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
-from ..forms import LoginForm
+from ..forms import LoginForm, UserRegistrationForm
 
 class LoginViewTest(TestCase):
     __USER_NAME = "testUser"
@@ -45,3 +45,85 @@ class LoginViewTest(TestCase):
     def assert_login_failed(self, response):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+class RegisterViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_get_page(self):
+        response = self.client.get('/register/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.context['form'], UserRegistrationForm)
+        self.assertFalse(response.context['form'].is_bound)
+
+    def test_valid_sign_up(self):
+        valid_form =  {
+            "username": "validName",
+            "email": "validemail@legit.com",
+            "password": "validPassword182"
+        }
+        response = self.client.post('/register/', valid_form)
+        new_user = User.objects.get(username=valid_form["username"])
+        
+        self.assertTrue(new_user.is_authenticated)
+        self.assertEqual(valid_form["email"], new_user.email)
+        hashPrefix = "pbkdf2_sha256$"
+        self.assertEqual(hashPrefix, new_user.password[:len(hashPrefix)]) 
+        self.assertEqual(response.url, reverse("welcome"))
+
+    def test_duplicate_username(self):
+        duplicate_username = "duplicateUsername"
+        User.objects.create_user(username=duplicate_username, password="validPassword12", email="valid@email.com")
+        invalid_form = {
+            "username": duplicate_username,
+            "password": "anotherValidPassword17",
+            "email": "validAndUniquel@email.com"
+        }
+        self.assert_form_is_rejected(invalid_form, "A user with that username already exists")
+
+    def test_duplicate_email(self):
+        duplicate_email = "duplicate@email.com"
+        User.objects.create_user(username="validUsername12", password="validPassword12", email=duplicate_email)
+        invalid_form = {
+            "username": "uniqueAndValidUsername",
+            "password": "anotherValidPassword17",
+            "email": duplicate_email
+        }
+        self.assert_form_is_rejected(invalid_form, "A user with that email already exists")
+
+    def test_weak_password(self):
+        invalid_form = {
+            "username": "validUsername",
+            "password": "weak",
+            "email": "valid@email.com"
+        }
+        self.assert_form_is_rejected(invalid_form, "Password must be at least 8 characters")
+
+    def test_wrong_form_format(self):
+        valid_username = "HarrisonFord182"
+        valid_password = "kjasdnf9889!"
+        valid_email    = "michael@jackson.com"
+
+        wrong_forms = [
+            {},
+            {"otherAttrib":12},
+            {"username":valid_username, "password": valid_password},
+            {"username":valid_username, "email": valid_email},
+            {"password":valid_password, "email": valid_email},
+            {"username":["harry", 12], "password": {"random":["james", "simon"]}, "email": {}}
+        ] 
+        for form in wrong_forms:
+            response = self.client.post("/register/", form)
+            self.assert_form_is_rejected(form, "This field is required")
+
+
+    def assert_form_is_rejected(self, form, error_message):
+        initial_user_count = User.objects.count()
+        
+        response = self.client.post("/register/", form)
+
+        self.assertEqual(initial_user_count, User.objects.count())
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+        self.assertEqual(response.status_code, 200)
+       
+        self.assertContains(response, error_message) 
