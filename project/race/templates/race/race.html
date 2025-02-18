@@ -1,11 +1,13 @@
 {% load static %}
 <head>
+    <!-- style sheets-->
     <link rel="stylesheet" href="{% static 'race/race_styles.css' %}">
-    
     <!-- Leaflet mapping plugin-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <!-- Font Awesome for map race icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!--scripts-->
 </head>
 
 <body>
@@ -14,7 +16,6 @@
         <p id="pageTitle">ExePLORE</p>
     </header>
     <main>
-        {% block content %}
         <div class="title">Races!</div>
         <div id="map">
             <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -54,13 +55,13 @@
                 {% endif %}
             </div>
                 <div class="actionButtons">
-                <button style="background-color: red;">RACE!!</button>
-                <button style="background-color: gold;">Time Trial</button>
+                <button style="background-color: red;" onclick="getLocation()">Where am I?</button>
+                <button style="background-color: gold;" onclick="startTimeTrial()">Time Trial</button>
                 <button style="background-color: forestgreen;">ExePLORE</button>
             </div>
         </div>
-        {% endblock %}
     </main>
-
+    {% csrf_token %}
+    <script src="{% static 'race/race_script.js' %}"></script>
 </body>
 
