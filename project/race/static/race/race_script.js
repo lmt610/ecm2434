@@ -1,16 +1,25 @@
 // Simple Timer Function
 let startTime;
+let isRunActive = false;
+let isPractise = false;
 function startRace() {
     startTime = Date.now();
-    setInterval(updateTimer, 1000);
+    isRunActive = true;
+    timerId = setInterval(updateTimer, 1000);
 }
 
 function updateTimer() {
     let elapsed = Math.floor((Date.now() - startTime) / 1000);
     document.getElementById("timer").textContent = elapsed + " seconds";
+
+    if (!isRunActive) {
+        clearInterval(timerId);
+        return;
+    }
 }
 
 function resetRace() {
+    isRunActive = false
     let start_time = new Date(startTime).toISOString();
     let end_time = Date.now()
     end_time = new Date(end_time).toISOString();
@@ -149,6 +158,11 @@ function updateRaceTime(startTime, endTime) {
         return;
     }
 
+    if (isPractise) {
+        location.reload();
+        return;
+    }
+
     fetch('/race/update-race-time/', {
         method: 'POST',
         headers: {
@@ -198,6 +212,10 @@ function startTimeTrial(){
         if(navigator.geolocation.getCurrentPosition(checkStartLocation)){
             const timeTrialDiv = document.getElementById('activeTimeTrialView');
             timeTrialDiv.classList.add('visible')
+            if (isPractise) {
+                const practiseText = document.getElementById('activePractise');
+                practiseText.classList.add('visible');
+            }
             startRace()
         }else{
             alert("you are not at the start point")
@@ -212,7 +230,11 @@ function endTimeTrial(){
     if (navigator.geolocation) {
         if(navigator.geolocation.getCurrentPosition(checkEndLocation)){
             resetRace()
+            if (isPractise) {
+                document.getElementById('activePractise').classList.remove('visible')
+            }
             document.getElementById('activeTimeTrialView').classList.remove('visible') 
+            
         }else{
             alert("you are not at the end point") 
         }   
