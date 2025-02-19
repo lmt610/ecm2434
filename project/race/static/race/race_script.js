@@ -76,7 +76,7 @@ function getCSRFToken() {
 function checkStartLocation(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    fetch('/race/calculate-distance/', {
+    return fetch('/race/calculate-distance/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -86,18 +86,18 @@ function checkStartLocation(position) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === "within range") {
-            return true
-        } else {
-            return false
-        }
+        return data.status === "within range";
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => {
+        console.error("Error:", error);
+        return false;
+    });
 }
+
 function checkEndLocation(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    fetch('/race/calculate-distance/', {
+    return fetch('/race/calculate-distance/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -107,13 +107,12 @@ function checkEndLocation(position) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === "within range") {
-            return true
-        } else {
-            return false
-        }
+        return data.status === "within range";
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => {
+        console.error("Error:", error);
+        return false;
+    });
 }
 
 function createRace(title, startId, endId) {
@@ -163,7 +162,6 @@ function updateRaceTime(startTime, endTime) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data.message);
         location.reload(); //reload after updating
     })
     .catch(error => console.error("Error:", error));
@@ -193,30 +191,70 @@ function addUserLocationToMap(lat, lon){
     }
 }
 
-function startTimeTrial(){
+function startTimeTrial() {
     if (navigator.geolocation) {
-        if(navigator.geolocation.getCurrentPosition(checkStartLocation)){
-            const timeTrialDiv = document.getElementById('activeTimeTrialView');
-            timeTrialDiv.classList.add('visible')
-            startRace()
-        }else{
-            alert("you are not at the start point")
-        }   
-        
+        navigator.geolocation.getCurrentPosition(position => {
+            checkStartLocation(position).then(isAtStartLocation => {
+                if (isAtStartLocation) {
+                    const timeTrialDiv = document.getElementById('activeTimeTrialView');
+                    timeTrialDiv.classList.add('visible');
+                    startRace();
+                } else {
+                    alert("You are not at the start point");
+                }
+            });
+        });
     } else {
-        alert("Geolocation is not supported by this browser.")
+        alert("Geolocation is not supported by this browser.");
     }
 }
 
-function endTimeTrial(){
+function endTimeTrial() {
     if (navigator.geolocation) {
-        if(navigator.geolocation.getCurrentPosition(checkEndLocation)){
-            resetRace()
-            document.getElementById('activeTimeTrialView').classList.remove('visible') 
-        }else{
-            alert("you are not at the end point") 
-        }   
+        navigator.geolocation.getCurrentPosition(position => {
+            checkEndLocation(position).then(isAtEndLocation => {
+                if (isAtEndLocation) {
+                    resetRace();
+                    document.getElementById('activeTimeTrialView').classList.remove('visible');
+                } else {
+                    alert("You are not at the end point");
+                }
+            });
+        });
     } else {
-        alert("Geolocation is not supported by this browser.")
-    }    
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+function startExePLORE() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            checkStartLocation(position).then(isAtStartLocation => {
+                if (isAtStartLocation) {
+                    const timeTrialDiv = document.getElementById('activeExePLOREView');
+                    timeTrialDiv.classList.add('visible');
+                } else {
+                    alert("You are not at the start point");
+                }
+            });
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+function endExePLORE() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            checkEndLocation(position).then(isAtEndLocation => {
+                if (isAtEndLocation) {
+                    document.getElementById('activeTimeTrialView').classList.remove('visible');
+                } else {
+                    alert("You are not at the end point");
+                }
+            });
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
 }

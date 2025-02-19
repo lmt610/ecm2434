@@ -36,7 +36,7 @@ def calculate_distance(request):
         #calculate distance using Haversine
         distance = haversine(user_lat, user_lon, place_lat, place_lon)
         #check if distance is within threshold (e.g., 20m)
-        threshold = 0.02
+        threshold = 0.05
         if distance <= threshold:
             return JsonResponse({"status": "within range", "distance": round(distance, 2)})
         else:

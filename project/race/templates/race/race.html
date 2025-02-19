@@ -42,7 +42,7 @@
             <button id="leaderboard">Leaderboards</button>
             <div id="status">
                 {% if race.is_complete%}
-                <p>Completed!</p>
+                <p>Race status: Completed!</p>
                 {% else %}
                 <p>You havn't exsplored this route yet!</p>
                 {% endif %}
@@ -58,13 +58,18 @@
                 <div class="actionButtons">
                 <button style="background-color: red;" onclick="getLocation()">Where am I?</button>
                 <button style="background-color: gold;" onclick="startTimeTrial()">Time Trial</button>
-                <button style="background-color: forestgreen;">ExePLORE</button>
+                <button style="background-color: forestgreen;" onclick="startExePLORE()">ExePLORE</button>
             </div>
         </div>
         <div id="activeTimeTrialView">
             <div id="timer">00:00</div>
             <button style="background-color: forestgreen;" onclick="endTimeTrial()">Finish</button>
             <button style="background-color: red;" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
+        </div>
+        <div id="activeExePLOREView">
+            <div id="qoute">"Leave it better than you found it, Be found better than you where"</div>
+            <button style="background-color: forestgreen;" onclick="endExePLORE()">Finish</button>
+            <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
         </div>
     </main>
     {% csrf_token %}
