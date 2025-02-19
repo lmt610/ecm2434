@@ -248,7 +248,7 @@ function endExePLORE() {
         navigator.geolocation.getCurrentPosition(position => {
             checkEndLocation(position).then(isAtEndLocation => {
                 if (isAtEndLocation) {
-                    document.getElementById('activeTimeTrialView').classList.remove('visible');
+                    document.getElementById('activeExePLOREView').classList.remove('visible');
                 } else {
                     alert("You are not at the end point");
                 }
