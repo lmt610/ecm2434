@@ -219,6 +219,7 @@ function startTimeTrial() {
             alert("you are not at the start point")
         }   
         
+>>>>>>> b21c243fb7be4a1e32dfde42079f078e08089988
     } else {
         alert("Geolocation is not supported by this browser.");
     }
