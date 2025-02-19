@@ -1,16 +1,25 @@
 // Simple Timer Function
 let startTime;
+let isRunActive = false;
+let isPractise = false;
 function startRace() {
     startTime = Date.now();
-    setInterval(updateTimer, 1000);
+    isRunActive = true;
+    timerId = setInterval(updateTimer, 1000);
 }
 
 function updateTimer() {
     let elapsed = Math.floor((Date.now() - startTime) / 1000);
     document.getElementById("timer").textContent = elapsed + " seconds";
+
+    if (!isRunActive) {
+        clearInterval(timerId);
+        return;
+    }
 }
 
 function resetRace() {
+    isRunActive = false
     let start_time = new Date(startTime).toISOString();
     let end_time = Date.now()
     end_time = new Date(end_time).toISOString();
@@ -148,6 +157,11 @@ function updateRaceTime(startTime, endTime) {
         return;
     }
 
+    if (isPractise) {
+        location.reload();
+        return;
+    }
+
     fetch('/race/update-race-time/', {
         method: 'POST',
         headers: {
@@ -193,51 +207,18 @@ function addUserLocationToMap(lat, lon){
 
 function startTimeTrial() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            checkStartLocation(position).then(isAtStartLocation => {
-                if (isAtStartLocation) {
-                    const timeTrialDiv = document.getElementById('activeTimeTrialView');
-                    timeTrialDiv.classList.add('visible');
-                    startRace();
-                } else {
-                    alert("You are not at the start point");
-                }
-            });
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
-}
-
-function endTimeTrial() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            checkEndLocation(position).then(isAtEndLocation => {
-                if (isAtEndLocation) {
-                    resetRace();
-                    document.getElementById('activeTimeTrialView').classList.remove('visible');
-                } else {
-                    alert("You are not at the end point");
-                }
-            });
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
-}
-
-function startExePLORE() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            checkStartLocation(position).then(isAtStartLocation => {
-                if (isAtStartLocation) {
-                    const timeTrialDiv = document.getElementById('activeExePLOREView');
-                    timeTrialDiv.classList.add('visible');
-                } else {
-                    alert("You are not at the start point");
-                }
-            });
-        });
+        if(navigator.geolocation.getCurrentPosition(checkStartLocation)){
+            const timeTrialDiv = document.getElementById('activeTimeTrialView');
+            timeTrialDiv.classList.add('visible')
+            if (isPractise) {
+                const practiseText = document.getElementById('activePractise');
+                practiseText.classList.add('visible');
+            }
+            startRace()
+        }else{
+            alert("you are not at the start point")
+        }   
+        
     } else {
         alert("Geolocation is not supported by this browser.");
     }
@@ -245,15 +226,15 @@ function startExePLORE() {
 
 function endExePLORE() {
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            checkEndLocation(position).then(isAtEndLocation => {
-                if (isAtEndLocation) {
-                    document.getElementById('activeExePLOREView').classList.remove('visible');
-                } else {
-                    alert("You are not at the end point");
-                }
-            });
-        });
+        if(navigator.geolocation.getCurrentPosition(checkEndLocation)){
+            resetRace()
+            if (isPractise) {
+                document.getElementById('activePractise').classList.remove('visible')
+            }
+            document.getElementById('activeTimeTrialView').classList.remove('visible') 
+        }else{
+            alert("you are not at the end point") 
+        }   
     } else {
         alert("Geolocation is not supported by this browser.");
     }

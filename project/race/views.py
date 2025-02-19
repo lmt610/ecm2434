@@ -95,7 +95,7 @@ def update_race_time(request):
                 race.end_time = end_time
             else:
                 #compare times
-                current_pb = (race.end_time - race.start_time).total_seconds()
+                current_pb = race.get_duration().total_seconds()
                 new_time = (end_time - start_time).total_seconds()
                 print(current_pb, new_time)
                 if new_time < current_pb:

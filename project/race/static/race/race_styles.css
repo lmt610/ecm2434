@@ -27,6 +27,16 @@ header img{
 
 }
 
+#pageTitle {
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Uses default text color */
+    cursor: pointer; /* Keeps it clickable */
+    position: absolute; /* Keeps it centered like your old `<p>` */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+}
+
 /* main page */
 
 main{
@@ -157,6 +167,22 @@ button:hover{
 #activeTimeTrialView.visible {
     opacity: 1;              
     transform: translateY(0); 
+}
+
+#activePractise {
+    margin-top: 25%;
+    margin-bottom: 10px;
+    justify-self: center;
+    width: 30%;
+    color: black;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 10px;
+    opacity: 0;
+}
+
+#activePractise.visible {
+    opacity: 1;
 }
 
 #activeTimeTrialView button{
