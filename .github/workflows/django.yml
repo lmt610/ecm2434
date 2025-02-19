@@ -34,8 +34,9 @@ jobs:
 
     - name: Run Migrations
       run: |
-        python project/manage.py migrate
+        cd project/
+        python manage.py migrate
         
     - name: Run Tests
       run: |
-        python project/manage.py test
+        python manage.py test

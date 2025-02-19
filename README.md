@@ -21,17 +21,18 @@ pip install -r requirements.txt
 
 4. Run migrations (set up the database)
 ```sh
-python project/manage.py migrate
+cd project/
+python manage.py migrate
 ```
 
 5. create an admin (optional)
 ```sh
-python project/manage.py createsuperuser
+python manage.py createsuperuser
 ```
 
 5. Run the (development) server
 ```sh
-python project/manage.py runserver
+python manage.py runserver
 ```
 
 ## Usage
@@ -42,10 +43,10 @@ you set up earlier
 
 To run all tests:
 ```sh
-python project/manage.py test
+python manage.py test
 ```
 
 To run an app's tests:
 ```sh
-python project/manage.py test app_name
+python manage.py test app_name
 ```
