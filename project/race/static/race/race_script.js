@@ -207,19 +207,51 @@ function addUserLocationToMap(lat, lon){
 
 function startTimeTrial() {
     if (navigator.geolocation) {
-        if(navigator.geolocation.getCurrentPosition(checkStartLocation)){
-            const timeTrialDiv = document.getElementById('activeTimeTrialView');
-            timeTrialDiv.classList.add('visible')
-            if (isPractise) {
-                const practiseText = document.getElementById('activePractise');
-                practiseText.classList.add('visible');
-            }
-            startRace()
-        }else{
-            alert("you are not at the start point")
-        }   
-        
->>>>>>> b21c243fb7be4a1e32dfde42079f078e08089988
+        navigator.geolocation.getCurrentPosition(position => {
+            checkStartLocation(position).then(isAtStartLocation => {
+                if (isAtStartLocation) {
+                    const timeTrialDiv = document.getElementById('activeTimeTrialView');
+                    timeTrialDiv.classList.add('visible');
+                    startRace();
+                } else {
+                    alert("You are not at the start point");
+                }
+            });
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+function endTimeTrial() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            checkEndLocation(position).then(isAtEndLocation => {
+                if (isAtEndLocation) {
+                    resetRace();
+                    document.getElementById('activeTimeTrialView').classList.remove('visible');
+                } else {
+                    alert("You are not at the end point");
+                }
+            });
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+function startExePLORE() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            checkStartLocation(position).then(isAtStartLocation => {
+                if (isAtStartLocation) {
+                    const timeTrialDiv = document.getElementById('activeExePLOREView');
+                    timeTrialDiv.classList.add('visible');
+                } else {
+                    alert("You are not at the start point");
+                }
+            });
+        });
     } else {
         alert("Geolocation is not supported by this browser.");
     }
@@ -227,15 +259,15 @@ function startTimeTrial() {
 
 function endExePLORE() {
     if (navigator.geolocation) {
-        if(navigator.geolocation.getCurrentPosition(checkEndLocation)){
-            resetRace()
-            if (isPractise) {
-                document.getElementById('activePractise').classList.remove('visible')
-            }
-            document.getElementById('activeTimeTrialView').classList.remove('visible') 
-        }else{
-            alert("you are not at the end point") 
-        }   
+        navigator.geolocation.getCurrentPosition(position => {
+            checkEndLocation(position).then(isAtEndLocation => {
+                if (isAtEndLocation) {
+                    document.getElementById('activeExePLOREView').classList.remove('visible');
+                } else {
+                    alert("You are not at the end point");
+                }
+            });
+        });
     } else {
         alert("Geolocation is not supported by this browser.");
     }
