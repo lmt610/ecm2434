@@ -39,4 +39,5 @@ jobs:
         
     - name: Run Tests
       run: |
+        cd project/
         python manage.py test
