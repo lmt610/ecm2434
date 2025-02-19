@@ -1,9 +1,11 @@
-// static/js/map.js
+
+let map;
+let playerLocationMarker = null;
 
 // Function to initialize the map
 function initializeMap(raceData) {
     // Initialize the map with the start location
-    var map = L.map('map').setView([50.736577, -3.532512], 14.5);  
+    map = L.map('map').setView([50.736577, -3.532512], 14.5);  
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -45,7 +47,7 @@ function initializeMap(raceData) {
         [raceData.start.lat, raceData.start.lng],
         [raceData.end.lat, raceData.end.lng]
     ]);
-    map.fitBounds(bounds, { padding: [0, 10] });
+    map.fitBounds(bounds, { padding: [50, 50] });
 }
 
 // Check if raceData exists and initialize the map

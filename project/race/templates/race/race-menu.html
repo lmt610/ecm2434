@@ -19,7 +19,7 @@
             <div class="row">
                 {% for race in races %}
                 <a class="raceOption" href="{% url 'race_detail' race.id %}">
-                    <div class="raceOption">
+                    <div class="raceTitle">
                         {{ race.title }}
                     </div>
                     <div id="map-{{ race.id }}" class="map">

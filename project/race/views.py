@@ -32,16 +32,12 @@ def calculate_distance(request):
     if request.method == "POST":
         data = json.loads(request.body)
         user_lat, user_lon = float(data["latitude"]), float(data["longitude"])
-
-        #Example of getting a stored location in the db
-        place = Location.objects.first() #change to fetch the correct place
-        place_lat, place_lon = place.latitude, place.longitude
-
+        place_lat, place_lon = float(data["targetLatitude"]), float(data["targetLongitude"])
         #calculate distance using Haversine
         distance = haversine(user_lat, user_lon, place_lat, place_lon)
-
         #check if distance is within threshold (e.g., 20m)
-        threshold = 0.02
+        threshold = 0.05
+        print(distance)
         if distance <= threshold:
             return JsonResponse({"status": "within range", "distance": round(distance, 2)})
         else:
@@ -57,6 +53,11 @@ def create_race(request):
         title = data.get("title")
         start_id = data.get("start_id")
         end_id = data.get("end_id")
+
+        #logic added to return an existing race to the frontend if the user enters a previously used start and end combination
+        for race in Race.objects.all():
+            if start_id == race.start.id and end_id == race.end.id:
+                return JsonResponse({"status": "success", "message": "Race already registered with user", "race_id": race.id})
 
         try:
             start_location = Location.objects.get(id=start_id)
@@ -82,9 +83,10 @@ def update_race_time(request):
     if request.method == "POST":
         data = json.loads(request.body)
         race_id = data.get("race_id")
+        print(race_id)
+        print(data.get("start_time"),data.get("end_time"))
         start_time = parse_datetime(data.get("start_time"))
         end_time = parse_datetime(data.get("end_time"))
-
         try:
             race = Race.objects.get(id=race_id)
 
@@ -94,12 +96,13 @@ def update_race_time(request):
                 race.end_time = end_time
             else:
                 #compare times
-                current_pb = (race.end_time - race.start_time).total_seconds()
+                current_pb = race.get_duration().total_seconds()
                 new_time = (end_time - start_time).total_seconds()
+                print(current_pb, new_time)
                 if new_time < current_pb:
                     race.start_time = start_time
                     race.end_time = end_time
-
+            print("setting completion to true")
             race.is_complete = True
             race.save()
 
