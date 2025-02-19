@@ -160,7 +160,7 @@
 <body>
 
     <div class="rectangle">
-    	<img src="{% static 'teams/logo.png' %}" alt="Logo" class="logo">
+    	<img src="{% static 'teams/logo.png' %}" alt="" class="logo">
     	<div class="header-text">ExePLORE</div>
 	<a href="{% url 'welcome' %}" class="home-link">Home</a> 
     </div>
@@ -176,7 +176,7 @@
                             {{ forloop.counter }}.
                         {% endif %}
                         {% if forloop.first %}
-                        <img src="{% static 'teams/gold.png' %}" alt="Gold Medal" class="medal">
+                        <img src="{% static 'teams/gold.png' %}" alt="⭐🥇⭐" class="medal">
                         {% endif %}
                     </span>
                     <span class="team-name {% if forloop.first %}shifted{% endif %}">{{ team.name }}</span>
