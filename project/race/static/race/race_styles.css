@@ -27,6 +27,16 @@ header img{
 
 }
 
+#pageTitle {
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Uses default text color */
+    cursor: pointer; /* Keeps it clickable */
+    position: absolute; /* Keeps it centered like your old `<p>` */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+}
+
 /* main page */
 
 main{
