@@ -123,7 +123,7 @@ function checkEndLocation(position) {
     });
 }
 
-function createRace(title, startId, endId) {
+function createRace(title, startId, endId, user) {
     fetch('/race/create-race/', {
         method: 'POST',
         headers: {
@@ -133,7 +133,8 @@ function createRace(title, startId, endId) {
         body: JSON.stringify({
             title: title,
             start_id: startId,
-            end_id: endId
+            end_id: endId,
+            profile: user
         })
     })
     .then(response => response.json())
@@ -144,33 +145,6 @@ function createRace(title, startId, endId) {
         } else {
             console.error("Error creating race:", data.message);
         }
-    })
-    .catch(error => console.error("Error:", error));
-}
-
-function updateRaceTime(startTime, endTime) {
-    const raceId = localStorage.getItem("currentRaceId"); //get stored race ID
-
-    if (!raceId) {
-        console.error("No active race found.");
-        return;
-    }
-
-    fetch('/race/update-race-time/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'applciation/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify({
-            race_id:raceId,
-            start_time: new Date(startTime).toISOString(),
-            end_time:new Date(endTime).toISOString()
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        location.reload(); //reload after updating
     })
     .catch(error => console.error("Error:", error));
 }
