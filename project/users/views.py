@@ -59,8 +59,9 @@ def register(request):
             user.set_password(form.cleaned_data['password'])  # hash password
             user.save()
 
+            login(request, user)
             messages.success(request, 'Your account has been created!')
-            return redirect('login')  
+            return redirect('welcome')  
 
     else:
         form = UserRegistrationForm()

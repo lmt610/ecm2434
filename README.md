@@ -21,17 +21,18 @@ pip install -r requirements.txt
 
 4. Run migrations (set up the database)
 ```sh
-python project/manage.py migrate
+cd project/
+python manage.py migrate
 ```
 
 5. create an admin (optional)
 ```sh
-python project/manage.py createsuperuser
+python manage.py createsuperuser
 ```
 
 5. Run the (development) server
 ```sh
-python project/manage.py runserver
+python manage.py runserver
 ```
 
 ## Usage
@@ -40,7 +41,12 @@ When the server is running, you can view the website at http://127.0.0.1:8000
 You can access the admin panel by going to http://127.0.0.1:8000/admin and logging in with the credentials
 you set up earlier
 
-To run tests (not set up yet):
+To run all tests:
 ```sh
-python project/manage.py test
+python manage.py test
+```
+
+To run an app's tests:
+```sh
+python manage.py test app_name
 ```
