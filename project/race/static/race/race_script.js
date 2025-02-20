@@ -1,7 +1,6 @@
 // Simple Timer Function
 let startTime;
 let isRunActive = false;
-let isPractise = false;
 function startRace() {
     startTime = Date.now();
     isRunActive = true;
@@ -154,11 +153,6 @@ function updateRaceTime(startTime, endTime) {
 
     if (!raceId) {
         console.error("No active race found.");
-        return;
-    }
-
-    if (isPractise) {
-        location.reload();
         return;
     }
 

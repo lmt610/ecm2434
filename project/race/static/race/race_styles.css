@@ -169,22 +169,6 @@ button:hover{
     transform: translateY(0); 
 }
 
-#activePractise {
-    margin-top: 25%;
-    margin-bottom: 10px;
-    justify-self: center;
-    width: 30%;
-    color: black;
-    border-radius: 10px;
-    background-color: white;
-    box-shadow: 10px;
-    opacity: 0;
-}
-
-#activePractise.visible {
-    opacity: 1;
-}
-
 #activeTimeTrialView button{
     display: flex;
     flex-direction: column;
