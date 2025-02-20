@@ -112,3 +112,12 @@ class TeamTests(TestCase):
         response = self.client.get(reverse('leaderboard'))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['teams']), 0)
+    
+    def test_model_team_str(self):
+        team = Team.objects.create(name='Test Team', admin=self.admin_user)
+        self.assertEqual(str(team), 'Test Team')
+
+    def test_model_teamjoinrequest_str(self):
+        team = Team.objects.create(name='Test Team', admin=self.admin_user)
+        join_request = TeamJoinRequest.objects.create(team=team, user=self.user)
+        self.assertEqual(str(join_request), f'Join request for {self.user.username} to {team.name}')
