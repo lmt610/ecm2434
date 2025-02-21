@@ -29,7 +29,7 @@ function resetRace() {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(),
         },
-        body: JSON.stringify({ race_id: raceID, start_time: start_time, end_time: end_time, profile_id: profile.id})
+        body: JSON.stringify({ race_id: raceID, start_time: start_time, end_time: end_time)
     })
     .then(response => response.json())
     .then(data => {
@@ -134,7 +134,6 @@ function createRace(title, startId, endId, user) {
             title: title,
             start_id: startId,
             end_id: endId,
-            profile_id: user.id
         })
     })
     .then(response => response.json())
