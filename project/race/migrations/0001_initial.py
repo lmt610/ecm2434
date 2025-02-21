@@ -32,6 +32,7 @@ class Migration(migrations.Migration):
                 ('is_complete', models.BooleanField()),
                 ('end', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='end_races', to='race.location')),
                 ('start', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='start_races', to='race.location')),
+                ('profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='profile_races', to='race.profile')),
             ],
         ),
     ]

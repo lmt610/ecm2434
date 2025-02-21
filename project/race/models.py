@@ -7,6 +7,7 @@ class Race(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     is_complete = models.BooleanField()
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
