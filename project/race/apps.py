@@ -5,4 +5,5 @@ class RaceConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'race'
 
-#test commit 
+    def ready(self):
+        import race.signals
