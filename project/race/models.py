@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User  # Import User model
 
 class Race(models.Model):
     title = models.CharField(max_length=255)
@@ -29,11 +30,7 @@ class Location(models.Model):
 
     def __str__(self):
         return self.name
-
-
-
-from django.contrib.auth.models import User  # Import User model
-
+        
 class LeaderboardEntry(models.Model):
     """Stores race results for the leaderboard"""
     user = models.ForeignKey(User, on_delete=models.CASCADE)
