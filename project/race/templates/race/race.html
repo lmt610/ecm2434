@@ -1,58 +1,78 @@
 {% load static %}
 <head>
+    <!-- style sheets-->
     <link rel="stylesheet" href="{% static 'race/race_styles.css' %}">
-    
     <!-- Leaflet mapping plugin-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Font Awesome for map race icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!--scripts-->
 </head>
 
 <body>
     <header>
         <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
-        <p id="pageTitle">ExePLORE</p>
+        <a id="pageTitle" href="{% url 'welcome' %}">ExePLORE</a>
     </header>
     <main>
-        {% block content %}
         <div class="title">Races!</div>
         <div id="map">
             <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
             <script>
-                // Initialize the map centred on exeter university
-                var map = L.map('map').setView([50.736577, -3.532512], 14.5);  
-        
-                // Set the OpenStreetMap tile layer
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
+                 // Create a data object that for external js
+                const raceID="{{ race.id }}";
+                const raceData = {
+                    start: {
+                        lat: {{ race.start.latitude }},
+                        lng: {{ race.start.longitude }},
+                        name: "{{ race.start.name }}"
+                    },
+                    end: {
+                        lat: {{ race.end.latitude }},
+                        lng: {{ race.end.longitude }},
+                        name: "{{ race.end.name }}"
+                    }
+                };
             </script>
+            <script src="{% static 'race/race_map_script.js' %}"></script>
         </div>
         <div class="menu">
-            <p id="routePOIs">{{race.title}}</p>
+            <a href="{% url 'race' %}" id="routePOIs">{{ race.title }} ►</a>
             <button id="leaderboard">Leaderboards</button>
             <div id="status">
-                {% if race.completed%}
-                <p>Completed!</p>
+                {% if race.is_complete%}
+                <p>Race status: Completed!</p>
                 {% else %}
                 <p>You havn't exsplored this route yet!</p>
                 {% endif %}
             </div>
             <div class="time">
                 <img src="" alt="">
-                {% if race.time%}
-                <p>Personal Best Time: {{race.time}}</p>
+                {% if race.is_complete%}
+                <p>Personal Best Time: {{race.get_duration}}</p>
                 {% else %}
                 <p>Personal Best Time: No time found</p>
                 {% endif %}
             </div>
                 <div class="actionButtons">
-                <button style="background-color: red;">RACE!!</button>
-                <button style="background-color: gold;">Time Trial</button>
-                <button style="background-color: forestgreen;">ExePLORE</button>
+                <button style="background-color: red;" onclick="getLocation()">Where am I?</button>
+                <button style="background-color: gold;" onclick="startTimeTrial()">Time Trial</button>
+                <button style="background-color: forestgreen;" onclick="startExePLORE()">ExePLORE</button>
             </div>
         </div>
-        {% endblock %}
+        <div id="activeTimeTrialView">
+            <div id="timer">00:00</div>
+            <button style="background-color: forestgreen;" onclick="endTimeTrial()">Finish</button>
+            <button style="background-color: red;" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
+        </div>
+        <div id="activeExePLOREView">
+            <div id="qoute">"Leave it better than you found it, Be found better than you where"</div>
+            <button style="background-color: forestgreen;" onclick="endExePLORE()">Finish</button>
+            <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
+        </div>
     </main>
-
+    {% csrf_token %}
+    <script src="{% static 'race/race_script.js' %}"></script>
 </body>
 

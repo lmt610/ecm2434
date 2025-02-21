@@ -148,4 +148,3 @@ def leaderboard_view(request):
         'top_entries': top_entries,
     }
     return render(request, 'race/leaderboard.html', context)
-

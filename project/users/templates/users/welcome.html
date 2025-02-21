@@ -8,10 +8,23 @@
     <h1>Welcome, {{ username }}!</h1>
     <h2>Total Points: {{ user_score }}</h2>
     <p><a href="{% url 'tasks' %}">View your tasks</a></p>
+    <p><a href="{% url 'team_list' %}">View Teams</a></p>
+    <a href="{% url 'leaderboard' %}">View the Team Leaderboard</a>
     <ul>
         <li>View your achievements</li>
         <li>View leaderboard</li>
 	<li>Enter location code</li>
     </ul>
+
+    {% if messages %}
+		<div>
+		{% for message in messages %}
+			<div>
+				{{ message }}
+			</div>
+		{% endfor %}
+		</div>
+	{% endif %}
+
 </body>
 </html>

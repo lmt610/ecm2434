@@ -7,8 +7,23 @@ from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordChangeForm
+from django.core.validators import EmailValidator
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
+
+def get_user_settings(request):
+    try:
+        user_settings = UserSettings.objects.get(user=request.user)
+    except UserSettings.DoesNotExist:
+        user_settings = UserSettings.objects.create(
+            user=request.user,
+            location_tracking=True,
+            show_on_leaderboard=True,
+            route_notifications=True,
+            achievement_notifications=True
+        )
+    return user_settings
 
 def home(request):
     return render(request, 'users/home.html')
@@ -44,8 +59,9 @@ def register(request):
             user.set_password(form.cleaned_data['password'])  # hash password
             user.save()
 
+            login(request, user)
             messages.success(request, 'Your account has been created!')
-            return redirect('login')  
+            return redirect('welcome')  
 
     else:
         form = UserRegistrationForm()
@@ -90,57 +106,33 @@ def increment_points(request):
 
 @login_required
 def settings_view(request):
-    return render(request, 'users/settings.html')
-
-@login_required
-def change_password(request):
-    if request.method == 'POST':
-        # Implement password change logic here
-        pass
-    return redirect('settings')
-
-@login_required
-def delete_account(request):
-    if request.method == 'POST':
-        user = request.user
-        user.delete()
-        messages.success(request, 'Your account has been successfully deleted.')
-        return redirect('home')
-    return redirect('settings')
-
-User = get_user_model()
-
-@login_required
-def settings_view(request):
-    try:
-        user_settings = UserSettings.objects.get(user=request.user)
-    except UserSettings.DoesNotExist:
-        user_settings = UserSettings.objects.create(
-            user=request.user,
-            location_tracking=True,
-            show_on_leaderboard=True,
-            route_notifications=True,
-            achievement_notifications=True
-        )
-    
     context = {
         'user': request.user,
-        'settings': user_settings,
+        'settings': get_user_settings(request),
     }
     return render(request, 'users/settings.html', context)
 
 @login_required
-def change_password(request):
+def change_password(request): 
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            messages.success(request, 'Your password was successfully updated!')
-            return redirect('settings')
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Your password was successfully updated!'
+            })
         else:
-            messages.error(request, 'Please correct the error below.')
-    return redirect('settings')
+            # Convert form errors to simple dict with error messages
+            errors = {}
+            for field, error_list in form.errors.items():
+                errors[field] = str(error_list[0])  # Convert to string and take first error
+            return JsonResponse({
+                'status': 'error',
+                'errors': errors
+            }, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 @login_required
 def delete_account(request):
@@ -156,9 +148,14 @@ def update_email(request):
     if request.method == 'POST':
         new_email = request.POST.get('email')
         if new_email:
-            request.user.email = new_email
-            request.user.save()
-            messages.success(request, 'Email updated successfully!')
+            email_validator = EmailValidator()
+            try:
+                email_validator(new_email)
+                request.user.email = new_email
+                request.user.save()
+                messages.success(request, 'Email updated successfully!')
+            except ValidationError:
+                messages.error(request, "Please provide a valid email")
         else:
             messages.error(request, 'Please provide a valid email.')
     return redirect('settings')

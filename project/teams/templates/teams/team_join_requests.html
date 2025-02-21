@@ -1,0 +1,23 @@
+<h1>Join Requests for {{ team.name }}</h1>
+
+{% if join_requests %}
+    <ul>
+        {% for request in join_requests %}
+            <li>
+                {{ request.user.username }} -
+                <form method="post" action="{% url 'approve_join_request' team.pk request.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Approve</button>
+                </form>
+                <form method="post" action="{% url 'reject_join_request' team.pk request.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Reject</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No pending join requests.</p>
+{% endif %}
+
+<a href="{% url 'team_detail' team.pk %}">Back to Team Details</a>
