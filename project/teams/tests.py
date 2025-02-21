@@ -100,18 +100,8 @@ class TeamTests(TestCase):
         self.assertEqual(join_request.status, 'rejected')
         self.assertFalse(team.members.filter(id=self.user.id).exists())
         self.assertIn(f"Join request from {self.user.username} has been rejected.", [m.message for m in response.wsgi_request._messages])
-
-    """def test_leaderboard_view(self):
-        team1 = Team.objects.create(name='Team A', admin=self.admin_user, points=100)
-        team2 = Team.objects.create(name='Team B', admin=self.admin_user, points=50)
-        response = self.client.get(reverse('leaderboard'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(list(response.context['teams']), [team1, team2])
-
-    def test_leaderboard_view_empty(self):
-        response = self.client.get(reverse('leaderboard'))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['teams']), 0)"""
+    
+    """TODO: Leaderboard tests""" 
     
     def test_model_team_str(self):
         team = Team.objects.create(name='Test Team', admin=self.admin_user)
