@@ -16,7 +16,8 @@ def populate_database(sender, **kwargs):
     loc2, created2 = Location.objects.get_or_create(name="Armory (A)", latitude=50.736859, longitude=-3.531877)
     loc3, created3 = Location.objects.get_or_create(name="Streatham Court (CQ)", latitude=50.735710, longitude=-3.530659)
     loc4, created4 = Location.objects.get_or_create(name="Physics Entrance", latitude=50.736766, longitude=-3.536608)
-    locX, adminTest = Location.objects.get_or_create(name="St Jhons road", latitude=50.729075, longitude=-3.512862)
+    locX, adminTest = Location.objects.get_or_create(name="St Jhons road (Test)", latitude=50.729075, longitude=-3.512862)
+    locY, adminTest = Location.objects.get_or_create(name="Innovation centre (Test)", latitude=50.738326, longitude=-3.531160)
 
     # 🏎️ Create a default race if none exist
     if not Race.objects.filter(title="Forum (North) to Armory (A)").exists():
@@ -55,14 +56,22 @@ def populate_database(sender, **kwargs):
             end_time=timezone.now() + timezone.timedelta(hours=100),
             is_complete=True
         )
-    if not Race.objects.filter(title="St Jhons road").exists(): 
+    if not Race.objects.filter(title="St Jhons road (Test)").exists(): 
         Race.objects.create(
-            title="St Jhons road",
+            title="St Jhons road (Test)",
             start=locX,
             end=locX,
             start_time=timezone.now(),
             end_time=timezone.now() + timezone.timedelta(hours=100),
             is_complete=False
         )
-
+    if not Race.objects.filter(title="Innovation centre (Test)").exists(): 
+        Race.objects.create(
+            title="Innovation centre (Test)",
+            start=locY,
+            end=locY,
+            start_time=timezone.now(),
+            end_time=timezone.now() + timezone.timedelta(hours=100),
+            is_complete=False
+        )
         print("✅ Database populated with initial race data!")
