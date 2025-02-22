@@ -55,8 +55,5 @@ def populate_database(sender, **kwargs):
             title="Innovation centre (Test)",
             start=locY,
             end=locY,
-            start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=100),
-            is_complete=False
         )
         print("✅ Database populated with initial race data!")
