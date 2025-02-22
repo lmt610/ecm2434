@@ -86,22 +86,15 @@ def create_race(request):
 #adds time to the created race object IF the new time is smaller than the existing one for that object
 def update_race_time(request):
     if request.method == "POST":
-        print("post start")
         data = json.loads(request.body)
-        print("id try")
         raceID = data.get("race_id")
-        print("race try")
-        print(raceID)
         race = Race.objects.get(id=raceID)
-        print(race)
         user = User.objects.get(username=data.get("user"))
-        print(user)
         start_time = parse_datetime(data.get("start_time"))
         end_time = parse_datetime(data.get("end_time"))
         
         try:
             Entry = RaceEntry.objects.get(race=race, user=user)
-            print(Entry)
             if Entry.start_time is None or Entry.end_time is None:
                 #if start_time or end_time is null, set them
                 Entry.start_time = start_time
