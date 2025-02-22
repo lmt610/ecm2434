@@ -16,8 +16,8 @@ def populate_database(sender, **kwargs):
     # Create a default user if it doesn't exist
     if not User.objects.filter(username="UserA").exists():
         user = User.objects.create_user(username="UserA", password="Password")
-        Profile.objects.create(user=user, other_field="12345678", points=0)
+        profile, created = Profile.objects.get_or_create(user=user, other_field="12345678", points=0)
 
     if not User.objects.filter(username="UserB").exists():
         user = User.objects.create_user(username="UserB", password="Password")
-        Profile.objects.create(user=user, other_field="12345678", points=0)
+        profile, created = Profile.objects.get_or_create(user=user, other_field="12345678", points=0)
