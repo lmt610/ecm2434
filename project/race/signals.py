@@ -19,51 +19,36 @@ def populate_database(sender, **kwargs):
     locX, adminTest = Location.objects.get_or_create(name="St Jhons road (Test)", latitude=50.729075, longitude=-3.512862)
     locY, adminTest = Location.objects.get_or_create(name="Innovation centre (Test)", latitude=50.738326, longitude=-3.531160)
 
-    # 🏎️ Create a default race if none exist
+    # 🏎️ Create a default races if none exist
     if not Race.objects.filter(title="Forum (North) to Armory (A)").exists():
         Race.objects.create(
             title="Forum (North) to Armory (A)",
             start=loc1,
             end=loc2,
-            start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=100),
-            is_complete=True
         )
     if not Race.objects.filter(title="Armory (A) to Streatham Court (CQ)").exists():
         Race.objects.create(
             title="Armory (A) to Streatham Court (CQ)",
             start=loc2,
             end=loc3,
-            start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=100),
-            is_complete=True
         )
     if not Race.objects.filter(title="Forum (North) to Physics Entrance").exists():    
         Race.objects.create(
             title="Forum (North) to Physics Entrance",
             start=loc1,
             end=loc4,
-            start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=100),
-            is_complete=True
         ),
     if not Race.objects.filter(title="Physics Entrance to Armory (A)").exists(): 
         Race.objects.create(
             title="Physics Entrance to Armory (A)",
             start=loc4,
             end=loc2,
-            start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=100),
-            is_complete=True
         )
     if not Race.objects.filter(title="St Jhons road (Test)").exists(): 
         Race.objects.create(
             title="St Jhons road (Test)",
             start=locX,
             end=locX,
-            start_time=timezone.now(),
-            end_time=timezone.now() + timezone.timedelta(hours=100),
-            is_complete=False
         )
     if not Race.objects.filter(title="Innovation centre (Test)").exists(): 
         Race.objects.create(

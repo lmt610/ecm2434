@@ -1,7 +1,6 @@
 // Simple Timer Function
 let startTime;
 let isRunActive = false;
-let isPractise = false;
 function startRace() {
     startTime = Date.now();
     isRunActive = true;
@@ -30,7 +29,7 @@ function resetRace() {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(),
         },
-        body: JSON.stringify({ race_id: raceID, start_time: start_time, end_time: end_time})
+        body: JSON.stringify({ race_id: raceID, user:loggedInUser, start_time: start_time, end_time: end_time})
     })
     .then(response => response.json())
     .then(data => {
@@ -124,7 +123,7 @@ function checkEndLocation(position) {
     });
 }
 
-function createRace(title, startId, endId) {
+function createRace(title, startId, endId, user) {
     fetch('/race/create-race/', {
         method: 'POST',
         headers: {
@@ -134,7 +133,7 @@ function createRace(title, startId, endId) {
         body: JSON.stringify({
             title: title,
             start_id: startId,
-            end_id: endId
+            end_id: endId,
         })
     })
     .then(response => response.json())
@@ -142,41 +141,10 @@ function createRace(title, startId, endId) {
         if (data.status === "success") {
             console.log("Race created with ID:", data.race_id);
             localStorage.setItem("currentRaceId", data.race_id);
+            location.reload(); // reload page for dymaic html content
         } else {
             console.error("Error creating race:", data.message);
         }
-    })
-    .catch(error => console.error("Error:", error));
-}
-
-function updateRaceTime(startTime, endTime) {
-    const raceId = localStorage.getItem("currentRaceId"); //get stored race ID
-
-    if (!raceId) {
-        console.error("No active race found.");
-        return;
-    }
-
-    if (isPractise) {
-        location.reload();
-        return;
-    }
-
-    fetch('/race/update-race-time/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'applciation/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify({
-            race_id:raceId,
-            start_time: new Date(startTime).toISOString(),
-            end_time:new Date(endTime).toISOString()
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        location.reload(); //reload after updating
     })
     .catch(error => console.error("Error:", error));
 }
@@ -272,3 +240,24 @@ function endExePLORE() {
         alert("Geolocation is not supported by this browser.");
     }
 }
+
+function CreateRaceEntryOrExceptSuccsess(){
+    return fetch('/race/create-race/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(), //Include CSRF token
+        },
+        body: JSON.stringify({race_id: raceID, user: loggedInUser})
+    })
+    .then(response => response.json())
+    .then(data => {
+        return data.status === "success";
+    })
+    .catch(error => {
+        console.error("error:", error);
+        return false;
+    });
+}
+
+CreateRaceEntryOrExceptSuccsess();
