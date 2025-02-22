@@ -29,7 +29,7 @@ function resetRace() {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(),
         },
-        body: JSON.stringify({ race_id: raceID, start_time: start_time, end_time: end_time})
+        body: JSON.stringify({ race_id: raceID, user:loggedInUser, start_time: start_time, end_time: end_time})
     })
     .then(response => response.json())
     .then(data => {
@@ -141,6 +141,7 @@ function createRace(title, startId, endId, user) {
         if (data.status === "success") {
             console.log("Race created with ID:", data.race_id);
             localStorage.setItem("currentRaceId", data.race_id);
+            location.reload(); // reload page for dymaic html content
         } else {
             console.error("Error creating race:", data.message);
         }
@@ -239,3 +240,24 @@ function endExePLORE() {
         alert("Geolocation is not supported by this browser.");
     }
 }
+
+function CreateRaceEntryOrExceptSuccsess(){
+    return fetch('/race/create-race/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(), //Include CSRF token
+        },
+        body: JSON.stringify({race_id: raceID, user: loggedInUser})
+    })
+    .then(response => response.json())
+    .then(data => {
+        return data.status === "success";
+    })
+    .catch(error => {
+        console.error("error:", error);
+        return false;
+    });
+}
+
+CreateRaceEntryOrExceptSuccsess();

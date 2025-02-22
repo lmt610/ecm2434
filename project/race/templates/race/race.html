@@ -8,6 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!--scripts-->
+    <script>
+        const loggedInUser = "{{ request.user }}";  
+        const raceID="{{ race.id }}";
+    </script>
+    {% csrf_token %}
+    <script src="{% static 'race/race_script.js' %}"></script>
 </head>
 
 <body>
@@ -21,7 +27,6 @@
             <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
             <script>
                  // Create a data object that for external js
-                const raceID="{{ race.id }}";
                 const raceData = {
                     start: {
                         lat: {{ race.start.latitude }},
@@ -41,7 +46,7 @@
             <a href="{% url 'race' %}" id="routePOIs">{{ race.title }} ►</a>
             <button id="leaderboard">Leaderboards</button>
             <div id="status">
-                {% if race.is_complete%}
+                {% if entry.is_complete%}
                 <p>Race status: Completed!</p>
                 {% else %}
                 <p>You havn't exsplored this route yet!</p>
@@ -49,8 +54,8 @@
             </div>
             <div class="time">
                 <img src="" alt="">
-                {% if race.is_complete%}
-                <p>Personal Best Time: {{race.get_duration}}</p>
+                {% if entry.is_complete%}
+                <p>Personal Best Time: {{entry.get_duration}}</p>
                 {% else %}
                 <p>Personal Best Time: No time found</p>
                 {% endif %}
@@ -72,7 +77,6 @@
             <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
         </div>
     </main>
-    {% csrf_token %}
-    <script src="{% static 'race/race_script.js' %}"></script>
+    
 </body>
 

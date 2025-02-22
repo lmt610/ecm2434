@@ -1,11 +1,12 @@
 import json
 from django.shortcuts import render, get_object_or_404
-from .models import Race, Location
+from .models import Race, Location, RaceEntry
 from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 from math import radians, sin, cos, sqrt, atan2
 
@@ -16,6 +17,11 @@ def race_view(request, race_id=None):
         return render(request,"race/race-menu.html", {"races": races})
     else:
         race = get_object_or_404(Race, id=race_id)
+        try:
+            entry = get_object_or_404(RaceEntry, race=race, user=request.user)
+            return render(request,"race/race.html", {"race": race, "entry": entry})
+        except:
+            pass
         return render(request,"race/race.html", {"race": race})
 
 #haversine formula to calculate distance
@@ -37,7 +43,6 @@ def calculate_distance(request):
         distance = haversine(user_lat, user_lon, place_lat, place_lon)
         #check if distance is within threshold (e.g., 20m)
         threshold = 0.05
-        print(distance)
         if distance <= threshold:
             return JsonResponse({"status": "within range", "distance": round(distance, 2)})
         else:
@@ -50,27 +55,25 @@ def calculate_distance(request):
 def create_race(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        title = data.get("title")
-        start_id = data.get("start_id")
-        end_id = data.get("end_id")
+        raceID = data.get("race_id")
+        race = Race.objects.get(id=raceID)
+        user = User.objects.get(username=data.get("user"))
+
 
         #logic added to return an existing race to the frontend if the user enters a previously used start and end combination
-        for race in Race.objects.all():
-            if start_id == race.start.id and end_id == race.end.id:
-                return JsonResponse({"status": "success", "message": "Race already registered with user", "race_id": race.id})
+        if RaceEntry.objects.filter(race=race, user=user).exists():    
+            return JsonResponse({"status": "success", "message": "Race already registered with user", "race_id": race.id})
 
         try:
-            start_location = Location.objects.get(id=start_id)
-            end_location = Location.objects.get(id=end_id)
-            race = Race.objects.create(
-                title=title,
-                start=start_location,
-                end=end_location,
-                start_time=None,
-                end_time=None,
-                is_complete=False,
+            RaceEntry.objects.create(
+                name = f"{race} {user}",
+                user = user,
+                race = race,
+                start_time = None,
+                end_time = None,
+                duration = None,
+                is_complete = False
             )
-
             return JsonResponse({"status": "success", "race_id": race.id})
         except Location.DoesNotExist:
             return JsonResponse({"status": "error", "message": "Invalid locations"}, status=400)
@@ -81,32 +84,38 @@ def create_race(request):
 #adds time to the created race object IF the new time is smaller than the existing one for that object
 def update_race_time(request):
     if request.method == "POST":
+        print("post start")
         data = json.loads(request.body)
-        race_id = data.get("race_id")
+        print("id try")
+        raceID = data.get("race_id")
+        print("race try")
+        print(raceID)
+        race = Race.objects.get(id=raceID)
+        print(race)
+        user = User.objects.get(username=data.get("user"))
+        print(user)
         start_time = parse_datetime(data.get("start_time"))
         end_time = parse_datetime(data.get("end_time"))
-
+        
         try:
-            race = Race.objects.get(id=race_id)
-
-            if race.start_time is None or race.end_time is None:
+            Entry = RaceEntry.objects.get(race=race, user=user)
+            print(Entry)
+            if Entry.start_time is None or Entry.end_time is None:
                 #if start_time or end_time is null, set them
-                race.start_time = start_time
-                race.end_time = end_time
+                Entry.start_time = start_time
+                Entry.end_time = end_time
             else:
                 #compare times
-                current_pb = race.get_duration().total_seconds()
+                current_pb = Entry.get_duration().total_seconds()
                 new_time = (end_time - start_time).total_seconds()
-                print(current_pb, new_time)
                 if new_time < current_pb:
-                    race.start_time = start_time
-                    race.end_time = end_time
-            print("setting completion to true")
-            race.is_complete = True
-            race.save()
+                    Entry.start_time = start_time
+                    Entry.end_time = end_time
+            Entry.is_complete = True
+            Entry.save()
 
-            return JsonResponse({"status": "success", "message": "Race updated"})
-        except Race.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
+            return JsonResponse({"status": "success", "message": "RaceEntry updated"})
+        except RaceEntry.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "RaceEntry not found"}, status=404)
 
     return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
