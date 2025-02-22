@@ -1,4 +1,6 @@
 import json
+from django.http import JsonResponse
+from .models import LeaderboardEntry
 from django.shortcuts import render, get_object_or_404
 from .models import Race, Location
 from django.http import JsonResponse
@@ -6,7 +8,6 @@ from django.utils.dateparse import parse_datetime
 from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-
 from math import radians, sin, cos, sqrt, atan2
 
 @login_required
@@ -111,3 +112,39 @@ def update_race_time(request):
             return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
 
     return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+    
+def leaderboard(request):
+    """Returns the leaderboard for a specific race, sorted by completion time"""
+    race_id = request.GET.get("race_id")  # Get race ID from the frontend
+    
+    if race_id:
+        leaderboard_entries = LeaderboardEntry.objects.filter(race_id=race_id).order_by("completion_time")[:10]
+    else:
+        leaderboard_entries = LeaderboardEntry.objects.order_by("completion_time")[:10]  # Default top 10 (all races)
+
+    data = [
+        {
+            "user": entry.user.username,
+            "race": entry.race.title,
+            "time": entry.completion_time,
+            "date": entry.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+        for entry in leaderboard_entries
+    ]
+    return JsonResponse({"leaderboard": data})
+
+def leaderboard_view(request):
+    race_title = request.GET.get("race_title")
+    if race_title:
+                # race title search is case insensitive
+        leaderboard_entries = LeaderboardEntry.objects.filter(race__title__icontains=race_title).order_by('completion_time').select_related('user', 'race')
+    else:
+        leaderboard_entries = LeaderboardEntry.objects.order_by('completion_time').select_related('user', 'race')
+        
+    top_entries = leaderboard_entries[:10]
+    entries_count = leaderboard_entries.count()
+
+    context = {
+        'top_entries': top_entries,
+    }
+    return render(request, 'race/leaderboard.html', context)
