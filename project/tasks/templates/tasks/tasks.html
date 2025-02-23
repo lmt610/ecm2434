@@ -1,19 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Tasks</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block title %}ExePLORE - Tasks{% endblock %}
+
+{% block content %}
+<div class="tasks-container">
     <h1>Your Score: {{ user_score }}</h1>
 
     <h2>Tasks</h2>
-    <ul>
-        <li><a href="{% url 'add_task_score' task_id=1 %}">Learn a new fact about sustainability</li>
+    <ul class="tasks-list">
+        <li><a href="{% url 'add_task_score' task_id=1 %}">Learn a new fact about sustainability</a></li>
         <li><a href="{% url 'add_task_score' task_id=2 %}">Recycle!</a></li>
         <li><a href="{% url 'add_task_score' task_id=3 %}">Pick up three pieces of litter</a></li>
     </ul>
-    <a href="{% url 'welcome' %}">Back to Home Page</a>
-
-</body>
-</html>
+</div>
+{% endblock %}

@@ -40,6 +40,7 @@ header img {
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
+    max-height: calc(100vh - 100px);
 }
 
 /* Signup Card */
