@@ -104,6 +104,8 @@ button{
     border: none;
     background-color: royalblue; 
     color: white;
+    margin: auto;
+    border-radius: 10px;
 }
 
 #leaderboard:hover{

@@ -44,7 +44,7 @@
         </div>
         <div class="menu">
             <a href="{% url 'race' %}" id="routePOIs">{{ race.title }} ►</a>
-            <button id="leaderboard">Leaderboards</button>
+            <a id="leaderboard" href="{% url 'leaderboard_view'%}?race_title={{ race.title }}">Leaderboards</a>
             <div id="status">
                 {% if entry.is_complete%}
                 <p>Race status: Completed!</p>
