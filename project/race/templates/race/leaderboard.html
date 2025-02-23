@@ -32,8 +32,8 @@
                             <td>{{ forloop.counter }}.</td>
                             <td>{{ entry.user.username }}</td>
                             <td>{{ entry.race.title }}</td>
-                            <td>{{ entry.completion_time }} seconds</td>
-                            <td>{{ entry.race.date }}</td>
+                            <td>{{ entry.duration }} seconds</td>
+                            <td>{{ entry.timestamp }}</td>
                         </tr>
                     {% empty %}
                         <tr>

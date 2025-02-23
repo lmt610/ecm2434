@@ -11,13 +11,14 @@ class Race(models.Model):
         return self.title
 
 class RaceEntry(models.Model):
-    name = models.CharField(max_length=255, default='RaceEntry')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.ForeignKey(Race, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, default='RaceEntry')
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
     duration = models.DurationField(null=True, blank=True)
     is_complete = models.BooleanField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if self.start_time != None and self.end_time!=None:

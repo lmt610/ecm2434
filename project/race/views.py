@@ -120,15 +120,15 @@ def leaderboard(request):
     race_id = request.GET.get("race_id")  # Get race ID from the frontend
     
     if race_id:
-        leaderboard_entries = LeaderboardEntry.objects.filter(race_id=race_id).order_by("completion_time")[:10]
+        leaderboard_entries = RaceEntry.objects.filter(race_id=race_id).order_by("duration")[:10]
     else:
-        leaderboard_entries = LeaderboardEntry.objects.order_by("completion_time")[:10]  # Default top 10 (all races)
+        leaderboard_entries = RaceEntry.objects.order_by("duration")[:10]  # Default top 10 (all races)
 
     data = [
         {
             "user": entry.user.username,
             "race": entry.race.title,
-            "time": entry.completion_time,
+            "time": entry.duration,
             "date": entry.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
         }
         for entry in leaderboard_entries
@@ -136,16 +136,20 @@ def leaderboard(request):
     return JsonResponse({"leaderboard": data})
 
 def leaderboard_view(request):
+    print("request made")
     race_title = request.GET.get("race_title")
     if race_title:
+        print("race title exists: ",race_title)
+        print("DB content: ",RaceEntry.objects.all())
                 # race title search is case insensitive
-        leaderboard_entries = LeaderboardEntry.objects.filter(race__title__icontains=race_title).order_by('completion_time').select_related('user', 'race')
+        leaderboard_entries = RaceEntry.objects.filter(race__title__icontains=race_title).order_by('duration').select_related('user', 'race')
+        print(leaderboard_entries)
     else:
-        leaderboard_entries = LeaderboardEntry.objects.order_by('completion_time').select_related('user', 'race')
-        
+        leaderboard_entries = RaceEntry.objects.order_by('duration').select_related('user', 'race')
+        print(leaderboard_entries)
     top_entries = leaderboard_entries[:10]
     entries_count = leaderboard_entries.count()
-
+    print(top_entries)
     context = {
         'top_entries': top_entries,
     }
