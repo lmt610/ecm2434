@@ -64,3 +64,26 @@ Example tests relevant to sprint 1 assessment:
 - All login and signup tests - `users`
     - login page - `users.tests.test_views.LoginViewTest`, `users.tests.test_forms.LoginFormTest`
     - sign up    - `users.tests.test_views.RegisterViewTest`, `users.tests.test_forms.UserRegistrationFormTest`
+
+
+
+
+## Populating databases
+The databases can be populated with mock data by running commands in your terminal.
+To create teams and users, navigate to the project directory and enter:
+```sh
+python manage.py create_teams
+```
+
+To create race entries:
+```sh
+python manage.py create_races
+```
+And to delete:
+```sh
+python manage.py delete_teams
+```
+or
+```sh
+python manage.py delete_races
+```
