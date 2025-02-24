@@ -88,8 +88,15 @@ def update_race_time(request):
     if request.method == "POST":
         data = json.loads(request.body)
         raceID = data.get("race_id")
-        race = Race.objects.get(id=raceID)
-        user = User.objects.get(username=data.get("user"))
+        try:
+            race = Race.objects.get(id=raceID)
+        except Race.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
+        try:
+          user = User.objects.get(username=data.get("user"))
+        except User.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+        
         start_time = parse_datetime(data.get("start_time"))
         end_time = parse_datetime(data.get("end_time"))
         
