@@ -45,9 +45,9 @@ When the server is running, you can view the website at http://127.0.0.1:8000
 You can access the admin panel by going to http://127.0.0.1:8000/admin and logging in with the credentials
 you set up earlier
 
-To run all tests:
+To run all tests with test labbles:
 ```sh
-python manage.py test
+python manage.py test -v 2
 ```
 
 To run an app's tests:
@@ -64,6 +64,7 @@ Example tests relevant to sprint 1 assessment:
 - All login and signup tests - `users`
     - login page - `users.tests.test_views.LoginViewTest`, `users.tests.test_forms.LoginFormTest`
     - sign up    - `users.tests.test_views.RegisterViewTest`, `users.tests.test_forms.UserRegistrationFormTest`
+    - race page  - `race.tests.RaceMenuPageTests`, `race.tests.CalculateDistanceViewTest`, `race.tests.UpdateRaceTimeViewTest`
 
 
 
