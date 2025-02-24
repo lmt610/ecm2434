@@ -3,6 +3,33 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now, timedelta
 from race.models import Race, User, RaceEntry, Location
+from django.contrib.auth.models import User
+
+
+class RaceMenuPageTests(TestCase):
+    def setUp(self):
+        # Create test Race objects 
+        loc1 = Location.objects.create(name="Forum (North)", latitude=50.735836, longitude=-3.533852)
+        loc2 = Location.objects.create(name="Armory (A)", latitude=50.736859, longitude=-3.531877)
+        self.race1 = Race.objects.create(title="Race 1", start=loc1, end=loc2)
+        self.race2 = Race.objects.create(title="Race 2", start=loc1, end=loc2)
+        # User needed for authorised get request 
+        self.user = User.objects.create_user(username='testuser', password='password')
+
+    def test_race_menu_contains_correct_number_of_maps(self):
+
+        self.client.login(username='testuser', password='password')
+
+        response = self.client.get(reverse("race"))  
+
+        self.assertEqual(response.status_code, 200)
+
+        # Count occurrences of the map div in the rendered response
+        num_maps_in_html = response.content.decode().count('class="map"')
+
+        # Ensure the count matches the number of Race entries
+        self.assertEqual(num_maps_in_html, Race.objects.count())
+
 
 class CalculateDistanceViewTest(TestCase):
 
@@ -49,6 +76,7 @@ class UpdateRaceTimeViewTest(TestCase):
         #Test updating race time when new PB is set.
         start_time = now()
         end_time = start_time + timedelta(minutes=6)  
+        attempt_duration = end_time - start_time
 
         data = {
             "race_id": self.race.id,
@@ -61,17 +89,19 @@ class UpdateRaceTimeViewTest(TestCase):
         
         # Reload entry from database
         self.entry.refresh_from_db()
-
+        DB_duration_dictionary = RaceEntry.objects.filter(user=self.user, race=self.race).values("duration").first()
+        DB_duration = DB_duration_dictionary["duration"]
+        
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "success")
-        self.assertEqual(self.entry.start_time, start_time)
-        self.assertEqual(self.entry.end_time, end_time)
+        self.assertEqual(attempt_duration, DB_duration)
         self.assertTrue(self.entry.is_complete)
 
     def test_update_race_time_success_not_new_PB(self):
         #Test request response and DB structure when a new PB is not attained.
         start_time = now()
         end_time = start_time + timedelta(minutes=15)  
+        attempt_duration = end_time - start_time
 
         data = {
             "race_id": self.race.id,
@@ -84,11 +114,12 @@ class UpdateRaceTimeViewTest(TestCase):
         
         # Reload entry from database
         self.entry.refresh_from_db()
+        DB_duration_dictionary = RaceEntry.objects.filter(user=self.user, race=self.race).values("duration").first()
+        DB_duration = DB_duration_dictionary["duration"]
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "success")
-        self.assertNotEqual(self.entry.start_time, start_time)
-        self.assertNotEqual(self.entry.end_time, end_time)
+        self.assertNotEqual(attempt_duration, DB_duration)
         self.assertTrue(self.entry.is_complete)
 
     def test_update_race_time_User_not_found(self):
