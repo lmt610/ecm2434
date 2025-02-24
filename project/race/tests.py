@@ -42,13 +42,13 @@ class UpdateRaceTimeViewTest(TestCase):
             loc1 = Location.objects.create(name="Forum (North)", latitude=50.735836, longitude=-3.533852)
             loc2 = Location.objects.create(name="Armory (A)", latitude=50.736859, longitude=-3.531877)
             self.race = Race.objects.create(title="Test Race", start=loc1, end=loc2)
-            self.entry = RaceEntry.objects.create(race=self.race, user=self.user, start_time=None, end_time=None, is_complete=False)
+            self.entry = RaceEntry.objects.create(race=self.race, user=self.user, start_time=now, end_time=timedelta(minutes=6), is_complete=True)
             self.url = reverse("update_race_time")  
 
     def test_update_race_time_success(self):
         #Test updating race time successfully.
         start_time = now()
-        end_time = start_time + timedelta(minutes=6)  # 6-minute race time
+        end_time = start_time + timedelta(minutes=3)  
 
         data = {
             "race_id": self.race.id,
@@ -74,7 +74,7 @@ class UpdateRaceTimeViewTest(TestCase):
             "race_id": self.race.id,
             "user": "non_existent_user",  # User doesn't exist
             "start_time": now().isoformat(),
-            "end_time": (now() + timedelta(minutes=6)).isoformat()
+            "end_time": (now() + timedelta(minutes=10)).isoformat()
         }
 
         response = self.client.post(self.url, json.dumps(data), content_type="application/json")
@@ -89,7 +89,7 @@ class UpdateRaceTimeViewTest(TestCase):
             "race_id": -1, #Race ID does not link to race
             "user": self.user.username,  
             "start_time": now().isoformat(),
-            "end_time": (now() + timedelta(minutes=6)).isoformat()
+            "end_time": (now() + timedelta(minutes=10)).isoformat()
         }
 
         response = self.client.post(self.url, json.dumps(data), content_type="application/json")
@@ -99,16 +99,16 @@ class UpdateRaceTimeViewTest(TestCase):
         self.assertEqual(response.json()["message"], "Race not found")
 
     def test_update_race_time_RaceEntry_not_found(self):
+        #test when there is no RaceEntry for a User and Race 
         user = User.objects.create_user(username="No RaceEntry User", password="password123")
         loc1 = Location.objects.create(name="Forum (North)", latitude=50.735836, longitude=-3.533852)
         loc2 = Location.objects.create(name="Armory (A)", latitude=50.736859, longitude=-3.531877)
         race = Race.objects.create(title="No RaceEntry Race", start=loc1, end=loc2)
-        #Test when the Race does not exist.
         data = {
             "race_id": race.id, 
             "user": user.username,  
             "start_time": now().isoformat(),
-            "end_time": (now() + timedelta(minutes=6)).isoformat()
+            "end_time": (now() + timedelta(minutes=10)).isoformat()
         }
 
         response = self.client.post(self.url, json.dumps(data), content_type="application/json")
@@ -116,3 +116,4 @@ class UpdateRaceTimeViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["status"], "error")
         self.assertEqual(response.json()["message"], "RaceEntry not found")
+
