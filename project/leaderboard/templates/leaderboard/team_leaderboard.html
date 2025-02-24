@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 {% load static %}
 <html lang="en">
 
@@ -169,7 +168,7 @@
     <h1>Team Leaderboard</h1>
 
         <ol>
-            {% for team in teams %}
+            {% for team in team_list %}
                 <li class="team-card">
                     <span class="team-rank">
                         {% if not forloop.first %}

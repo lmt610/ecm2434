@@ -1,0 +1,200 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Leaderboard</title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+            letter-spacing: 0.3em;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); /* change to static .png */
+            background-color: #73624b;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+        }
+
+	.rectangle {
+	    width: 100%;
+	    height: 120px;
+	    top: 0px;
+        background-color: #2f554f;
+	    z-index: 500;
+        text-align: center;
+        margin: 0 auto;
+        border-radius: 5px;
+        position: fixed;
+	}
+
+	.header-text {
+        text-align: center;
+        padding-top: 25px;
+	    color: #eeeeee;
+	    font-family: "Garamond", serif;
+	    font-size: 2.5rem;
+	    letter-spacing: 0.01em;
+	    margin: auto; 
+	}
+
+    .leaderboard-container {
+        opacity: 0.8;
+	    margin: auto;
+        margin-top: 130px;
+	    width: 100%;
+	    max-width: 700px;
+        }
+
+    h1 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #ccccbb;
+        }
+
+
+    .user-card {
+        background: #b0cc99;
+        margin: 5px auto;
+        border-radius: 5px;
+        left: -15px;
+	    padding: 10px;
+        display: flex;
+	    height: 40px;
+	    width: 90%;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        position: relative;
+        }
+
+        .user-card::after {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border-radius: 20px;
+            z-index: 0;
+        }
+
+    .user-card .user-points {
+        position: relative;
+        z-index: 1000;
+        font-size: 1rem;
+	    letter-spacing: 0.1em;
+        font-weight: bold;
+    }
+
+	.user-card .user-name {
+	    position: center;
+	    letter-spacing: 0.05em;
+	}
+
+	.user-rank {
+            margin-right: 10px; 
+        }
+
+        .medal {
+            width: 50px; 
+            height: auto; 
+            margin-left: -5px; 
+            margin-right: 35px;
+	}
+
+	
+        .user-name.shifted {
+            margin-left: -55px; /* shifts usernames left by 50px if not in 1st place */
+        }
+
+        .user-card:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s;
+        }
+	
+	.user-card.alt {
+            background: #b7ca79;
+        }
+
+
+        .logo {
+            position: absolute; 
+            top: 15px; 
+            right: 20px; 
+            width: 120px; 
+            height: auto; 
+            z-index: 1000; 
+        }
+
+
+    .home-link {
+        display: inline-block;
+        background-color: #677e62;
+        color: #eefeee;
+	    position: absolute;
+	    left: 20px;
+	    top: 30px;
+        padding: 10px 20px;
+	    z-index: 1000;
+        text-decoration: none; /* removes underline */
+        border-radius: 5px;
+        font-size: 1rem;
+        letter-spacing: 0.2em;
+        font-weight: bold;
+	    transition: background-color 0.3s, transform 0.3s; 
+        }
+
+        .home-link:hover {
+            background-color: #374e22; 
+            transform: scale(1.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="rectangle">
+    	<img src="{% static 'teams/logo.png' %}" alt="" class="logo">
+    	<div class="header-text">ExePLORE</div>
+	<a href="{% url 'welcome' %}" class="home-link">Home</a> 
+    </div>
+
+    <div class="leaderboard-container">
+    <h1>User Leaderboard</h1>
+
+        <ol>
+            {% for user in user_list %}
+                <li class="user-card">
+                    <span class="user-rank">
+                        {% if not forloop.first %}
+                            {{ forloop.counter }}.
+                        {% endif %}
+                        {% if forloop.first %}
+                        <img src="{% static 'teams/gold.png' %}" alt="⭐🥇⭐" class="medal">
+                        {% endif %}
+                    </span>
+                    <span class="user-name {% if forloop.first %}shifted{% endif %}">{{ user.name }}</span>
+                    <span class="user-points">{{ user.points }} pts</span>
+                </li>
+            {% empty %}
+                <li class="user-card"><span>No users available.</span></li>
+            {% endfor %}
+        </ol>
+
+    </div>
+    <script>
+            const userCards = document.querySelectorAll('.user-card');
+
+            userCards.forEach((card, index) => {
+                if (index % 2 === 1) {
+                    card.classList.add('alt');
+                    }
+                });
+  </script>
+</body>
+</html>

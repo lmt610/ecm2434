@@ -64,7 +64,3 @@ def reject_join_request(request, pk, request_id):
 
 def is_superuser(user):
     return user.is_superuser
-
-def leaderboard(request):
-    teams = Team.objects.order_by('-points')  # order by points 
-    return render(request, 'teams/leaderboard.html', {'teams' : teams})
