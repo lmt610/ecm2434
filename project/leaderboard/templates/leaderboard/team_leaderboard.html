@@ -9,7 +9,7 @@
         body {
             font-family: "Lato", sans-serif;
             letter-spacing: 0.3em;
-            background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png'); /* change to static .png */
+            background-image: url("{% static 'dark-wood.png' %}"); 
             background-color: #73624b;
             margin: 0;
             padding: 20px;
@@ -19,34 +19,34 @@
             height: 100vh;
         }
 
-	.rectangle {
-	    width: 100%;
-	    height: 120px;
-	    top: 0px;
+        .rectangle {
+            width: 100%;
+            height: 120px;
+            top: 0px;
         background-color: #2f554f;
-	    z-index: 500;
+            z-index: 500;
         text-align: center;
         margin: 0 auto;
         border-radius: 5px;
         position: fixed;
-	}
+        }
 
-	.header-text {
+        .header-text {
         text-align: center;
         padding-top: 25px;
-	    color: #eeeeee;
-	    font-family: "Garamond", serif;
-	    font-size: 2.5rem;
-	    letter-spacing: 0.01em;
-	    margin: auto; 
-	}
+            color: #eeeeee;
+            font-family: "Garamond", serif;
+            font-size: 2.5rem;
+            letter-spacing: 0.01em;
+            margin: auto; 
+        }
 
     .leaderboard-container {
         opacity: 0.8;
-	    margin: auto;
+            margin: auto;
         margin-top: 130px;
-	    width: 100%;
-	    max-width: 700px;
+            width: 100%;
+            max-width: 700px;
         }
 
     h1 {
@@ -62,10 +62,10 @@
         margin: 5px auto;
         border-radius: 5px;
         left: -15px;
-	    padding: 10px;
+            padding: 10px;
         display: flex;
-	    height: 40px;
-	    width: 90%;
+            height: 40px;
+            width: 90%;
         justify-content: space-between;
         align-items: center;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
@@ -87,16 +87,16 @@
         position: relative;
         z-index: 1000;
         font-size: 1rem;
-	    letter-spacing: 0.1em;
+            letter-spacing: 0.1em;
         font-weight: bold;
     }
 
-	.team-card .team-name {
-	    position: center;
-	    letter-spacing: 0.05em;
-	}
+        .team-card .team-name {
+            position: center;
+            letter-spacing: 0.05em;
+        }
 
-	.team-rank {
+        .team-rank {
             margin-right: 10px; 
         }
 
@@ -105,9 +105,9 @@
             height: auto; 
             margin-left: -5px; 
             margin-right: 35px;
-	}
+        }
 
-	
+
         .team-name.shifted {
             margin-left: -55px; /* shifts team names left by 50px if not in 1st place */
         }
@@ -116,8 +116,8 @@
             transform: scale(1.05);
             transition: transform 0.2s;
         }
-	
-	.team-card.alt {
+
+        .team-card.alt {
             background: #b7ca79;
         }
 
@@ -136,17 +136,17 @@
         display: inline-block;
         background-color: #677e62;
         color: #eefeee;
-	    position: absolute;
-	    left: 20px;
-	    top: 30px;
+            position: absolute;
+            left: 20px;
+            top: 30px;
         padding: 10px 20px;
-	    z-index: 1000;
+            z-index: 1000;
         text-decoration: none; /* removes underline */
         border-radius: 5px;
         font-size: 1rem;
         letter-spacing: 0.2em;
         font-weight: bold;
-	    transition: background-color 0.3s, transform 0.3s; 
+            transition: background-color 0.3s, transform 0.3s; 
         }
 
         .home-link:hover {
@@ -159,9 +159,9 @@
 <body>
 
     <div class="rectangle">
-    	<img src="{% static 'teams/logo.png' %}" alt="" class="logo">
-    	<div class="header-text">ExePLORE</div>
-	<a href="{% url 'welcome' %}" class="home-link">Home</a> 
+        <img src="{% static 'logo.png' %}" alt="" class="logo">
+        <div class="header-text">ExePLORE</div>
+        <a href="{% url 'welcome' %}" class="home-link">Home</a> 
     </div>
 
     <div class="leaderboard-container">
@@ -175,7 +175,7 @@
                             {{ forloop.counter }}.
                         {% endif %}
                         {% if forloop.first %}
-                        <img src="{% static 'teams/gold.png' %}" alt="⭐🥇⭐" class="medal">
+                        <img src="{% static 'gold.png' %}" alt="⭐🥇⭐" class="medal">
                         {% endif %}
                     </span>
                     <span class="team-name {% if forloop.first %}shifted{% endif %}">{{ team.name }}</span>
