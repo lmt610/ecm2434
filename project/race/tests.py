@@ -31,7 +31,7 @@ class RaceMenuPageTests(TestCase):
         self.assertEqual(num_maps_in_html, Race.objects.count())
 
 
-class CalculateDistanceViewTest(TestCase):
+class CalculateDistanceViewTests(TestCase):
 
     def setUp(self):
         self.url = reverse("calculate_distance")
@@ -62,7 +62,7 @@ class CalculateDistanceViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "outside range")
 
-class UpdateRaceTimeViewTest(TestCase):
+class UpdateRaceTimeViewTests(TestCase):
     def setUp(self):
         #Set up test data: Create a user, race, and race entry.
             self.user = User.objects.create_user(username="test_user", password="password123")
@@ -170,3 +170,23 @@ class UpdateRaceTimeViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["status"], "error")
         self.assertEqual(response.json()["message"], "RaceEntry not found")
+        
+class RestrictedUrlRaceRedirectTests(TestCase):
+    def setUp(self):
+        # Create test Race to provide race-detail page to query for redirect  
+        loc1 = Location.objects.create(name="Forum (North)", latitude=50.735836, longitude=-3.533852)
+        loc2 = Location.objects.create(name="Armory (A)", latitude=50.736859, longitude=-3.531877)
+        self.race1 = Race.objects.create(title="Race 1", start=loc1, end=loc2)
+
+
+    def test_race_menu_redirect_on_unauthorized_request(self):
+
+        response = self.client.get(reverse("race"))  
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_race_detail_redirect_on_unauthorized_request(self):
+
+        response = self.client.get(reverse("race_detail", kwargs={"race_id": 1}))  
+
+        self.assertEqual(response.status_code, 302)
