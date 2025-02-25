@@ -25,24 +25,35 @@ class Command(BaseCommand):
         ]
 
         users = []
-        superuser = User.objects.create_superuser(username='superuser', password='password')
-        self.stdout.write(self.style.SUCCESS(f"Superuser '{superuser.username}' created."))
+        username = 'superuser'
+        password = 'password'
+        
+        if not User.objects.filter(username=username).exists():
+            superuser = User.objects.create_superuser(username=username, password=password)
+            self.stdout.write(self.style.SUCCESS(f'Superuser "{username}" created successfully.'))
+        else:
+            self.stdout.write(self.style.WARNING(f'Superuser "{username}" already exists.'))
+            superuser = User.objects.get(username=username)  
 
-        for i in user_data:
-            user, created = User.objects.get_or_create(username=i['username'])
+        for user_info in user_data:
+            user, created = User.objects.get_or_create(
+                username=user_info['username'],
+                defaults={'password': user_info['password']}
+            )
             if created:
-                user.set_password(i['password'])
+                user.set_password(user_info['password']) 
                 user.save()
                 self.stdout.write(self.style.SUCCESS(f"User '{user.username}' created."))
             else:
                 self.stdout.write(self.style.WARNING(f"User '{user.username}' already exists."))
             users.append(user)
 
-        users.append(superuser)
+        if superuser is not None:
+            users.append(superuser)
 
-        for i in team_data:
+        for team_info in team_data:
             admin_user = superuser
-            team, created = Team.objects.get_or_create(name=i['name'], admin=admin_user)
+            team, created = Team.objects.get_or_create(name=team_info['name'], admin=admin_user)
             if created:
                 team.points = random.randint(0, 100)
                 team.save()
@@ -50,11 +61,13 @@ class Command(BaseCommand):
             else:
                 self.stdout.write(self.style.WARNING(f"Team '{team.name}' already exists."))
 
-            num_members = random.randint(1, len(users))  
-            members = random.sample(users, num_members)  
-            team.members.set(members)  
-            team.save()
-            members_usernames = [member.username for member in members]
-            self.stdout.write(self.style.SUCCESS(f"Users {', '.join(members_usernames)} added to team '{team.name}'."))
+            if len(users) > 0:
+                num_members = random.randint(1, len(users))  
+                members = random.sample(users, num_members)  
+                team.members.set(members)  
+                team.save()
+
+                members_usernames = [member.username for member in members]
+                self.stdout.write(self.style.SUCCESS(f"Users {', '.join(members_usernames)} added to team '{team.name}'."))
 
         self.stdout.write(self.style.SUCCESS("Teams and users created successfully!"))
