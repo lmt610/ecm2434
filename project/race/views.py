@@ -143,20 +143,15 @@ def leaderboard(request):
     return JsonResponse({"leaderboard": data})
 
 def leaderboard_view(request):
-    print("request made")
     race_title = request.GET.get("race_title")
     if race_title:
-        print("race title exists: ",race_title)
-        print("DB content: ",RaceEntry.objects.all())
-                # race title search is case insensitive
-        leaderboard_entries = RaceEntry.objects.filter(race__title__icontains=race_title).order_by('duration').select_related('user', 'race')
-        print(leaderboard_entries)
+        leaderboard_entries = LeaderboardEntry.objects.filter(race__title__icontains=race_title).order_by('completion_time').select_related('user', 'race')
     else:
-        leaderboard_entries = RaceEntry.objects.order_by('duration').select_related('user', 'race')
-        print(leaderboard_entries)
+        leaderboard_entries = LeaderboardEntry.objects.order_by('completion_time').select_related('user', 'race')
+        
     top_entries = leaderboard_entries[:10]
     entries_count = leaderboard_entries.count()
-    print(top_entries)
+
     context = {
         'top_entries': top_entries,
     }
