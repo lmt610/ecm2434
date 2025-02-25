@@ -143,3 +143,20 @@ class RegisterViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
        
         self.assertContains(response, error_message) 
+
+class RestrictedUrlUserRedirectTests(TestCase):
+    def setUp(self):
+        pass
+
+
+    def test_welcome_redirect_on_unauthorized_request(self):
+
+        response = self.client.get(reverse("welcome"))  
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_settings_redirect_on_unauthorized_request(self):
+
+        response = self.client.get(reverse("settings"))  
+
+        self.assertEqual(response.status_code, 302)
