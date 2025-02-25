@@ -27,6 +27,18 @@ header img{
 
 }
 
+#pageTitle {
+    text-decoration: none; /* Removes underline */
+    color: inherit; /* Uses default text color */
+    cursor: pointer; /* Keeps it clickable */
+    position: absolute; /* Keeps it centered like your old `<p>` */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+}
+
+/* main page */
+
 main{
     text-align: center;
     display: grid;
@@ -34,6 +46,7 @@ main{
     grid-template-rows: 2fr 10fr 5fr 5fr;
     gap: 10px;
     margin-top: 10px;
+    z-index: 1;
 }
 
 button{
@@ -58,6 +71,15 @@ button{
     height: 100%;
 }
 
+.flag-border{
+	text-shadow:
+		-2px 0 black,
+		0 2px black,
+		  2px 0 black,
+          0 -2px black;
+}
+
+
 .menu{
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -69,6 +91,9 @@ button{
 }
 
 #routePOIs{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background: forestgreen;
     margin: auto;
     padding: 15px;
@@ -88,6 +113,8 @@ button{
     border: none;
     background-color: royalblue; 
     color: white;
+    margin: auto;
+    border-radius: 10px;
 }
 
 #leaderboard:hover{
@@ -114,7 +141,7 @@ button{
 }
 
 .actionButtons button{
-    height: 20%;
+    height: 5vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -131,4 +158,106 @@ button{
 
 button:hover{
     border: 2px solid black;
+}
+
+/* Time trial view */
+
+#activeTimeTrialView{  
+    position: fixed;
+    top: 0;                  
+    left: 0;                 
+    right: 0;                
+    bottom: 0;              
+    background-color: rgba(0, 0, 0, 0.7);  
+    z-index: 9999;    
+    opacity: 0;             
+    transform: translateY(-100%); 
+    transition: opacity 1s ease, transform 1s ease; 
+}
+
+#activeTimeTrialView.visible {
+    opacity: 1;              
+    transform: translateY(0); 
+}
+
+#activeTimeTrialView button{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 10%;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    width: 30%;
+    aspect-ratio: 20/1;
+    padding: 10px;
+    border: none;
+    color: white;
+ 
+}
+
+button:hover{
+    border: 2px solid black;
+}
+
+#timer{
+    margin-top: 25%;
+    margin-bottom: 10px;
+    justify-self: center;
+    width: 30%;
+    color: black;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 10px;
+    
+}
+/* Exsplore view */
+
+#activeExePLOREView{  
+    position: fixed;
+    top: 0;                  
+    left: 0;                 
+    right: 0;                
+    bottom: 0;              
+    background-color: rgba(0, 0, 0, 0.7);  
+    z-index: 9999;    
+    opacity: 0;              
+    transform: translateY(-100%); 
+    transition: opacity 1s ease, transform 1s ease; 
+}
+
+#activeExePLOREView.visible {
+    opacity: 1;              
+    transform: translateY(0); 
+}
+
+#activeExePLOREView button{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 10%;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    width: 30%;
+    aspect-ratio: 20/1;
+    padding: 10px;
+    border: none;
+    color: white;
+ 
+}
+
+button:hover{
+    border: 2px solid black;
+}
+
+#qoute{
+    margin-top: 10%;
+    margin-bottom: 15%;
+    margin-bottom: 10%;
+    justify-self: center;
+    width: 30%;
+    opacity: 70%;
+    color: black;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 10px;   
 }

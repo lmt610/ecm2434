@@ -1,9 +1,11 @@
-// static/js/map.js
+
+let map;
+let playerLocationMarker = null;
 
 // Function to initialize the map
 function initializeMap(raceData) {
     // Initialize the map with the start location
-    var map = L.map('map').setView([50.736577, -3.532512], 14.5);  
+    map = L.map('map').setView([50.736577, -3.532512], 14.5);  
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -12,7 +14,7 @@ function initializeMap(raceData) {
 
     // Create flag icons for start and end
     const startIcon = L.divIcon({
-        html: '<i class="fa fa-flag fa-3x" style="color: #40ff40;"></i>',  // Green flag
+        html: '<i class="fa fa-flag fa-3x flag-border" style="color: #40ff40;"></i>',  // Green flag
         iconSize: [25, 37],
         iconAnchor: [0, 42],
         popupAnchor: [0, -42],  // Popup will appear above the flag
@@ -45,7 +47,7 @@ function initializeMap(raceData) {
         [raceData.start.lat, raceData.start.lng],
         [raceData.end.lat, raceData.end.lng]
     ]);
-    map.fitBounds(bounds, { padding: [0, 10] });
+    map.fitBounds(bounds, { padding: [50, 50] });
 }
 
 // Check if raceData exists and initialize the map

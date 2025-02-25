@@ -70,12 +70,13 @@ header img{
 }
 
 .raceTitle{
-    width: 45%; 
+    width: 60%; 
     background-color: white;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(185, 110, 110, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
+    white-space: nowrap;
 }
 
 .map{
@@ -83,4 +84,12 @@ header img{
     height: 30vh;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.flag-border{
+	text-shadow: 
+		-2px 0 black, 
+		0 2px black,
+		2px 0 black,
+		0 -2px black;
 }

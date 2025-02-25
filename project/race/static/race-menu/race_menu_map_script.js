@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Create flag icons for start and end
         const startIcon = L.divIcon({
-            html: '<i class="fa fa-flag fa-3x" style="color: #40ff40;"></i>',  // Green flag
+            html: '<i class="fa fa-flag fa-3x flag-border" style="color: #40ff40;"></i>',  // Green flag
             iconSize: [35, 37],
             iconAnchor: [0, 42],
             className: 'start-flag-icon'
