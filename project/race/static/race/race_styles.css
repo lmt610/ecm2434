@@ -71,6 +71,15 @@ button{
     height: 100%;
 }
 
+.flag-border{
+	text-shadow:
+		-2px 0 black,
+		0 2px black,
+		  2px 0 black,
+          0 -2px black;
+}
+
+
 .menu{
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -104,6 +113,8 @@ button{
     border: none;
     background-color: royalblue; 
     color: white;
+    margin: auto;
+    border-radius: 10px;
 }
 
 #leaderboard:hover{

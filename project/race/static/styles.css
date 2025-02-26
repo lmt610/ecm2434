@@ -1,0 +1,147 @@
+body {
+    font-family: "Lato", sans-serif;
+    letter-spacing: 0.1em;
+    background-color: #633c26; 
+    background-image: url('https://www.transparenttextures.com/patterns/tree-bark.png'); 
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4c6a3f;
+    color: #ffffff;
+    padding: 1rem;
+    text-align: center;
+    height: 80px
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+section {
+    background-color: #e9d4b9;
+    padding: 1rem;
+    border: 2px solid #c9b499;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+}
+
+h1, h2 {
+    margin-bottom: 1rem;
+    font-family: "Garamond", serif;
+}
+
+h1 {
+    margin-top: 12px;
+    font-size: 2.5rem;
+}
+
+h2 {
+    color: #203025;
+    font-size: 1.6em;
+    margin-bottom: 2rem;
+}
+
+table {
+    width: 95%;
+    border-collapse: collapse;
+    color: #052510;
+    background-color: #e4eedb;
+    animation: fadeIn 1s; 
+    border-radius: 5px; 
+    overflow: hidden; 
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+th, td {
+    padding: 0.5rem;
+    text-align: left;
+}
+
+th {
+background-color: #5c7a44;
+    color: #ffffff; 
+    font-weight: bold;
+    text-transform: uppercase; 
+    letter-spacing: 1px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f0f5ed; 
+}
+
+tbody tr:hover{
+    background-color: #cceecc;
+    font-weight: bold;
+}
+
+.home-link {
+    display: inline-block;
+    background-color: #879e72;
+    color: #eefeee;
+    position: absolute;
+    left: 20px;
+    top: 30px;
+    padding: 8px 20px;
+    z-index: 1000;
+    text-decoration: none; 
+    border-radius: 5px;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s; 
+    }
+
+    .home-link:hover {
+            background-color: #6e8e62; 
+            transform: scale(1.05);
+        }
+
+    .race-form {
+        margin-top: 20px; 
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f0e8d9;
+        width: 300px; 
+    }
+
+    .race-form label {
+        display: block; 
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .race-form input[type="text"] {
+        width: 90%; 
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; 
+    }
+
+    .race-form button[type="submit"] {
+        background-color: #5c7a44;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer; 
+        font-size: 16px;
+    }
+    .race-form button[type="submit"]:hover {
+        background-color: #4e8e41; 
+    }

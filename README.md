@@ -1,5 +1,9 @@
 # ecm2434
 
+## Dependencies
+Python library dependencies are stored in `requirements.txt`. This project
+uses Django 5, so the minimum supported version of Python is `3.10`.
+
 ## Installation
 1. Clone the repo:
 ```sh
@@ -50,3 +54,13 @@ To run an app's tests:
 ```sh
 python manage.py test app_name
 ```
+
+To run a specific test class, use the full import path. E.g.
+```sh
+python manage.py test project.users.tests.test_views.LoginViewTest
+```
+
+Example tests relevant to sprint 1 assessment:
+- All login and signup tests - `users`
+    - login page - `users.tests.test_views.LoginViewTest`, `users.tests.test_forms.LoginFormTest`
+    - sign up    - `users.tests.test_views.RegisterViewTest`, `users.tests.test_forms.UserRegistrationFormTest`
