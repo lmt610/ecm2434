@@ -1,10 +1,11 @@
 from django.urls import path, include
 from . import views
-from .views import home, register, sign_in, welcome, increment_points, settings_view, delete_account, change_password, toggle_setting, update_email
+from .views import home, register, sign_in, log_out, welcome, increment_points, settings_view, delete_account, change_password, toggle_setting, update_email
 urlpatterns = [   
     path('', home, name='home'),
     path('login/', sign_in, name='login'),
     path('register/', register, name='register'),
+    path('logout/', log_out, name="log_out"),
     path('welcome/', welcome, name='welcome'),
     path('tasks/', include('tasks.urls')),
     path('teams/', include('teams.urls')),
