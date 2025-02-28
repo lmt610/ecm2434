@@ -1,9 +1,7 @@
-/* Fix header height issue */
 .exeplore-header {
     height: 74px !important;
 }
 
-/* Race Menu Styles - Matching Dashboard Theme */
 .race-menu-container {
     max-width: 1200px;
     margin: 0 auto;

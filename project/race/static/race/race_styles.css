@@ -1,18 +1,16 @@
-/* Reset styles but avoid affecting the base header */
 .race-content * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Fix header height issue */
 .exeplore-header {
     height: 74px !important;
 }
 
 /* Main Race Page Container */
 .race-page {
-    min-height: calc(100vh - 74px); /* Adjust for header height */
+    min-height: calc(100vh - 74px);
     display: flex;
     flex-direction: column;
     background-color: #f5f7fa;
