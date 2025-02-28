@@ -1,7 +1,20 @@
-<h1>Team List</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-<ul>
-    {% for team in teams %}
-        <li><a href="{% url 'team_detail' team.pk %}">{{ team.name }}</a></li>
-    {% endfor %}
-</ul>
+{% block title %}ExePLORE - Teams List{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'teams/teams_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="team-list-container">
+    <h1>Team List</h1>
+
+    <ul>
+        {% for team in teams %}
+            <li><a href="{% url 'team_detail' team.pk %}">{{ team.name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

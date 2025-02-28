@@ -1,30 +1,43 @@
-<h1>{{ team.name }}</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-<p>Points: {{ team.points }}</p>
-<p>Admin: {{ team.admin.username }}</p>
+{% block title %}ExePLORE - Team Details{% endblock %}
 
-{% if user.is_authenticated %}
-    {% if not has_joined and not join_request_pending %}
-        <form method="post" action="{% url 'request_join_team' team.pk %}">
-            {% csrf_token %}
-            <button type="submit">Request to Join</button>
-        </form>
-    {% elif has_joined %}
-        <p>You are a member of this team.</p>
-    {% elif join_request_pending %}
-        <p>You have already requested to join this team.  Waiting for approval.</p>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'teams/teams_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="team-detail-container">
+    <h1>{{ team.name }}</h1>
+
+    <p>Points: {{ team.points }}</p>
+    <p>Admin: {{ team.admin.username }}</p>
+
+    {% if user.is_authenticated %}
+        {% if not has_joined and not join_request_pending %}
+            <form method="post" action="{% url 'request_join_team' team.pk %}">
+                {% csrf_token %}
+                <button type="submit">Request to Join</button>
+            </form>
+        {% elif has_joined %}
+            <p>You are a member of this team.</p>
+        {% elif join_request_pending %}
+            <p>You have already requested to join this team. Waiting for approval.</p>
+        {% endif %}
+    {% else %}
+        <p>Please log in to request to join this team.</p>
     {% endif %}
-{% else %}
-    <p>Please log in to request to join this team.</p>
-{% endif %}
 
-{% if user == team.admin %}
-    <p><a href="{% url 'team_join_requests' team.pk %}">View Join Requests</a></p>
-{% endif %}
+    {% if user == team.admin %}
+        <p><a href="{% url 'team_join_requests' team.pk %}">View Join Requests</a></p>
+    {% endif %}
 
-<h2>Members</h2>
-<ul>
-    {% for member in team.members.all %}
-        <li>{{ member.username }}</li>
-    {% endfor %}
-</ul>
+    <h2>Members</h2>
+    <ul>
+        {% for member in team.members.all %}
+            <li>{{ member.username }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

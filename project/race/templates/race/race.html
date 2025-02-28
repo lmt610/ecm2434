@@ -6,167 +6,137 @@
 {% block extra_css %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-    .race-page {
-        min-height: calc(100vh - 74px);
-        display: flex;
-        flex-direction: column;
-    }
-
-    .race-main {
-        text-align: center;
-        display: grid;
-        height: 100%;
-        grid-template-rows: 2fr 10fr 5fr 5fr;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .title {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        grid-row: 1/2;
-        background-color: mediumspringgreen;
-        color: white;
-        font-size: 25px;
-    }
-
-    #map {
-        grid-row: 2/3;
-        height: 100%;
-        width: 100%;
-    }
-
-    .menu {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr 3fr;
-        width: 100%;
-        height: 100%;
-        grid-row: 3/5;
-        text-align: center;
-    }
-
-    #routePOIs {
-        background: forestgreen;
-        margin: auto;
-        padding: 15px;
-        border-radius: 10px;
-        width: 45%;
-        height: 50%;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        grid-column: 1/3;
-        grid-row: 1/2;
-        color: white;
-        text-decoration: none;
-    }
-
-    #leaderboard {
-        width: 50%;
-        height: 50%;
-        grid-column: 1/2;
-        grid-row: 2/3;
-        border: none;
-        background-color: royalblue;
-        color: white;
-        cursor: pointer;
-    }
-
-    #leaderboard:hover {
-        border: 2px solid black;
-    }
-
-    #status {
-        grid-column: 2/3;
-        margin: auto;
-        grid-row: 2/3;
-    }
-
-    .time {
-        grid-column: 1/3;
-        grid-row: 3/4;
-        width: 100%;
-        margin: auto;
-    }
-
-    .actionButtons {
-        grid-column: 1/3;
-        grid-row: 4/5;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .actionButtons button {
-        width: 50%;
-        padding: 10px;
-        border: none;
-        border-radius: 10px;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .actionButtons button:hover {
-        border: 2px solid black;
-        transform: scale(1.02);
-    }
-</style>
+<link rel="stylesheet" href="{% static 'race/race_styles.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="race-page">
-    <main class="race-main">
-        <div class="title">Races!</div>
-        <div id="map">
-            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-            <script>
-                const raceData = {
-                    start: {
-                        lat: {{ race.start.latitude }},
-                        lng: {{ race.start.longitude }},
-                        name: "{{ race.start.name }}"
-                    },
-                    end: {
-                        lat: {{ race.end.latitude }},
-                        lng: {{ race.end.longitude }},
-                        name: "{{ race.end.name }}"
-                    }
-                };
-            </script>
-            <script src="{% static 'race/race_map_script.js' %}"></script>
+    <div class="race-content">
+        <div class="race-main">
+            <div class="title-bar">{{ race.title }}</div>
+            
+            <div id="map">
+                <!-- Map will be loaded here -->
+            </div>
+            
+            <div class="menu">
+                <a href="{% url 'race' %}" id="routePOIs">
+                    <span>Race Details</span>
+                    <i class="fas fa-chevron-right ml-2"></i>
+                </a>
+                
+                <button id="leaderboard">
+                    <i class="fas fa-trophy mr-2"></i> Leaderboard
+                </button>
+                
+                <div id="status">
+                    {% if race.is_complete %}
+                    <p class="status-complete"><i class="fas fa-check-circle mr-2"></i> Completed!</p>
+                    {% else %}
+                    <p class="status-incomplete"><i class="fas fa-hourglass-half mr-2"></i> Not yet completed</p>
+                    {% endif %}
+                </div>
+                
+                <div class="time">
+                    {% if race.is_complete %}
+                    <p><i class="fas fa-stopwatch mr-2"></i> Personal Best: <strong>{{race.get_duration}}</strong></p>
+                    {% else %}
+                    <p><i class="fas fa-stopwatch mr-2"></i> Personal Best: Not yet set</p>
+                    {% endif %}
+                </div>
+                
+                <div class="actionButtons">
+                    <button class="btn-race">
+                        <i class="fas fa-running mr-2"></i> RACE!
+                    </button>
+                    <button class="btn-time-trial">
+                        <i class="fas fa-stopwatch mr-2"></i> Time Trial
+                    </button>
+                    <button class="btn-explore">
+                        <i class="fas fa-map-marked-alt mr-2"></i> ExePLORE
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="menu">
-            <a href="{% url 'race' %}" id="routePOIs">{{ race.title }} ►</a>
-            <button id="leaderboard">Leaderboards</button>
-            <div id="status">
-                {% if race.is_complete %}
-                <p>Completed!</p>
-                {% else %}
-                <p>You haven't explored this route yet!</p>
-                {% endif %}
-            </div>
-            <div class="time">
-                {% if race.is_complete %}
-                <p>Personal Best Time: {{race.get_duration}}</p>
-                {% else %}
-                <p>Personal Best Time: No time found</p>
-                {% endif %}
-            </div>
-            <div class="actionButtons">
-                <button style="background-color: red;">RACE!!</button>
-                <button style="background-color: gold;">Time Trial</button>
-                <button style="background-color: forestgreen;">ExePLORE</button>
-            </div>
-        </div>
-    </main>
+    </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'race/race_script.js' %}"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    const raceData = {
+        start: {
+            lat: {{ race.start.latitude }},
+            lng: {{ race.start.longitude }},
+            name: "{{ race.start.name }}"
+        },
+        end: {
+            lat: {{ race.end.latitude }},
+            lng: {{ race.end.longitude }},
+            name: "{{ race.end.name }}"
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('map').setView([50.736577, -3.532512], 14.5);  
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const startIcon = L.divIcon({
+            html: '<i class="fa fa-flag fa-3x" style="color: #40ff40;"></i>',
+            iconSize: [25, 37],
+            iconAnchor: [0, 42],
+            popupAnchor: [0, -42], 
+            className: 'start-flag-icon'
+        });
+
+        const endIcon = L.divIcon({
+            html: '<i class="fa fa-flag-checkered fa-3x" style="color: #4040ff;"></i>',
+            iconSize: [35, 37],
+            iconAnchor: [0, 42],
+            popupAnchor: [0, -42],
+            className: 'end-flag-icon'
+        });
+
+        const startMarker = L.marker([raceData.start.lat, raceData.start.lng], {
+            icon: startIcon
+        })
+            .addTo(map)
+            .bindPopup(`Start: ${raceData.start.name}`);
+
+        const endMarker = L.marker([raceData.end.lat, raceData.end.lng], {
+            icon: endIcon
+        })
+            .addTo(map)
+            .bindPopup(`End: ${raceData.end.name}`);
+
+        const bounds = L.latLngBounds([
+            [raceData.start.lat, raceData.start.lng],
+            [raceData.end.lat, raceData.end.lng]
+        ]);
+        map.fitBounds(bounds, { padding: [50, 50] });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('leaderboard').addEventListener('click', function() {
+            alert('Leaderboard functionality will be implemented soon!');
+        });
+
+        const actionButtons = document.querySelectorAll('.actionButtons button');
+        actionButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.classList.contains('btn-race')) {
+                    alert('Race mode selected! Get ready to race!');
+                } else if (this.classList.contains('btn-time-trial')) {
+                    alert('Time Trial mode selected! Beat your personal best!');
+                } else if (this.classList.contains('btn-explore')) {
+                    alert('ExePLORE mode selected! Explore at your own pace!');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

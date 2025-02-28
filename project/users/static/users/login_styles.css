@@ -1,19 +1,13 @@
-/* Content wrapper */
-.exeplore-content {
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 100px);
-    overflow: hidden;
-}
-
 /* Main Container */
 .login-container {
-    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+    padding-bottom: 20px;
+    min-height: calc(100vh - 198px);
     background-color: #f5f7fa;
+    width: 100%;
 }
 
 /* Login Card */
@@ -166,15 +160,10 @@
 }
 
 /* Footer */
-.login-footer {
-    padding: 20px;
-    background-color: white;
-    border-top: 1px solid #e0e0e0;
-}
-
 .footer-content {
     max-width: 1200px;
     margin: 0 auto;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -191,6 +180,7 @@
     display: flex;
     gap: 20px;
 }
+
 
 /* Responsive Design */
 @media (max-width: 480px) {

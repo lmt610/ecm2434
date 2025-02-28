@@ -10,9 +10,11 @@
         /* Global Reset */
         body, html {
             margin: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
             padding: 0 !important;
-            min-height: 100vh !important;
             width: 100% !important;
+            min-height: 100vh !important;
             overflow-x: hidden !important;
             font-family: 'Inter', sans-serif !important;
             -webkit-font-smoothing: antialiased !important;
@@ -256,6 +258,17 @@
             width: 100%;
             margin: 0;
             padding: 0;
+            min-height: auto;
+        }
+
+        /* Footer */
+        .site-footer {
+            margin-top: auto;
+            width: 100%;
+            flex-shrink: 0;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+            position: relative;
         }
 
         /* Responsive Design */
@@ -331,6 +344,10 @@
     <main class="exeplore-content">
         {% block content %}{% endblock %}
     </main>
+
+    <footer class="site-footer">
+        {% block footer %}{% endblock %}
+    </footer>
 
     {% block extra_js %}{% endblock %}
 </body>
