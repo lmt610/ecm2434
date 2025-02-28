@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'tasks',
     'race',
     'teams',
+    'leaderboard',
     ]
 
 MIDDLEWARE = [

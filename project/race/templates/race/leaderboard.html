@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Race Leaderboard</title>
+    <a href="{% url 'welcome' %}" class="home-link">Home</a>
+</form>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+    body {
+        font-family: "Lato", sans-serif;
+        letter-spacing: 0.1em;
+        background-color: #633c26; 
+        background-image: url("{% static 'race/images/tree-bark.png' %}"); 
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ExePLORE</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Race Leaderboard</h2>
+            <table id="leaderboardTable">  
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th>Race</th>
+                        <th>Time</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in top_entries %}
+                        <tr>
+                            <td>{{ forloop.counter }}.</td>
+                            <td>{{ entry.user.username }}</td>
+                            <td>{{ entry.race.title }}</td>
+                            <td>{{ entry.completion_time }} seconds</td>
+                            <td>{{ entry.timestamp }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">No race entries yet!</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>  
+        </section>
+        <form method="GET" action="" class="race-form">
+                <label for="race_title">Enter Race Title:</label>
+                <input type="text" id="race_title" name="race_title">
+                <button type="submit">View Leaderboard</button>
+        </form>
+    </main>
+    <script>
+        async function fetchLeaderboard() {
+        try {
+            const response = await fetch('/race/leaderboard'); 
+            const data = await response.json();
+
+            const tableBody = document.getElementById('leaderboardTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; 
+
+            data.leaderboard.forEach((entry, index) => {
+                const row = tableBody.insertRow();
+
+                const rankCell = row.insertCell(0);
+                rankCell.textContent = index + 1; 
+                row.insertCell(1).textContent = entry.user;
+                row.insertCell(2).textContent = entry.race;
+                row.insertCell(3).textContent = entry.time;
+                row.insertCell(4).textContent = entry.date;
+            });
+        } catch (error) {
+            console.error('Error fetching leaderboard data:', error);
+        }
+    }
+</script>
+</body>
+</html>

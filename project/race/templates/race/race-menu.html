@@ -3,43 +3,32 @@
 
 {% block title %}ExePLORE - Race Menu{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="{% static 'race-menu/race_menu_styles.css' %}">
-{% endblock %}
+        <!-- Leaflet mapping plugin-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <!-- Font Awesome for map race icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
 
-{% block content %}
-<div class="race-menu-container">
-    <div class="menu-header">
-        <h1>Choose Your Race</h1>
-    </div>
-
-    {% if races %}
-    <div class="race-grid">
-        {% for race in races %}
-        <a href="{% url 'race_detail' race.id %}" class="race-card">
-            <div class="race-card-title">{{ race.title }}</div>
-            <div id="map-{{ race.id }}" class="race-card-map"></div>
-            <div class="race-card-details">
-                <div class="race-start">
-                    <span class="race-label">Start</span>
-                    <span class="race-value">{{ race.start.name }}</span>
-                </div>
-                <div class="race-end">
-                    <span class="race-label">End</span>
-                    <span class="race-value">{{ race.end.name }}</span>
-                </div>
-            </div>
-            <div class="race-status">
-                {% if race.is_complete %}
-                <span class="status-badge status-complete">
-                    <i class="fas fa-check-circle"></i> Completed
-                </span>
-                {% else %}
-                <span class="status-badge status-incomplete">
-                    <i class="fas fa-hourglass-half"></i> Not Started
-                </span>
+<body>
+    <header>
+        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
+        <p id="pageTitle">ExePLORE</p>
+    </header>
+    <main>
+        <div class="menuBanner">Select Race!</div>
+        <div class="raceMenu">
+            <div class="row">
+                {% for race in races %}
+                <a class="raceOption" href="{% url 'race_detail' race.id %}">
+                    <div class="raceOption">
+                        {{ race.title }}
+                    </div>
+                    <div id="map-{{ race.id }}" class="map">
+                        
+                    </div>
+                </a>
+                {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                        </div><div class="row">
                 {% endif %}
             </div>
         </a>
