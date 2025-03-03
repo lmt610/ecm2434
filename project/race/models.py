@@ -26,6 +26,7 @@ class RaceEntry(models.Model):
     def save(self, *args, **kwargs):
         if self.start_time != None and self.end_time!=None:
             self.duration = self.end_time - self.start_time
+            self.assign_medal()
             super().save(*args, **kwargs)
         else:
             super().save(*args, **kwargs)
@@ -37,6 +38,13 @@ class RaceEntry(models.Model):
         duration = self.get_duration()
         return duration.total_seconds() / 60
     
+    def assign_medal(self):
+        medals=["Gold", "Silver", "Bronze"]
+        for i in range(len(self.race.medal_requirements)):
+            if self.duration <= self.race.medal_requirements[i]:
+                self.entry.medal = medals[i]
+                break
+
     @property
     def race_date(self):
         return self.start_time.date()  # This extracts the date part from the start_time
