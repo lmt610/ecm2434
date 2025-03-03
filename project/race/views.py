@@ -99,22 +99,42 @@ def update_race_time(request):
         
         start_time = parse_datetime(data.get("start_time"))
         end_time = parse_datetime(data.get("end_time"))
-        
+        print(start_time,end_time)
         try:
-            Entry = RaceEntry.objects.get(race=race, user=user)
-            if Entry.start_time is None or Entry.end_time is None:
+            entry = RaceEntry.objects.get(race=race, user=user)
+            if entry.start_time is None or entry.end_time is None:
                 #if start_time or end_time is null, set them
-                Entry.start_time = start_time
-                Entry.end_time = end_time
+                entry.start_time = start_time
+                entry.end_time = end_time
+                # check if user erned a medal
+                medals=["Gold", "Silver", "Bronze"]
+                duration = (end_time - start_time).total_seconds()
+                print("new race entry")
+                print(entry.race.medal_requirements[1])
+                for i in range(len(entry.race.medal_requirements)):
+                    print(f"{duration} <= {entry.race.medal_requirements[i]}")
+                    if duration <= entry.race.medal_requirements[i]:
+                        entry.medal = medals[i]
+                        print(f"medal: {entry.medal}")
+                        break
             else:
                 #compare times
-                current_pb = Entry.get_duration().total_seconds()
+                current_pb = entry.get_duration().total_seconds()
                 new_time = (end_time - start_time).total_seconds()
                 if new_time < current_pb:
-                    Entry.start_time = start_time
-                    Entry.end_time = end_time
-            Entry.is_complete = True
-            Entry.save()
+                    entry.start_time = start_time
+                    entry.end_time = end_time
+                    # check if user erned a medal
+                    medals=["Gold", "Silver", "Bronze"]
+                    print("existing race entry")
+                    for i in range(len(entry.race.medal_requirements)):
+                        print(f"{new_time} <= {entry.race.medal_requirements[i]}")
+                        if new_time <= entry.race.medal_requirements[i]:
+                            entry.medal = medals[i]
+                            print(f"medal: {entry.medal}")
+                            break
+            entry.is_complete = True
+            entry.save()
 
             return JsonResponse({"status": "success", "message": "RaceEntry updated"})
         except RaceEntry.DoesNotExist:

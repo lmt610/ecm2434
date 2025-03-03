@@ -5,6 +5,7 @@ class Race(models.Model):
     title = models.CharField(max_length=255)
     start = models.ForeignKey('Location', related_name='start_races', on_delete=models.CASCADE)
     end = models.ForeignKey('Location', related_name='end_races', on_delete=models.CASCADE)
+    medal_requirements = models.JSONField(default=list)
     
 
     def __str__(self):
@@ -19,6 +20,8 @@ class RaceEntry(models.Model):
     duration = models.DurationField(null=True, blank=True)
     is_complete = models.BooleanField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    medal = models.CharField(max_length=6, default='None')
+
 
     def save(self, *args, **kwargs):
         if self.start_time != None and self.end_time!=None:
