@@ -53,9 +53,10 @@ function getLocation() {
 function showPosition(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
+    const acc = position.coords.accuracy;
 
     //let user see their location 
-    addUserLocationToMap(lat,lon);
+    addUserLocationToMap(lat,lon,acc);
 }
 
 function showError(error) {
@@ -149,7 +150,7 @@ function createRace(title, startId, endId, user) {
     .catch(error => console.error("Error:", error));
 }
 
-function addUserLocationToMap(lat, lon){
+function addUserLocationToMap(lat, lon, acc){
     if (typeof map !== 'undefined' && map !== null) {
         if (playerLocationMarker != null){
             map.removeLayer(playerLocationMarker);
@@ -158,7 +159,7 @@ function addUserLocationToMap(lat, lon){
             color: 'red',      
             fillColor: 'red',   
             fillOpacity: 0.5,    
-            radius: 20       
+            radius: acc       
         }).addTo(map)
 
         // fit the user location and race points on the map view

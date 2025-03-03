@@ -9,10 +9,11 @@
     <h2>Total Points: {{ user_score }}</h2>
     <p><a href="{% url 'tasks' %}">View your tasks</a></p>
     <p><a href="{% url 'team_list' %}">View Teams</a></p>
-    <a href="{% url 'leaderboard' %}">View the Team Leaderboard</a>
+    <p><a href="{% url 'user_leaderboard' %}">View the Global User Leaderboard</a>
+    <p><a href="{% url 'team_leaderboard' %}">View the Global Team Leaderboard</a>
     <ul>
         <li>View your achievements</li>
-        <li>View leaderboard</li>
+        <li>View team leaderboard</li>
 	<li>Enter location code</li>
     </ul>
 

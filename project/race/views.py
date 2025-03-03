@@ -43,7 +43,7 @@ def calculate_distance(request):
         place_lat, place_lon = float(data["targetLatitude"]), float(data["targetLongitude"])
         #calculate distance using Haversine
         distance = haversine(user_lat, user_lon, place_lat, place_lon)
-        #check if distance is within threshold (e.g., 20m)
+        #check if distance is within threshold (e.g., 50m)
         threshold = 0.05
         if distance <= threshold:
             return JsonResponse({"status": "within range", "distance": round(distance, 2)})
@@ -88,8 +88,15 @@ def update_race_time(request):
     if request.method == "POST":
         data = json.loads(request.body)
         raceID = data.get("race_id")
-        race = Race.objects.get(id=raceID)
-        user = User.objects.get(username=data.get("user"))
+        try:
+            race = Race.objects.get(id=raceID)
+        except Race.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
+        try:
+          user = User.objects.get(username=data.get("user"))
+        except User.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+        
         start_time = parse_datetime(data.get("start_time"))
         end_time = parse_datetime(data.get("end_time"))
         
@@ -136,20 +143,15 @@ def leaderboard(request):
     return JsonResponse({"leaderboard": data})
 
 def leaderboard_view(request):
-    print("request made")
     race_title = request.GET.get("race_title")
     if race_title:
-        print("race title exists: ",race_title)
-        print("DB content: ",RaceEntry.objects.all())
-                # race title search is case insensitive
-        leaderboard_entries = RaceEntry.objects.filter(race__title__icontains=race_title).order_by('duration').select_related('user', 'race')
-        print(leaderboard_entries)
+        leaderboard_entries = LeaderboardEntry.objects.filter(race__title__icontains=race_title).order_by('completion_time').select_related('user', 'race')
     else:
-        leaderboard_entries = RaceEntry.objects.order_by('duration').select_related('user', 'race')
-        print(leaderboard_entries)
+        leaderboard_entries = LeaderboardEntry.objects.order_by('completion_time').select_related('user', 'race')
+        
     top_entries = leaderboard_entries[:10]
     entries_count = leaderboard_entries.count()
-    print(top_entries)
+
     context = {
         'top_entries': top_entries,
     }
