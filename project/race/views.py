@@ -16,7 +16,9 @@ from math import radians, sin, cos, sqrt, atan2
 def race_view(request, race_id=None):
     if race_id is None:
         races = Race.objects.all()
-        return render(request,"race/race-menu.html", {"races": races})
+        raceEntries=RaceEntry.objects.filter(user=request.user)
+        print(raceEntries)
+        return render(request,"race/race-menu.html", {"races": races, "raceEntries": raceEntries})
     else:
         race = get_object_or_404(Race, id=race_id)
         try:
