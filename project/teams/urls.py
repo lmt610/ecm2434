@@ -11,5 +11,4 @@ urlpatterns = [
     path('<int:pk>/join_requests/', views.team_join_requests, name='team_join_requests'),
     path('<int:pk>/approve_join_request/<int:request_id>/', views.approve_join_request, name='approve_join_request'),
     path('<int:pk>/reject_join_request/<int:request_id>/', views.reject_join_request, name='reject_join_request'),
-    path('leaderboard/', views.leaderboard, name='leaderboard'),
 ]
