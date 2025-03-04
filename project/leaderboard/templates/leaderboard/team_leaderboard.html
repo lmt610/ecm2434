@@ -4,7 +4,7 @@
 {% block title %}ExePLORE - Team Leaderboard{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'teams/teams_styles.css' %}">
+<link rel="stylesheet" href="{% static 'leaderboard/team_leaderboard_styles.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -19,7 +19,7 @@
                             {{ forloop.counter }}.
                         {% endif %}
                         {% if forloop.first %}
-                            <img src="{% static 'teams/gold.png' %}" alt="Gold Medal" class="medal">
+                            <img src="{% static 'gold.png' %}" alt="Gold Medal" class="medal">
                         {% endif %}
                     </span>
                     <span class="team-name {% if forloop.first %}shifted{% endif %}">{{ team.name }}</span>

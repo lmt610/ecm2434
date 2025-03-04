@@ -151,8 +151,10 @@ def leaderboard_view(request):
         
     top_entries = leaderboard_entries[:10]
     entries_count = leaderboard_entries.count()
-
+    all_races = Race.objects.all()
+    
     context = {
         'top_entries': top_entries,
+        'all_races': all_races,
     }
     return render(request, 'race/leaderboard.html', context)
