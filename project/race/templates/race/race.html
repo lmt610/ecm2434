@@ -1,83 +1,143 @@
 {% extends 'base.html' %}
 {% load static %}
-<head>
-    <!-- style sheets-->
-    <link rel="stylesheet" href="{% static 'race/race_styles.css' %}">
-    <!-- Leaflet mapping plugin-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <!-- Font Awesome for map race icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <!--scripts-->
-    <script>
-        const loggedInUser = "{{ request.user }}";  
-        const raceID="{{ race.id }}";
-    </script>
-    {% csrf_token %}
-    <script src="{% static 'race/race_script.js' %}"></script>
-</head>
+{% block title %}ExePLORE - {{ race.title }}{% endblock %}
 
-<body>
-    <header>
-        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
-        <a id="pageTitle" href="{% url 'welcome' %}">ExePLORE</a>
-    </header>
-    <main>
-        <div class="title">Races!</div>
-        <div id="map">
-            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-            <script>
-                 // Create a data object that for external js
-                const raceData = {
-                    start: {
-                        lat: {{ race.start.latitude }},
-                        lng: {{ race.start.longitude }},
-                        name: "{{ race.start.name }}"
-                    },
-                    end: {
-                        lat: {{ race.end.latitude }},
-                        lng: {{ race.end.longitude }},
-                        name: "{{ race.end.name }}"
-                    }
-                };
-            </script>
-            <script src="{% static 'race/race_map_script.js' %}"></script>
+{% block extra_css %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{% static 'race/race_styles.css' %}">
+<style>
+/* Additional styles for modals */
+#activeTimeTrialView, #activeExePLOREView {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+#activeTimeTrialView.visible, #activeExePLOREView.visible {
+    transform: translateY(0);
+}
+
+#timer {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+#qoute {
+    font-size: 18px;
+    font-style: italic;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#activeTimeTrialView button, #activeExePLOREView button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 5px;
+    min-width: 100px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="race-page">
+    <div class="race-main">
+        <div class="title-bar">
+            {{ race.title }}
         </div>
+        
+        <div id="map">
+            <!-- Map will be initialized by JavaScript -->
+        </div>
+        
         <div class="menu">
             <a href="{% url 'race' %}" id="routePOIs">{{ race.title }} ►</a>
-            <a id="leaderboard" href="{% url 'leaderboard_view'%}?race_title={{ race.title }}">Leaderboards</a>
+            
+            <a id="leaderboard" href="{% url 'leaderboard_view' %}?race_title={{ race.title }}">Leaderboards</a>
+            
             <div id="status">
-                {% if entry.is_complete%}
-                <p>Race status: Completed!</p>
+                {% if entry.is_complete %}
+                <p class="status-complete"><i class="fas fa-check-circle"></i> Race status: Completed!</p>
                 {% else %}
-                <p>You haven't explored this route yet!</p>
+                <p class="status-incomplete"><i class="fas fa-hourglass-half"></i> You haven't explored this route yet!</p>
                 {% endif %}
             </div>
+            
             <div class="time">
-                <img src="" alt="">
-                {% if entry.is_complete%}
-                <p>Personal Best Time: {{entry.get_duration}}</p>
+                {% if entry.is_complete %}
+                <p>Personal Best Time: {{ entry.get_duration }}</p>
                 {% else %}
                 <p>Personal Best Time: No time found</p>
                 {% endif %}
             </div>
-                <div class="actionButtons">
-                <button style="background-color: red;" onclick="getLocation()">Where am I?</button>
-                <button style="background-color: gold;" onclick="startTimeTrial()">Time Trial</button>
-                <button style="background-color: forestgreen;" onclick="startExePLORE()">ExePLORE</button>
+            
+            <div class="actionButtons">
+                <button class="btn-race" onclick="getLocation()">Where am I?</button>
+                <button class="btn-time-trial" onclick="startTimeTrial()">Time Trial</button>
+                <button class="btn-explore" onclick="startExePLORE()">ExePLORE</button>
             </div>
         </div>
-        <div id="activeTimeTrialView">
-            <div id="timer">00:00</div>
-            <button style="background-color: forestgreen;" onclick="endTimeTrial()">Finish</button>
-            <button style="background-color: red;" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
-        </div>
-        <div id="activeExePLOREView">
-            <div id="qoute">"Leave it better than you found it, Be found better than you where"</div>
-            <button style="background-color: forestgreen;" onclick="endExePLORE()">Finish</button>
-            <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
-        </div>
-    </main>
-    
-</body>
+    </div>
+</div>
 
+<!-- Active Time Trial View -->
+<div id="activeTimeTrialView">
+    <div id="timer">0 seconds</div>
+    <div>
+        <button style="background-color: forestgreen;" onclick="endTimeTrial()">Finish</button>
+        <button style="background-color: red;" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
+    </div>
+</div>
+
+<!-- Active ExePLORE View -->
+<div id="activeExePLOREView">
+    <div id="qoute">"Leave it better than you found it, Be found better than you were"</div>
+    <div>
+        <button style="background-color: forestgreen;" onclick="endExePLORE()">Finish</button>
+        <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    // Create data object for external js
+    const loggedInUser = "{{ request.user }}";  
+    const raceID = "{{ race.id }}";
+    const raceData = {
+        start: {
+            lat: {{ race.start.latitude }},
+            lng: {{ race.start.longitude }},
+            name: "{{ race.start.name }}"
+        },
+        end: {
+            lat: {{ race.end.latitude }},
+            lng: {{ race.end.longitude }},
+            name: "{{ race.end.name }}"
+        }
+    };
+</script>
+{% csrf_token %}
+<script src="{% static 'race/race_map_script.js' %}"></script>
+<script src="{% static 'race/race_script.js' %}"></script>
+{% endblock %}
