@@ -166,3 +166,12 @@ def toggle_setting(request):
             return JsonResponse({'status': 'success'})
             
     return JsonResponse({'status': 'error'}, status=400)
+
+def privacy_policy_view(request):
+    return render(request, "legal/privacy_policy.html")
+
+def data_protection_view(request):
+    return render(request, "legal/data_protection.html")
+
+def terms_of_service_view(request):
+    return render(request, "legal/terms_of_service.html")
