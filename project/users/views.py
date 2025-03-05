@@ -154,15 +154,15 @@ def update_email(request):
 def toggle_setting(request):
     if request.method == 'POST':
         setting_name = request.POST.get('setting')
+        if setting_name==None or request.POST.get('value')==None:
+            return JsonResponse({'status':'error'},status=400)
+
         value = request.POST.get('value') == 'true'
         
-        try:
-            user_settings = UserSettings.objects.get(user=request.user)
-            if hasattr(user_settings, setting_name):
-                setattr(user_settings, setting_name, value)
-                user_settings.save()
-                return JsonResponse({'status': 'success'})
-        except UserSettings.DoesNotExist:
-            pass
+        user_settings = UserSettings.objects.get(user=request.user)
+        if hasattr(user_settings, setting_name):
+            setattr(user_settings, setting_name, value)
+            user_settings.save()
+            return JsonResponse({'status': 'success'})
             
     return JsonResponse({'status': 'error'}, status=400)
