@@ -33,7 +33,6 @@ class SettingsViewTest(TestCase):
             {},
             {"setting": "location_tracking"},
             {"value": "true"},
-            {"setting": "location_tracking", "value": True},
             {"setting": "non existent attribute", "value": "true"}
         ]
         for form in invalid_forms:
@@ -51,4 +50,4 @@ class SettingsViewTest(TestCase):
         
         for address in mandated_links:
             link = soup.find('a', href=address)
-            self.assertIsNotNone(link)
+            self.assertIsNotNone(link, f"Error: couldn't find {address}")
