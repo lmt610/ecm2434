@@ -1,11 +1,27 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+def validate_ascending_three_items(value):
+    if not isinstance(value, list):
+        raise ValidationError("This field must be a list")
+
+    if len(value) != 3:
+        raise ValidationError("This field must contain exactly 3 items")
+    
+    for elem in value:
+        if not isinstance(elem, int):
+            raise ValidationError("Elements in this field must be integers")
+
+
+    if value[0] > value[1] or value[1] > value[2]:
+        raise ValidationError("Values in this field must be in ascending order")
 
 class Race(models.Model):
     title = models.CharField(max_length=255)
     start = models.ForeignKey('Location', related_name='start_races', on_delete=models.CASCADE)
     end = models.ForeignKey('Location', related_name='end_races', on_delete=models.CASCADE)
-    medal_requirements = models.JSONField(default=list)
+    medal_requirements = models.JSONField(default=list, validators=[validate_ascending_three_items])
     
 
     def __str__(self):
@@ -41,8 +57,8 @@ class RaceEntry(models.Model):
     def assign_medal(self):
         medals=["Gold", "Silver", "Bronze"]
         for i in range(len(self.race.medal_requirements)):
-            if self.duration <= self.race.medal_requirements[i]:
-                self.entry.medal = medals[i]
+            if self.duration.total_seconds() <= self.race.medal_requirements[i]:
+                self.medal = medals[i]
                 break
 
     @property
