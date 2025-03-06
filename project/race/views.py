@@ -74,7 +74,6 @@ def create_race(request):
                 race = race,
                 start_time = None,
                 end_time = None,
-                duration = None,
                 is_complete = False
             )
             return JsonResponse({"status": "success", "race_id": race.id})
@@ -107,7 +106,7 @@ def update_race_time(request):
                 entry.end_time = end_time
             else:
                 #compare time to previous best
-                current_pb = entry.get_duration().total_seconds()
+                current_pb = entry.get_duration()
                 new_time = (end_time - start_time).total_seconds()
                 if new_time < current_pb:
                     entry.start_time = start_time

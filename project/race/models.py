@@ -33,7 +33,6 @@ class RaceEntry(models.Model):
     name = models.CharField(max_length=255, default='RaceEntry')
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
-    duration = models.DurationField(null=True, blank=True)
     is_complete = models.BooleanField()
     timestamp = models.DateTimeField(auto_now_add=True)
     medal = models.CharField(max_length=6, default='None')
@@ -41,23 +40,20 @@ class RaceEntry(models.Model):
 
     def save(self, *args, **kwargs):
         if self.start_time != None and self.end_time!=None:
-            self.duration = self.end_time - self.start_time
             self.assign_medal()
-            super().save(*args, **kwargs)
-        else:
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def get_duration(self):
-        return self.end_time - self.start_time
+        return (self.end_time - self.start_time).total_seconds()
 
     def get_duration_in_minutes(self):
         duration = self.get_duration()
-        return duration.total_seconds() / 60
+        return duration / 60
     
     def assign_medal(self):
         medals=["Gold", "Silver", "Bronze"]
         for i in range(len(self.race.medal_requirements)):
-            if self.duration.total_seconds() <= self.race.medal_requirements[i]:
+            if self.get_duration() <= self.race.medal_requirements[i]:
                 self.medal = medals[i]
                 break
 
