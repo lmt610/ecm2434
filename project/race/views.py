@@ -74,7 +74,6 @@ def create_race(request):
                 race = race,
                 start_time = None,
                 end_time = None,
-                duration = None,
                 is_complete = False
             )
             return JsonResponse({"status": "success", "race_id": race.id})
@@ -103,29 +102,15 @@ def update_race_time(request):
         try:
             entry = RaceEntry.objects.get(race=race, user=user)
             if entry.start_time is None or entry.end_time is None:
-                #if start_time or end_time is null, set them
                 entry.start_time = start_time
                 entry.end_time = end_time
-                # check if user erned a medal
-                medals=["Gold", "Silver", "Bronze"]
-                duration = (end_time - start_time).total_seconds()
-                for i in range(len(entry.race.medal_requirements)):
-                    if duration <= entry.race.medal_requirements[i]:
-                        entry.medal = medals[i]
-                        break
             else:
-                #compare times
-                current_pb = entry.get_duration().total_seconds()
+                #compare time to previous best
+                current_pb = entry.get_duration()
                 new_time = (end_time - start_time).total_seconds()
                 if new_time < current_pb:
                     entry.start_time = start_time
                     entry.end_time = end_time
-                    # check if user erned a medal
-                    medals=["Gold", "Silver", "Bronze"]
-                    for i in range(len(entry.race.medal_requirements)):
-                        if new_time <= entry.race.medal_requirements[i]:
-                            entry.medal = medals[i]
-                            break
             entry.is_complete = True
             entry.save()
 

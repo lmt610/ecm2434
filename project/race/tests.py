@@ -76,7 +76,7 @@ class UpdateRaceTimeViewTests(TestCase):
         #Test updating race time when new PB is set.
         start_time = now()
         end_time = start_time + timedelta(minutes=6)  
-        attempt_duration = end_time - start_time
+        attempt_duration = (end_time - start_time).total_seconds()
 
         data = {
             "race_id": self.race.id,
@@ -89,8 +89,7 @@ class UpdateRaceTimeViewTests(TestCase):
         
         # Reload entry from database
         self.entry.refresh_from_db()
-        DB_duration_dictionary = RaceEntry.objects.filter(user=self.user, race=self.race).values("duration").first()
-        DB_duration = DB_duration_dictionary["duration"]
+        DB_duration = RaceEntry.objects.filter(user=self.user, race=self.race).first().get_duration()
         
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "success")
@@ -101,7 +100,7 @@ class UpdateRaceTimeViewTests(TestCase):
         #Test request response and DB structure when a new PB is not attained.
         start_time = now()
         end_time = start_time + timedelta(minutes=15)  
-        attempt_duration = end_time - start_time
+        attempt_duration = (end_time - start_time).total_seconds()
 
         data = {
             "race_id": self.race.id,
@@ -114,8 +113,7 @@ class UpdateRaceTimeViewTests(TestCase):
         
         # Reload entry from database
         self.entry.refresh_from_db()
-        DB_duration_dictionary = RaceEntry.objects.filter(user=self.user, race=self.race).values("duration").first()
-        DB_duration = DB_duration_dictionary["duration"]
+        DB_duration = RaceEntry.objects.filter(user=self.user, race=self.race).first().get_duration()
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "success")
