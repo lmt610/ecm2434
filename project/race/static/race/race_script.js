@@ -124,32 +124,6 @@ function checkEndLocation(position) {
     });
 }
 
-function createRace(title, startId, endId, user) {
-    fetch('/race/create-race/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify({
-            title: title,
-            start_id: startId,
-            end_id: endId,
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            console.log("Race created with ID:", data.race_id);
-            localStorage.setItem("currentRaceId", data.race_id);
-            location.reload(); // reload page for dymaic html content
-        } else {
-            console.error("Error creating race:", data.message);
-        }
-    })
-    .catch(error => console.error("Error:", error));
-}
-
 function addUserLocationToMap(lat, lon, acc){
     if (typeof map !== 'undefined' && map !== null) {
         if (playerLocationMarker != null){
@@ -241,24 +215,3 @@ function endExePLORE() {
         alert("Geolocation is not supported by this browser.");
     }
 }
-
-function CreateRaceEntryOrExceptSuccsess(){
-    return fetch('/race/create-race/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken(), //Include CSRF token
-        },
-        body: JSON.stringify({race_id: raceID, user: loggedInUser})
-    })
-    .then(response => response.json())
-    .then(data => {
-        return data.status === "success";
-    })
-    .catch(error => {
-        console.error("error:", error);
-        return false;
-    });
-}
-
-CreateRaceEntryOrExceptSuccsess();
