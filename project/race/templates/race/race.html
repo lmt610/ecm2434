@@ -42,7 +42,7 @@
             </script>
             <script src="{% static 'race/race_map_script.js' %}"></script>
             <div class="medalTag">
-                    {% if entry.medal != 'None' %}
+                    {% if entry and entry.medal != 'None' %}
                         <img src="{% static 'images/'|add:entry.medal|add:'.png' %}" alt="">
                     {% endif %} 
             </div> 
