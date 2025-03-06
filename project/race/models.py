@@ -57,8 +57,8 @@ class RaceEntry(models.Model):
     def assign_medal(self):
         medals=["Gold", "Silver", "Bronze"]
         for i in range(len(self.race.medal_requirements)):
-            if self.duration <= self.race.medal_requirements[i]:
-                self.entry.medal = medals[i]
+            if self.duration.total_seconds() <= self.race.medal_requirements[i]:
+                self.medal = medals[i]
                 break
 
     @property
