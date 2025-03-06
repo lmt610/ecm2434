@@ -9,7 +9,7 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
+from users.models import Profile
 from math import radians, sin, cos, sqrt, atan2
 
 @login_required
@@ -169,3 +169,30 @@ def leaderboard_view(request):
         'top_entries': top_entries,
     }
     return render(request, 'race/leaderboard.html', context)
+
+def add_exeplore_points(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        raceID = data.get("race_id")
+        try:
+            race = Race.objects.get(id=raceID)
+        except Race.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
+        try:
+            user = User.objects.get(username=data.get("user"))
+            profile = user.user_profile
+        except User.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+        
+        start_lat = race.start.latitude
+        start_lon = race.start.longitude
+        end_lat = race.end.latitude
+        end_lon = race.end.longitude
+
+        #distance is calculated in kilometres, multiply by 100 to get points in the 10s
+        points_to_add = 100 * haversine(start_lat, start_lon, end_lat, end_lon) + 20
+
+        profile.points += points_to_add
+        profile.save()
+
+        return JsonResponse({"points": points_to_add})
