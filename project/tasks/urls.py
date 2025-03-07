@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import tasks, add_task_score  
+from .views import tasks
 
 urlpatterns = [
     path('tasks/', tasks, name='tasks'),
