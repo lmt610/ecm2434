@@ -8,6 +8,16 @@
     <a href="{% url 'welcome' %}" class="home-link">Home</a>
 </form>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+    body {
+        font-family: "Lato", sans-serif;
+        letter-spacing: 0.1em;
+        background-color: #633c26; 
+        background-image: url("{% static 'race/images/tree-bark.png' %}"); 
+        margin: 0;
+        padding: 0;
+    }
+    </style>
 </head>
 <body>
     <header>
@@ -33,7 +43,7 @@
                             <td>{{ entry.user.username }}</td>
                             <td>{{ entry.race.title }}</td>
                             <td>{{ entry.completion_time }} seconds</td>
-                            <td>{{ entry.race.date }}</td>
+                            <td>{{ entry.timestamp }}</td>
                         </tr>
                     {% empty %}
                         <tr>

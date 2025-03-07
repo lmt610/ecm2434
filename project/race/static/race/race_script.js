@@ -1,7 +1,6 @@
 // Simple Timer Function
 let startTime;
 let isRunActive = false;
-let isPractise = false;
 function startRace() {
     startTime = Date.now();
     isRunActive = true;
@@ -54,9 +53,10 @@ function getLocation() {
 function showPosition(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
+    const acc = position.coords.accuracy;
 
     //let user see their location 
-    addUserLocationToMap(lat,lon);
+    addUserLocationToMap(lat,lon,acc);
 }
 
 function showError(error) {
@@ -124,64 +124,7 @@ function checkEndLocation(position) {
     });
 }
 
-function createRace(title, startId, endId) {
-    fetch('/race/create-race/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify({
-            title: title,
-            start_id: startId,
-            end_id: endId
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            console.log("Race created with ID:", data.race_id);
-            localStorage.setItem("currentRaceId", data.race_id);
-        } else {
-            console.error("Error creating race:", data.message);
-        }
-    })
-    .catch(error => console.error("Error:", error));
-}
-
-function updateRaceTime(startTime, endTime) {
-    const raceId = localStorage.getItem("currentRaceId"); //get stored race ID
-
-    if (!raceId) {
-        console.error("No active race found.");
-        return;
-    }
-
-    if (isPractise) {
-        location.reload();
-        return;
-    }
-
-    fetch('/race/update-race-time/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'applciation/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify({
-            race_id:raceId,
-            start_time: new Date(startTime).toISOString(),
-            end_time:new Date(endTime).toISOString()
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        location.reload(); //reload after updating
-    })
-    .catch(error => console.error("Error:", error));
-}
-
-function addUserLocationToMap(lat, lon){
+function addUserLocationToMap(lat, lon, acc){
     if (typeof map !== 'undefined' && map !== null) {
         if (playerLocationMarker != null){
             map.removeLayer(playerLocationMarker);
@@ -190,7 +133,7 @@ function addUserLocationToMap(lat, lon){
             color: 'red',      
             fillColor: 'red',   
             fillOpacity: 0.5,    
-            radius: 20       
+            radius: acc       
         }).addTo(map)
 
         // fit the user location and race points on the map view
@@ -262,7 +205,8 @@ function endExePLORE() {
         navigator.geolocation.getCurrentPosition(position => {
             checkEndLocation(position).then(isAtEndLocation => {
                 if (isAtEndLocation) {
-                    document.getElementById('activeExePLOREView').classList.remove('visible');
+                    document.getElementById('activeExePLOREView').classList.remove('visible')
+                    addExePlorePoints();
                 } else {
                     alert("You are not at the end point");
                 }
@@ -271,4 +215,23 @@ function endExePLORE() {
     } else {
         alert("Geolocation is not supported by this browser.");
     }
+}
+
+function addExePlorePoints() {
+    return fetch('/race/add-exeplore-points/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(), //Include CSRF token
+        },
+        body: JSON.stringify({start_latitude: raceData.start.lat, start_longitude: raceData.start.lng, end_latitude: raceData.end.lat, end_longitude: raceData.end.lng, user: loggedInUser})
+    })
+    .then(response => response.json())
+    .then(data => {
+        return data.points > 0;
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        return false;
+    });
 }

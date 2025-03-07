@@ -33,3 +33,15 @@ class UserSettings(models.Model):
     
     def __str__(self):
         return f"{self.user.username}'s settings"
+
+@receiver(post_save, sender=User)
+def create_user_settings(sender, instance, created, **kwargs):
+    if created:
+        UserSettings.objects.create(
+              user=instance,
+              location_tracking=True,
+              show_on_leaderboard=True,
+              route_notifications=True,
+              achievement_notifications=True
+          )
+

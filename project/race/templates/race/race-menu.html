@@ -23,7 +23,13 @@
                         {{ race.title }}
                     </div>
                     <div id="map-{{ race.id }}" class="map">
-                        
+                        <div class="medalTag">
+                            {% for raceEntry in raceEntries %}
+                                {% if raceEntry.race == race and raceEntry.medal != 'None' %}        
+                                        <img src="{% static 'images/'|add:raceEntry.medal|add:'.png' %}" alt="">
+                                {% endif %}
+                            {% endfor %}   
+                        </div>   
                     </div>
                 </a>
                 {% if forloop.counter|divisibleby:2 and not forloop.last %}

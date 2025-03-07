@@ -14,7 +14,7 @@ function initializeMap(raceData) {
 
     // Create flag icons for start and end
     const startIcon = L.divIcon({
-        html: '<i class="fa fa-flag fa-3x" style="color: #40ff40;"></i>',  // Green flag
+        html: '<i class="fa fa-flag fa-3x flag-border" style="color: #40ff40;"></i>',  // Green flag
         iconSize: [25, 37],
         iconAnchor: [0, 42],
         popupAnchor: [0, -42],  // Popup will appear above the flag
