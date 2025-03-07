@@ -77,8 +77,9 @@
             <button style="background-color: red;" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
         </div>
         <div id="activeExePLOREView">
+            <div id="pointsNotif">You just earned  points!</div>
             <div id="qoute">"Leave it better than you found it, Be found better than you where"</div>
-            <button style="background-color: forestgreen;" onclick="endExePLORE()">Finish</button>
+            <button style="background-color: forestgreen;" onclick="this.disabled = true; endExePLORE()">Finish</button>
             <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
         </div>
     </main>

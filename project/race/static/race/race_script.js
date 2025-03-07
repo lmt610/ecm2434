@@ -205,8 +205,17 @@ function endExePLORE() {
         navigator.geolocation.getCurrentPosition(position => {
             checkEndLocation(position).then(isAtEndLocation => {
                 if (isAtEndLocation) {
-                    document.getElementById('activeExePLOREView').classList.remove('visible')
                     addExePlorePoints();
+                    document.getElementById("pointsNotif").classList.add("visible");
+                    setTimeout(() => {
+                        document.getElementById("pointsNotif").classList.remove('visible');
+                    }, 2000);
+                    setTimeout(() => {
+                        document.getElementById('activeExePLOREView').classList.remove('visible');
+                        document.querySelectorAll("#activeExePLOREView button").forEach(button => {
+                            button.disabled = false;
+                        });
+                    }, 3000);
                 } else {
                     alert("You are not at the end point");
                 }
@@ -228,6 +237,7 @@ function addExePlorePoints() {
     })
     .then(response => response.json())
     .then(data => {
+        document.getElementById("pointsNotif").textContent = "You just earned " + data.points + " points!";
         return data.points > 0;
     })
     .catch(error => {
