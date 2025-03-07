@@ -72,11 +72,8 @@ def update_race_time(request):
         race=race,
         user=request.user,
         defaults={
-            "name": f"{race} {request.user}",
             "user": request.user,
-            "race": race,
-            "start_time": None,
-            "end_time": None
+            "race": race
         })
     if created:
         entry.start_time = start_time

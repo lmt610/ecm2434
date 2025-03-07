@@ -30,13 +30,16 @@ class Race(models.Model):
 class RaceEntry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.ForeignKey(Race, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, default='RaceEntry')
-    start_time = models.DateTimeField(null=True, blank=True)
-    end_time = models.DateTimeField(null=True, blank=True)
+    name = models.CharField(max_length=255)
+    start_time = models.DateTimeField(default=None, null=True, blank=True)
+    end_time = models.DateTimeField(default=None, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     medal = models.CharField(max_length=6, default='None')
 
     def save(self, *args, **kwargs):
+        if not self.name:
+            self.name = f"{self.race} {self.user}"
+
         if self.start_time != None and self.end_time!=None:
             self.assign_medal()
         super().save(*args, **kwargs)
