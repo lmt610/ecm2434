@@ -10,4 +10,5 @@ urlpatterns = [
     path('update-race-time/', views.update_race_time, name='update_race_time'),
     path('leaderboard/', views.leaderboard_view, name='leaderboard_view'),    
     path('race/leaderboard/', views.leaderboard, name='raceleaderboard'), 
+    path('add-exeplore-points/', views.add_exeplore_points, name='add_exeplore_points'),
 ]

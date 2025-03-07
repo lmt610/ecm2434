@@ -205,7 +205,8 @@ function endExePLORE() {
         navigator.geolocation.getCurrentPosition(position => {
             checkEndLocation(position).then(isAtEndLocation => {
                 if (isAtEndLocation) {
-                    document.getElementById('activeExePLOREView').classList.remove('visible');
+                    document.getElementById('activeExePLOREView').classList.remove('visible')
+                    addExePlorePoints();
                 } else {
                     alert("You are not at the end point");
                 }
@@ -214,4 +215,23 @@ function endExePLORE() {
     } else {
         alert("Geolocation is not supported by this browser.");
     }
+}
+
+function addExePlorePoints() {
+    return fetch('/race/add-exeplore-points/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCSRFToken(), //Include CSRF token
+        },
+        body: JSON.stringify({start_latitude: raceData.start.lat, start_longitude: raceData.start.lng, end_latitude: raceData.end.lat, end_longitude: raceData.end.lng, user: loggedInUser})
+    })
+    .then(response => response.json())
+    .then(data => {
+        return data.points > 0;
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        return false;
+    });
 }

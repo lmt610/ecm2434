@@ -138,26 +138,24 @@ def leaderboard_view(request):
 def add_exeplore_points(request):
     if request.method == "POST":
         data = json.loads(request.body)
-        raceID = data.get("race_id")
+        
         try:
-            race = Race.objects.get(id=raceID)
-        except Race.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
-        try:
-            user = User.objects.get(username=data.get("user"))
-            profile = user.user_profile
-        except User.DoesNotExist:
+            user = Profile.objects.get(user__username=data.get("user"))
+        except Profile.DoesNotExist:
             return JsonResponse({"status": "error", "message": "User not found"}, status=404)
         
-        start_lat = race.start.latitude
-        start_lon = race.start.longitude
-        end_lat = race.end.latitude
-        end_lon = race.end.longitude
+        start_lat = data.get("start_latitude")
+        start_lon = data.get("start_longitude")
+        end_lat = data.get("end_latitude")
+        end_lon = data.get("end_longitude")
 
-        #distance is calculated in kilometres, multiply by 100 to get points in the 10s
+        #distance is calculated in kilometres, multiply by 100 to get points in the 10s + 20 to add base points
         points_to_add = 100 * haversine(start_lat, start_lon, end_lat, end_lon) + 20
+        int(points_to_add)
 
-        profile.points += points_to_add
-        profile.save()
+        user.points += points_to_add
+        user.save()
 
         return JsonResponse({"points": points_to_add})
+    
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
