@@ -20,12 +20,11 @@ def race_view(request, race_id=None):
         return render(request,"race/race-menu.html", {"races": races, "raceEntries": raceEntries})
     else:
         race = get_object_or_404(Race, id=race_id)
-        try:
-            entry = get_object_or_404(RaceEntry, race=race, user=request.user)
-            return render(request,"race/race.html", {"race": race, "entry": entry})
-        except:
-            pass
-        return render(request,"race/race.html", {"race": race})
+        entry = RaceEntry.objects.filter(race=race, user=request.user).first()
+        if(entry):
+            return render(request, "race/race.html", {"race": race, "entry": entry})
+        else:
+            return render(request,"race/race.html", {"race": race})
 
 #haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -63,10 +62,10 @@ def update_race_time(request):
 
     data = json.loads(request.body)
     raceID = data.get("race_id")
-    if not Race.objects.filter(id=raceID).exists():
+    race = Race.objects.filter(id=raceID).first()
+    if race == None:
          return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
 
-    race = Race.objects.get(id=raceID)
     start_time = parse_datetime(data.get("start_time"))
     end_time = parse_datetime(data.get("end_time"))
     entry, created = RaceEntry.objects.get_or_create(
