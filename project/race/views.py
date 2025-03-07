@@ -68,13 +68,7 @@ def update_race_time(request):
 
     start_time = parse_datetime(data.get("start_time"))
     end_time = parse_datetime(data.get("end_time"))
-    entry, created = RaceEntry.objects.get_or_create(
-        race=race,
-        user=request.user,
-        defaults={
-            "user": request.user,
-            "race": race
-        })
+    entry, created = RaceEntry.objects.get_or_create(race=race, user=request.user)
     if created:
         entry.start_time = start_time
         entry.end_time = end_time
