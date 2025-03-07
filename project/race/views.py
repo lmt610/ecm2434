@@ -69,7 +69,7 @@ def update_race_time(request):
     race = Race.objects.get(id=raceID)
     start_time = parse_datetime(data.get("start_time"))
     end_time = parse_datetime(data.get("end_time"))
-    entry, _ = RaceEntry.objects.get_or_create(
+    entry, created = RaceEntry.objects.get_or_create(
         race=race,
         user=request.user,
         defaults={
@@ -79,8 +79,7 @@ def update_race_time(request):
             "start_time": None,
             "end_time": None
         })
-
-    if entry.start_time is None or entry.end_time is None:
+    if created:
         entry.start_time = start_time
         entry.end_time = end_time
     else:
@@ -90,8 +89,8 @@ def update_race_time(request):
         if new_time < current_pb:
             entry.start_time = start_time
             entry.end_time = end_time
+    
     entry.save()
-
     return JsonResponse({"status": "success", "message": "RaceEntry updated"})
 
     
