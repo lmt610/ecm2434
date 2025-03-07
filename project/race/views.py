@@ -53,52 +53,47 @@ def calculate_distance(request):
         
     return JsonResponse({"error": "Invalid request"}, status = 400)
    
-@csrf_exempt
-#adds time to the created race object IF the new time is smaller than the existing one for that object
-def update_race_time(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        raceID = data.get("race_id")
-        try:
-            race = Race.objects.get(id=raceID)
-        except Race.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
-        try:
-          user = User.objects.get(username=data.get("user"))
-        except User.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
-        
-        start_time = parse_datetime(data.get("start_time"))
-        end_time = parse_datetime(data.get("end_time"))
-        
-        entry, _ = RaceEntry.objects.get_or_create(
-            race=race,
-            user=user,
-            defaults={
-                "name": f"{race} {user}",
-                "user": user,
-                "race": race,
-                "start_time": None,
-                "end_time": None,
-                "is_complete": False
-            })
 
-        if entry.start_time is None or entry.end_time is None:
+#adds time to the created race object IF the new time is smaller than the existing one for that object
+@login_required
+@csrf_exempt
+def update_race_time(request):
+    if request.method != "POST":
+        return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+
+    data = json.loads(request.body)
+    raceID = data.get("race_id")
+    if not Race.objects.filter(id=raceID).exists():
+         return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
+
+    race = Race.objects.get(id=raceID)
+    start_time = parse_datetime(data.get("start_time"))
+    end_time = parse_datetime(data.get("end_time"))
+    entry, _ = RaceEntry.objects.get_or_create(
+        race=race,
+        user=request.user,
+        defaults={
+            "name": f"{race} {request.user}",
+            "user": request.user,
+            "race": race,
+            "start_time": None,
+            "end_time": None
+        })
+
+    if entry.start_time is None or entry.end_time is None:
+        entry.start_time = start_time
+        entry.end_time = end_time
+    else:
+        #compare time to previous best
+        current_pb = entry.get_duration()
+        new_time = (end_time - start_time).total_seconds()
+        if new_time < current_pb:
             entry.start_time = start_time
             entry.end_time = end_time
-        else:
-            #compare time to previous best
-            current_pb = entry.get_duration()
-            new_time = (end_time - start_time).total_seconds()
-            if new_time < current_pb:
-                entry.start_time = start_time
-                entry.end_time = end_time
-        entry.is_complete = True
-        entry.save()
+    entry.save()
 
-        return JsonResponse({"status": "success", "message": "RaceEntry updated"})
+    return JsonResponse({"status": "success", "message": "RaceEntry updated"})
 
-    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
     
 def leaderboard(request):
     """Returns the leaderboard for a specific race, sorted by completion time"""

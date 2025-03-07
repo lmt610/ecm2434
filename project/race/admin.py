@@ -11,8 +11,7 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields = ('name',)
 
 class RaceEntryAdmin(admin.ModelAdmin):
-    list_display = ('race', 'user', 'name', 'start_time', 'end_time', 'is_complete', 'medal')
-    list_filter = ('is_complete',)
+    list_display = ('race', 'user', 'name', 'start_time', 'end_time', 'medal')
 
 admin.site.register(Race, RaceAdmin)
 admin.site.register(RaceEntry, RaceEntryAdmin)

@@ -33,10 +33,8 @@ class RaceEntry(models.Model):
     name = models.CharField(max_length=255, default='RaceEntry')
     start_time = models.DateTimeField(null=True, blank=True)
     end_time = models.DateTimeField(null=True, blank=True)
-    is_complete = models.BooleanField()
     timestamp = models.DateTimeField(auto_now_add=True)
     medal = models.CharField(max_length=6, default='None')
-
 
     def save(self, *args, **kwargs):
         if self.start_time != None and self.end_time!=None:

@@ -65,22 +65,25 @@ class CalculateDistanceViewTests(TestCase):
 class UpdateRaceTimeViewTests(TestCase):
     def setUp(self):
         #Set up test data: Create a user, race, and race entry.
-            self.user = User.objects.create_user(username="test_user", password="password123")
+            self.USERNAME = "test_user"
+            self.PASSWORD = "password123"
+            self.user = User.objects.create_user(username=self.USERNAME, password=self.PASSWORD)
             loc1 = Location.objects.create(name="Forum (North)", latitude=50.735836, longitude=-3.533852)
             loc2 = Location.objects.create(name="Armory (A)", latitude=50.736859, longitude=-3.531877)
             self.race = Race.objects.create(title="Test Race", start=loc1, end=loc2)
-            self.entry = RaceEntry.objects.create(race=self.race, user=self.user, start_time=now(), end_time=now()+timedelta(minutes=10), is_complete=False)
-            self.url = reverse("update_race_time")  
+            self.entry = RaceEntry.objects.create(race=self.race, user=self.user, start_time=now(), end_time=now()+timedelta(minutes=10))
+            self.url = reverse("update_race_time")
 
     def test_update_race_time_success_new_PB(self):
         #Test updating race time when new PB is set.
+        self.client.login(username=self.USERNAME, password=self.PASSWORD)
+
         start_time = now()
         end_time = start_time + timedelta(minutes=6)  
         attempt_duration = (end_time - start_time).total_seconds()
 
         data = {
             "race_id": self.race.id,
-            "user": self.user.username,
             "start_time": start_time.isoformat(),
             "end_time": end_time.isoformat()
         }
@@ -94,17 +97,17 @@ class UpdateRaceTimeViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "success")
         self.assertEqual(attempt_duration, DB_duration)
-        self.assertTrue(self.entry.is_complete)
 
     def test_update_race_time_success_not_new_PB(self):
         #Test request response and DB structure when a new PB is not attained.
+        self.client.login(username=self.USERNAME, password=self.PASSWORD)
+
         start_time = now()
         end_time = start_time + timedelta(minutes=15)  
         attempt_duration = (end_time - start_time).total_seconds()
 
         data = {
             "race_id": self.race.id,
-            "user": self.user.username,
             "start_time": start_time.isoformat(),
             "end_time": end_time.isoformat()
         }
@@ -118,28 +121,13 @@ class UpdateRaceTimeViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], "success")
         self.assertNotEqual(attempt_duration, DB_duration)
-        self.assertTrue(self.entry.is_complete)
-
-    def test_update_race_time_User_not_found(self):
-        #Test when the User does not exist.
-        data = {
-            "race_id": self.race.id,
-            "user": "non_existent_user",  # User doesn't exist
-            "start_time": now().isoformat(),
-            "end_time": (now() + timedelta(minutes=6)).isoformat()
-        }
-
-        response = self.client.post(self.url, json.dumps(data), content_type="application/json")
-
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()["status"], "error")
-        self.assertEqual(response.json()["message"], "User not found")
-    
+   
     def test_update_race_time_Race_not_found(self):
+        self.client.login(username=self.USERNAME, password=self.PASSWORD)
+
         #Test when the Race does not exist.
         data = {
             "race_id": -1, #Race ID does not link to race
-            "user": self.user.username,  
             "start_time": now().isoformat(),
             "end_time": (now() + timedelta(minutes=6)).isoformat()
         }
@@ -186,5 +174,21 @@ class RestrictedUrlRaceRedirectTests(TestCase):
     def test_race_detail_redirect_on_unauthorized_request(self):
 
         response = self.client.get(reverse("race_detail", kwargs={"race_id": 1}))  
+
+        self.assertEqual(response.status_code, 302)
+
+    #Test when the User does not exist.
+    def test_update_race_time_user_not_logged_in(self):
+        loc1 = Location.objects.create(name="Forum (North)", latitude=50.735836, longitude=-3.533852)
+        loc2 = Location.objects.create(name="Armory (A)", latitude=50.736859, longitude=-3.531877)
+        race = Race.objects.create(title="Test Race", start=loc1, end=loc2)
+        url = reverse("update_race_time")
+        data = {
+            "race_id": race.id,
+            "start_time": now().isoformat(),
+            "end_time": (now() + timedelta(minutes=6)).isoformat()
+        }
+
+        response = self.client.post(url, json.dumps(data), content_type="application/json")
 
         self.assertEqual(response.status_code, 302)
