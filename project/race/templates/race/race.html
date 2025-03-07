@@ -51,7 +51,7 @@
             <a href="{% url 'race' %}" id="routePOIs">{{ race.title }} ►</a>
             <a id="leaderboard" href="{% url 'leaderboard_view'%}?race_title={{ race.title }}">Leaderboards</a>
             <div id="status">
-                {% if entry.is_complete%}
+                {% if entry %}
                 <p>Race status: Completed!</p>
                 {% else %}
                 <p>You haven't explored this route yet!</p>
@@ -59,7 +59,7 @@
             </div>
             <div class="time">
                 <img src="" alt="">
-                {% if entry.is_complete%}
+                {% if entry %}
                 <p>Personal Best Time: {{entry.get_duration}}</p>
                 {% else %}
                 <p>Personal Best Time: No time found</p>

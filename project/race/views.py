@@ -9,7 +9,7 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
+from users.models import Profile
 from math import radians, sin, cos, sqrt, atan2
 
 @login_required
@@ -20,12 +20,11 @@ def race_view(request, race_id=None):
         return render(request,"race/race-menu.html", {"races": races, "raceEntries": raceEntries})
     else:
         race = get_object_or_404(Race, id=race_id)
-        try:
-            entry = get_object_or_404(RaceEntry, race=race, user=request.user)
-            return render(request,"race/race.html", {"race": race, "entry": entry})
-        except:
-            pass
-        return render(request,"race/race.html", {"race": race})
+        entry = RaceEntry.objects.filter(race=race, user=request.user).first()
+        if(entry):
+            return render(request, "race/race.html", {"race": race, "entry": entry})
+        else:
+            return render(request,"race/race.html", {"race": race})
 
 #haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -52,74 +51,44 @@ def calculate_distance(request):
             return JsonResponse({"status": "outside range", "distance": round(distance, 2)})
         
     return JsonResponse({"error": "Invalid request"}, status = 400)
+   
 
-@csrf_exempt
-#creates a race object when a user chooses two locations
-def create_race(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        raceID = data.get("race_id")
-        race = Race.objects.get(id=raceID)
-        user = User.objects.get(username=data.get("user"))
-
-
-        #logic added to return an existing race to the frontend if the user enters a previously used start and end combination
-        if RaceEntry.objects.filter(race=race, user=user).exists():    
-            return JsonResponse({"status": "success", "message": "Race already registered with user", "race_id": race.id})
-
-        try:
-            RaceEntry.objects.create(
-                name = f"{race} {user}",
-                user = user,
-                race = race,
-                start_time = None,
-                end_time = None,
-                duration = None,
-                is_complete = False
-            )
-            return JsonResponse({"status": "success", "race_id": race.id})
-        except Location.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Invalid locations"}, status=400)
-        
-    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
-    
-@csrf_exempt
 #adds time to the created race object IF the new time is smaller than the existing one for that object
+@login_required
+@csrf_exempt
 def update_race_time(request):
-    if request.method == "POST":
-        data = json.loads(request.body)
-        raceID = data.get("race_id")
-        try:
-            race = Race.objects.get(id=raceID)
-        except Race.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
-        try:
-          user = User.objects.get(username=data.get("user"))
-        except User.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
-        
-        start_time = parse_datetime(data.get("start_time"))
-        end_time = parse_datetime(data.get("end_time"))
-        try:
-            entry = RaceEntry.objects.get(race=race, user=user)
-            if entry.start_time is None or entry.end_time is None:
-                entry.start_time = start_time
-                entry.end_time = end_time
-            else:
-                #compare time to previous best
-                current_pb = entry.get_duration().total_seconds()
-                new_time = (end_time - start_time).total_seconds()
-                if new_time < current_pb:
-                    entry.start_time = start_time
-                    entry.end_time = end_time
-            entry.is_complete = True
-            entry.save()
+    if request.method != "POST":
+        return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
 
-            return JsonResponse({"status": "success", "message": "RaceEntry updated"})
-        except RaceEntry.DoesNotExist:
-            return JsonResponse({"status": "error", "message": "RaceEntry not found"}, status=404)
+    data = json.loads(request.body)
+    raceID = data.get("race_id")
+    race = Race.objects.filter(id=raceID).first()
+    if race == None:
+         return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
 
-    return JsonResponse({"status": "error", "message": "Invalid request"}, status=400)
+    start_time = parse_datetime(data.get("start_time"))
+    end_time = parse_datetime(data.get("end_time"))
+    entry, created = RaceEntry.objects.get_or_create(
+        race=race,
+        user=request.user,
+        defaults={
+            "user": request.user,
+            "race": race
+        })
+    if created:
+        entry.start_time = start_time
+        entry.end_time = end_time
+    else:
+        #compare time to previous best
+        current_pb = entry.get_duration()
+        new_time = (end_time - start_time).total_seconds()
+        if new_time < current_pb:
+            entry.start_time = start_time
+            entry.end_time = end_time
+    
+    entry.save()
+    return JsonResponse({"status": "success", "message": "RaceEntry updated"})
+
     
 def leaderboard(request):
     """Returns the leaderboard for a specific race, sorted by completion time"""
@@ -155,3 +124,28 @@ def leaderboard_view(request):
         'top_entries': top_entries,
     }
     return render(request, 'race/leaderboard.html', context)
+
+def add_exeplore_points(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        
+        try:
+            user = Profile.objects.get(user__username=data.get("user"))
+        except Profile.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "User not found"}, status=404)
+        
+        start_lat = data.get("start_latitude")
+        start_lon = data.get("start_longitude")
+        end_lat = data.get("end_latitude")
+        end_lon = data.get("end_longitude")
+
+        #distance is calculated in kilometres, multiply by 100 to get points in the 10s + 20 to add base points
+        points_to_add = 100 * haversine(start_lat, start_lon, end_lat, end_lon) + 20
+        int(points_to_add)
+
+        user.points += points_to_add
+        user.save()
+
+        return JsonResponse({"points": points_to_add})
+    
+    return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
