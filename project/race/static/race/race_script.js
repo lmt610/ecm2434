@@ -29,7 +29,7 @@ function resetRace() {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(),
         },
-        body: JSON.stringify({ race_id: raceID, user:loggedInUser, start_time: start_time, end_time: end_time})
+        body: JSON.stringify({ race_id: raceID, start_time: start_time, end_time: end_time})
     })
     .then(response => response.json())
     .then(data => {
@@ -124,32 +124,6 @@ function checkEndLocation(position) {
     });
 }
 
-function createRace(title, startId, endId, user) {
-    fetch('/race/create-race/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify({
-            title: title,
-            start_id: startId,
-            end_id: endId,
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            console.log("Race created with ID:", data.race_id);
-            localStorage.setItem("currentRaceId", data.race_id);
-            location.reload(); // reload page for dymaic html content
-        } else {
-            console.error("Error creating race:", data.message);
-        }
-    })
-    .catch(error => console.error("Error:", error));
-}
-
 function addUserLocationToMap(lat, lon, acc){
     if (typeof map !== 'undefined' && map !== null) {
         if (playerLocationMarker != null){
@@ -231,7 +205,8 @@ function endExePLORE() {
         navigator.geolocation.getCurrentPosition(position => {
             checkEndLocation(position).then(isAtEndLocation => {
                 if (isAtEndLocation) {
-                    document.getElementById('activeExePLOREView').classList.remove('visible');
+                    document.getElementById('activeExePLOREView').classList.remove('visible')
+                    addExePlorePoints();
                 } else {
                     alert("You are not at the end point");
                 }
@@ -242,23 +217,21 @@ function endExePLORE() {
     }
 }
 
-function CreateRaceEntryOrExceptSuccsess(){
-    return fetch('/race/create-race/', {
+function addExePlorePoints() {
+    return fetch('/race/add-exeplore-points/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(), //Include CSRF token
         },
-        body: JSON.stringify({race_id: raceID, user: loggedInUser})
+        body: JSON.stringify({start_latitude: raceData.start.lat, start_longitude: raceData.start.lng, end_latitude: raceData.end.lat, end_longitude: raceData.end.lng, user: loggedInUser})
     })
     .then(response => response.json())
     .then(data => {
-        return data.status === "success";
+        return data.points > 0;
     })
     .catch(error => {
-        console.error("error:", error);
+        console.error("Error:", error);
         return false;
     });
 }
-
-CreateRaceEntryOrExceptSuccsess();
