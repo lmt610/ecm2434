@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from race.models import Race, Location
-from leaderboard.models import LeaderboardEntry
-from django.utils import timezone  
+from race.models import Race, Location, RaceEntry
+from django.utils.timezone import now, timedelta 
 
 class Command(BaseCommand):
     help = "Creates race entries and users"
@@ -49,15 +48,16 @@ class Command(BaseCommand):
 
             for username, (race, completion_time) in completion_times.items():
                 user = User.objects.get(username=username)
-                leaderboard_entry = LeaderboardEntry.objects.create(
+                RaceEntry.objects.create(
                     user=user,
                     race=race,
-                    completion_time=completion_time,
+                    start_time=now(),
+                    end_time=now()+timedelta(seconds=completion_time)
                 )
-                self.stdout.write(self.style.SUCCESS(f"Leaderboard entry created for {user.username} in {race.title}"))
+                self.stdout.write(self.style.SUCCESS(f"Race entry created for {user.username} in {race.title}"))
 
         except ValueError as e:
-            self.stdout.write(self.style.ERROR(f"ValueError during LeaderboardEntry creation: {e}"))
+            self.stdout.write(self.style.ERROR(f"ValueError during RaceEntry creation: {e}"))
         except Exception as e:
             self.stdout.write(self.style.ERROR(f"An unexpected error occurred: {e}"))
 

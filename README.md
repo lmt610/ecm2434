@@ -78,7 +78,7 @@ python manage.py create_teams
 
 To create race entries:
 ```sh
-python manage.py create_races
+python manage.py create_race_entries
 ```
 And to delete:
 ```sh
