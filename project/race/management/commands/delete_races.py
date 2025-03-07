@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from race.models import Race, Location, LeaderboardEntry
+from race.models import Race, Location
+from leaderboard.models import LeaderboardEntry
 from django.utils import timezone  
 
 class Command(BaseCommand):
