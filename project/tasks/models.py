@@ -29,7 +29,6 @@ class Task(models.Model):
         if self.race:
             count = RaceEntry.objects.filter(
                 user=user,
-                is_complete=True,
                 race=self.race,
                 timestamp__gte=self.created_at
             ).count()
@@ -37,7 +36,6 @@ class Task(models.Model):
         else:
             count = RaceEntry.objects.filter(
                 user=user,
-                is_complete=True,
                 timestamp__gte=self.created_at
             ).count()
             return count
@@ -47,7 +45,6 @@ class Task(models.Model):
             return RaceEntry.objects.filter(
                 user=user,
                 race=self.race,
-                is_complete=True,
                 timestamp__gte=self.created_at
                 ).exists()
         elif self.task_type == 'multi':
