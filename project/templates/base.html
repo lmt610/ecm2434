@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ExePLORE{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* Global Reset */
         body, html {
@@ -36,12 +37,12 @@
             background-image: linear-gradient(to right, #2f554f, #3a6a62) !important;
             padding: 0.75rem 2rem !important;
             display: flex !important;
+            vertical-align: middle !important;
             justify-content: space-between !important;
             align-items: center !important;
             height: 74px !important;
             position: relative !important;
             z-index: 1000 !important;
-            width: 100% !important;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
         }
 
@@ -133,7 +134,7 @@
             gap: 1rem !important;
             align-items: center !important;
             margin-left: 1.5rem !important;
-            margin-right: 2rem !important;
+            margin-right: 0.5rem !important;
             position: relative !important;
         }
 
@@ -152,7 +153,6 @@
             transition: all 0.2s ease !important;
             min-width: 140px !important;
             max-width: 160px !important;
-            margin-right: 2rem !important;
         }
 
         .exeplore-header .user-menu:hover {
@@ -225,31 +225,45 @@
             border-left-color: #2f554f !important;
         }
 
-        /* Auth Buttons */
+        /* Auth Buttons - Updated to match welcome page */
         .exeplore-header .auth-button {
-            padding: 0.625rem 1.25rem !important;
+            padding: 0.75rem 1rem !important;
             border-radius: 8px !important;
             text-decoration: none !important;
-            transition: all 0.2s ease !important;
-            font-weight: 500 !important;
+            transition: all 0.3s ease !important;
+            font-weight: 600 !important;
             font-size: 0.95rem !important;
             letter-spacing: 0.3px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            white-space: nowrap !important;
         }
 
         .exeplore-header .login-button {
-            background-color: rgba(255,255,255,0.1) !important;
-            color: #ffffff !important;
+            background-color: #2f554f !important;
+            color: white !important;
+            min-width: 100px !important;
+        }
+
+        .exeplore-header .login-button:hover {
+            background-color: #3a6a62 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
         }
 
         .exeplore-header .register-button {
-            background-color: #ffffff !important;
+            background-color: white !important;
             color: #2f554f !important;
+            border: 2px solid #2f554f !important;
+            min-width: 100px !important;
         }
 
-        .exeplore-header .login-button:hover,
         .exeplore-header .register-button:hover {
-            transform: translateY(-1px) !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+            background-color: #ecfdf5 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
         }
 
         /* Main content wrapper */
@@ -302,6 +316,11 @@
             .exeplore-header .user-menu {
                 min-width: 140px !important;
             }
+            
+            .exeplore-header .auth-button {
+                padding: 0.625rem 1rem !important;
+                font-size: 0.9rem !important;
+            }
         }
     </style>
     {% block extra_css %}{% endblock %}
@@ -334,8 +353,12 @@
                         </div>
                     </div>
                 {% else %}
-                    <a href="{% url 'login' %}" class="auth-button login-button">Sign In</a>
-                    <a href="{% url 'register' %}" class="auth-button register-button">Register</a>
+                    <a href="{% url 'login' %}" class="auth-button login-button">
+                        <i class="fas fa-sign-in-alt"></i> <span class="button-text">Sign In</span>
+                    </a>
+                    <a href="{% url 'register' %}" class="auth-button register-button">
+                        <i class="fas fa-user-plus"></i> <span class="button-text">Register</span>
+                    </a>
                 {% endif %}
             </div>
         </nav>
