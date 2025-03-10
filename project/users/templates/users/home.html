@@ -1,18 +1,120 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}ExePLORE - Home{% endblock %}
+{% block title %}ExePLORE - Welcome{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/home_styles.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="welcome-section">
-    <h1>Welcome to ExePLORE!</h1>
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="message">
-                    {{ message }}
+<div class="welcome-page">
+    <div class="background-overlay"></div>
+    
+    <div class="welcome-container">
+        <div class="welcome-content">
+            <div class="welcome-text">
+                <h1>Welcome to <span class="brand-highlight">ExePLORE</span></h1>
+                <h2>Discover and Explore Exeter University's Campus</h2>
+                <p>Join exciting races, complete challenges, and compete with friends as you explore the beautiful University of Exeter campus.</p>
+                
+                <div class="feature-points">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h3>Interactive Races</h3>
+                            <p>Participate in time trials around campus</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h3>Form Teams</h3>
+                            <p>Create or join teams to compete together</p>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="feature-text">
+                            <h3>Leaderboards</h3>
+                            <p>Compare your results with other players</p>
+                        </div>
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
+            
+            <div class="auth-panel">
+                <div class="university-logo">
+                    <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="University of Exeter Logo">
+                </div>
+                
+                <div class="auth-options">
+                    <h3>Ready to start exploring?</h3>
+                    
+                    {% if messages %}
+                        <div class="messages">
+                            {% for message in messages %}
+                                <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="auth-buttons">
+                        <a href="{% url 'login' %}" class="auth-button login-btn">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </a>
+                        <a href="{% url 'register' %}" class="auth-button register-btn">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </div>
+                    
+                    <div class="auth-help">
+                        <p>New to ExePLORE? <a href="{% url 'register' %}">Create an account</a> to get started.</p>
+                    </div>
+                </div>
+            </div>
         </div>
-    {% endif %}
+    </div>
+    
+    <div class="features-section">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-running"></i>
+            </div>
+            <h3>Campus Races</h3>
+            <p>Compete in exciting races across campus locations and set new personal records</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <h3>Challenges</h3>
+            <p>Complete various tasks and challenges to earn points and unlock new areas</p>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-medal"></i>
+            </div>
+            <h3>Achievements</h3>
+            <p>Earn badges and achievements as you explore and complete activities</p>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+<script src="{% static 'users/home_script.js' %}"></script>
 {% endblock %}
