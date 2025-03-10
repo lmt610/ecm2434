@@ -1,24 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-</head>
-<body>
-    <h1>Welcome to our ECM2434 project!</h1>
-    <p>
-        <a href="{% url 'login' %}">Sign In</a> or
-        <a href="{% url 'register' %}">Register</a>
-    </p>
-	{% if messages %}
-		<div>
-		{% for message in messages %}
-			<div>
-				{{ message }}
-			</div>
-		{% endfor %}
-		</div>
-	{% endif %}
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}ExePLORE - Home{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h1>Welcome to ExePLORE!</h1>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

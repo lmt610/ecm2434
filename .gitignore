@@ -13,3 +13,6 @@ driveupload/
 
 # Ignore temporary drive upload files
 .tmp.driveupload
+
+# Ignore static files
+staticfiles/

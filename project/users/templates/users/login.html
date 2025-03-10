@@ -1,19 +1,13 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExePLORE - Login</title>
-    <link rel="stylesheet" href="{% static 'users/login_styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
-        <p id="pageTitle">ExePLORE</p>
-    </header>
 
+{% block title %}ExePLORE - Login{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/login_styles.css' %}">
+{% endblock %}
+
+{% block content %}
     <main class="login-container">
         <div class="login-card">
             <div class="card-header">
@@ -66,16 +60,14 @@
             </div>
         </div>
     </main>
-
-    <footer class="login-footer">
-        <div class="footer-content">
-            <p>&copy; 2025 ExePLORE. University of Exeter</p>
-            <div class="legal-links">
-                <a href="#" class="text-link">Privacy Policy</a>
-                <a href="#" class="text-link">Terms of Service</a>
-                <a href="#" class="text-link">Help</a>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+{% endblock %}
+{% block footer %}
+<div class="footer-content">
+    <p>&copy; 2025 ExePLORE. University of Exeter</p>
+    <div class="legal-links">
+        <a href="#" class="text-link">Privacy Policy</a>
+        <a href="#" class="text-link">Terms of Service</a>
+        <a href="#" class="text-link">Help</a>
+    </div>
+</div>
+{% endblock %}
