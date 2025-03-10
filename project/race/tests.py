@@ -192,3 +192,22 @@ class RestrictedUrlRaceRedirectTests(TestCase):
         response = self.client.post(url, json.dumps(data), content_type="application/json")
 
         self.assertEqual(response.status_code, 302)
+
+class RacePageTest(TestCase):
+    def setUp(self):
+        # Create test Race objects 
+        loc1 = Location.objects.create(name="Forum (North)", latitude=50.735836, longitude=-3.533852)
+        loc2 = Location.objects.create(name="Armory (A)", latitude=50.736859, longitude=-3.531877)
+        self.race1 = Race.objects.create(title="Race 1", start=loc1, end=loc2)
+        # User needed for authorised get request 
+        self.user = User.objects.create_user(username='testuser', password='password')
+
+    def test_race_details_page_loads(self):
+
+        self.client.login(username='testuser', password='password')
+        #fetch race at id 1 
+        response = self.client.get("race/1/")  
+        #ensure race loads
+        self.assertEqual(response.status_code, 200)
+
+    
