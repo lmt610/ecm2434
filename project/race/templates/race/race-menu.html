@@ -1,114 +1,56 @@
 {% extends 'base.html' %}
 {% load static %}
+{%block content%}
+<head>
+    <link rel="stylesheet" href="{% static 'race-menu/race_menu_styles.css' %}">
 
-{% block title %}ExePLORE - Race Menu{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="{% static 'race-menu/race_menu_styles.css' %}">
-{% endblock %}
-
-{% block content %}
-<div class="race-menu-container">
-    <div class="menu-header">
-        <h1>Choose Your Race</h1>
-    </div>
-
-    {% if races %}
-    <div class="race-grid">
-        {% for race in races %}
-        <a href="{% url 'race_detail' race.id %}" class="race-card">
-            <div class="race-card-title">{{ race.title }}</div>
-            <div id="map-{{ race.id }}" class="race-card-map"></div>
-            <div class="race-card-details">
-                <div class="race-start">
-                    <span class="race-label">Start</span>
-                    <span class="race-value">{{ race.start.name }}</span>
-                </div>
-                <div class="race-end">
-                    <span class="race-label">End</span>
-                    <span class="race-value">{{ race.end.name }}</span>
-                </div>
-            </div>
-            <div class="race-status">
-                {% if race.is_complete %}
-                <span class="status-badge status-complete">
-                    <i class="fas fa-check-circle"></i> Completed
-                </span>
-                {% else %}
-                <span class="status-badge status-incomplete">
-                    <i class="fas fa-hourglass-half"></i> Not Started
-                </span>
+        <!-- Leaflet mapping plugin-->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <!-- Font Awesome for map race icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>  
+    <main>
+        <div class="raceMenu">
+            <div class="row">
+                {% for race in races %}
+                <a class="raceOption" href="{% url 'race_detail' race.id %}">
+                    <div class="raceTitle">
+                        {{ race.title }}
+                    </div>
+                    <div id="map-{{ race.id }}" class="map">
+                        <div class="medalTag">
+                            {% for raceEntry in raceEntries %}
+                                {% if raceEntry.race == race and raceEntry.medal != 'None' %}        
+                                        <img src="{% static 'images/'|add:raceEntry.medal|add:'.png' %}" alt="">
+                                {% endif %}
+                            {% endfor %}   
+                        </div>   
+                    </div>
+                </a>
+                {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                        </div><div class="row">
                 {% endif %}
-            </div>
-        </a>
-        {% endfor %}
-    </div>
-    {% else %}
-    <div class="empty-state">
-        <i class="fas fa-map-marked-alt"></i>
-        <h2>No races available</h2>
-        <p>There are no races set up yet. Check back later!</p>
-    </div>
-    {% endif %}
-</div>
-{% endblock %}
+            {% endfor%}
+        </div>
+    </main>
+    
+    
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-{% block extra_js %}
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Django template rendering race data as a JS object
+        const races = [
+            {% for race in races %}
+                {
+                    id: "{{ race.id }}",
+                    start: { lat: {{ race.start.latitude }}, lng: {{ race.start.longitude }} },
+                    end: { lat: {{ race.end.latitude }}, lng: {{ race.end.longitude }} }
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ];
+    </script>
 
-<script>
-    const races = [
-        {% for race in races %}
-            {
-                id: "{{ race.id }}",
-                start: { lat: {{ race.start.latitude }}, lng: {{ race.start.longitude }} },
-                end: { lat: {{ race.end.latitude }}, lng: {{ race.end.longitude }} }
-            }{% if not forloop.last %},{% endif %}
-        {% endfor %}
-    ];
-
-    document.addEventListener('DOMContentLoaded', function() {
-        if (races.length === 0) return;
-
-        races.forEach(race => {
-            const mapContainer = document.getElementById(`map-${race.id}`);
-            if (!mapContainer) return;
-
-            const map = L.map(`map-${race.id}`, {
-                zoomControl: false,
-                dragging: false,
-                touchZoom: false,
-                scrollWheelZoom: false
-            }).setView([50.736577, -3.532512], 14.5);
-
-            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "&copy; OpenStreetMap contributors",
-            }).addTo(map);
-
-            const startIcon = L.divIcon({
-                html: '<i class="fa fa-flag fa-2x" style="color: #40ff40;"></i>',
-                iconSize: [25, 30],
-                iconAnchor: [0, 30],
-                className: 'start-flag-icon'
-            });
-            const endIcon = L.divIcon({
-                html: '<i class="fa fa-flag-checkered fa-2x" style="color: #4040ff;"></i>',
-                iconSize: [25, 30],
-                iconAnchor: [0, 30],
-                className: 'end-flag-icon'
-            });
-
-            L.marker([race.start.lat, race.start.lng], { icon: startIcon }).addTo(map);
-            L.marker([race.end.lat, race.end.lng], { icon: endIcon }).addTo(map);
-
-            const bounds = L.latLngBounds([
-                [race.start.lat, race.start.lng],
-                [race.end.lat, race.end.lng]
-            ]);
-            map.fitBounds(bounds, { padding: [30, 30] });
-        });
-    });
-</script>
+    <script src="{% static 'race-menu/race_menu_map_script.js' %}"></script>
+</body>
 {% endblock %}
