@@ -20,8 +20,8 @@ def race_view(request, race_id=None):
     else:
         race = get_object_or_404(Race, id=race_id)
         entry = RaceEntry.objects.filter(race=race, user=request.user).first()
-        duration = entry.get_duration()
         if(entry):
+            duration = entry.get_duration()
             return render(request, "race/race.html", {"race": race, "entry": entry, "duration" : duration})
         else:
             return render(request,"race/race.html", {"race": race})
