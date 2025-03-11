@@ -32,16 +32,12 @@ class Task(models.Model):
                 race=self.race,
                 timestamp__gte=self.created_at
             ).count()
-            print('count: ')
-            print(count)
             return count
         else:
             count = RaceEntry.objects.filter(
                 user=user,
                 timestamp__gte=self.created_at
             ).count()
-            print('else count: ')
-            print(count)
             return count
 
     def is_completed_by_user(self, user):
