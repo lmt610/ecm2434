@@ -21,7 +21,8 @@ def race_view(request, race_id=None):
         race = get_object_or_404(Race, id=race_id)
         entry = RaceEntry.objects.filter(race=race, user=request.user).first()
         if(entry):
-            return render(request, "race/race.html", {"race": race, "entry": entry})
+            duration = entry.get_duration()
+            return render(request, "race/race.html", {"race": race, "entry": entry, "duration" : duration})
         else:
             return render(request,"race/race.html", {"race": race})
 
@@ -112,3 +113,5 @@ def add_exeplore_points(request):
         return JsonResponse({"points": points_to_add})
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
+

@@ -19,14 +19,9 @@ def populate_database(sender, **kwargs):
     if user_a is None:
         user_a = User.objects.create_user(username="UserA", password="Password")
     
-    # Check if the user already has a profile
-    if not hasattr(user_a, 'user_profile'):
-        Profile.objects.create(user=user_a, other_field="12345678", points=0)
-    
     user_b = User.objects.filter(username="UserB").first()
     if user_b is None:
         user_b = User.objects.create_user(username="UserB", password="Password")
     
-    # Check if the user already has a profile
-    if not hasattr(user_b, 'user_profile'):
-        Profile.objects.create(user=user_b, other_field="12345678", points=0)
+
+        
