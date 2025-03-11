@@ -8,10 +8,32 @@
     padding: 20px 0;
 }
 
+/* Top Header */
+.rectangle {
+    width: 100%;
+    height: 120px;
+    background-color: #2f654f;
+    z-index: 500;
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 5px;
+    position: fixed;
+    top: 0;
+}
+
+.header-text {
+    text-align: center;
+    padding-top: 25px;
+    color: #eeeeee;
+    font-family: "Garamond", serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.01em;
+}
+
 .leaderboard-container {
     opacity: 0.8;
     margin: auto;
-    margin-top: 20px;
+    margin-top: 130px;
     width: 100%;
     max-width: 700px;
     padding: 0 20px;
@@ -24,6 +46,7 @@
     color: #ccccbb;
 }
 
+/* User Cards */
 .user-card {
     background: #b0cc99;
     margin: 5px auto;
@@ -87,10 +110,42 @@
     background: #b7ca79;
 }
 
-.leaderboard-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* Filter Dropdown */
+.filter-container {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#team-filter {
+    padding: 5px 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    background: #ffffff;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+/* Home Link */
+.home-link {
+    display: inline-block;
+    background-color: #677e62;
+    color: #eefeee;
+    position: absolute;
+    left: 20px;
+    top: 30px;
+    padding: 10px 20px;
+    z-index: 1000;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.home-link:hover {
+    background-color: #374e22;
+    transform: scale(1.05);
 }
 
 @media (max-width: 768px) {

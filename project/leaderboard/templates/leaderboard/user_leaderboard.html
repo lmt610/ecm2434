@@ -11,19 +11,43 @@
 <div class="leaderboard-page">
     <div class="leaderboard-container">
         <h1>User Leaderboard</h1>
+
+        <!-- Team Filter Dropdown -->
+        <div class="filter-container">
+            <label for="team-filter">Filter by Team:</label>
+            <select id="team-filter">
+                <option value="all">All Teams</option>
+                {% for team in teams %}
+                    <option value="{{ team.name }}" {% if team.name == selected_team %}selected{% endif %}>{{ team.name }}</option>
+                {% endfor %}
+            </select>            
+        </div>
+
+        <!-- Leaderboard List -->
         <ol class="leaderboard-list">
-            {% for user in user_list %}
-                <li class="user-card {% if forloop.counter|divisibleby:2 %}alt{% endif %}">
-                    <span class="user-rank">
-                        {% if not forloop.first %}
-                            {{ forloop.counter }}.
-                        {% endif %}
-                        {% if forloop.first %}
-                            <img src="{% static 'gold.png' %}" alt="Gold Medal" class="medal">
+            {% for profile in ranked_profile_list %}
+                <li class="user-card {% if forloop.counter|divisibleby:2 %}alt{% endif %}" data-teams="{% for team in profile.user.teams.all %}{{ team.name }} {% endfor %}">
+                    <span class="user-rank" data-rank="{{ profile.rank_in_team }}">
+                        {% if selected_team != 'all' %}
+                            {% if profile.rank_in_team == 1 %}
+                                <img src="{% static 'gold.png' %}" alt="⭐🥇⭐" class="medal">
+                            {% else %}
+                                {{ profile.rank_in_team }}.
+                            {% endif %}
+                        {% else %}
+                            {% if forloop.first %}
+                                <img src="{% static 'gold.png' %}" alt="⭐🥇⭐" class="medal">
+                            {% else %}
+                                {{ forloop.counter }}.
+                            {% endif %}
                         {% endif %}
                     </span>
-                    <span class="user-name {% if forloop.first %}shifted{% endif %}">{{ user.user }}</span>
-                    <span class="user-points">{{ user.points }} pts</span>
+                    
+                    <span class="user-name {% if forloop.first or selected_team != 'all' and profile.rank_in_team == 1 %}shifted{% endif %}">
+                        {{ profile.user.username }}
+                    </span>
+                
+                    <span class="user-points">{{ profile.points }} pts</span>
                 </li>
             {% empty %}
                 <li class="user-card"><span>No users available.</span></li>
@@ -36,11 +60,36 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const teamFilter = document.getElementById('team-filter');
         const userCards = document.querySelectorAll('.user-card');
-        userCards.forEach((card, index) => {
-            if (index % 2 === 1) {
-                card.classList.add('alt');
-            }
+
+        teamFilter.addEventListener('change', function() {
+            let selectedTeam = this.value;
+            let visibleUsers = [];
+
+            userCards.forEach(card => {
+                let userTeams = card.getAttribute('data-teams');
+                if (selectedTeam === "all" || userTeams.includes(selectedTeam)) {
+                    card.style.display = "flex";
+                    visibleUsers.push(card);
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            // Re-rank only the visible users
+            visibleUsers.forEach((card, index) => {
+                let rankSpan = card.querySelector('.user-rank');
+                let userNameSpan = card.querySelector('.user-name');
+
+                if (index === 0) {
+                    rankSpan.innerHTML = `<img src="{% static 'gold.png' %}" alt="⭐🥇⭐" class="medal">`;
+                    userNameSpan.classList.add('shifted');
+                } else {
+                    rankSpan.textContent = (index + 1) + ".";
+                    userNameSpan.classList.remove('shifted');
+                }
+            });
         });
     });
 </script>
