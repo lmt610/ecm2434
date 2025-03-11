@@ -43,7 +43,7 @@
                         {% endif %}
                     </span>
                     
-                    <span class="user-name {% if forloop.first or (selected_team != 'all' and profile.rank_in_team == 1) %}shifted{% endif %}">
+                    <span class="user-name {% if forloop.first or selected_team != 'all' and profile.rank_in_team == 1 %}shifted{% endif %}">
                         {{ profile.user.username }}
                     </span>
                 
