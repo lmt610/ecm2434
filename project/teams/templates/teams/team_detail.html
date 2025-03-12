@@ -4,7 +4,7 @@
 {% block title %}ExePLORE - Team Details{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'teams/teams_styles.css' %}">
+<link rel="stylesheet" href="{% static 'teams/teams_details_styles.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -21,9 +21,9 @@
                 <button type="submit">Request to Join</button>
             </form>
         {% elif has_joined %}
-            <p>You are a member of this team.</p>
-        {% elif join_request_pending %}
-            <p>You have already requested to join this team. Waiting for approval.</p>
+            <p class="member-status">You are a member of this team!</p>
+            {% elif join_request_pending %}
+                <p class="pending-status">You have requested to join this team. Waiting for approval.</p>
         {% endif %}
     {% else %}
         <p>Please log in to request to join this team.</p>
@@ -34,10 +34,12 @@
     {% endif %}
 
     <h2>Members</h2>
-    <ul>
-        {% for member in team.members.all %}
-            <li>{{ member.username }}</li>
-        {% endfor %}
-    </ul>
+        <div class="member-container">
+        <ul>
+                {% for member in team.members.all %}
+                <li>{{ member.username }}</li>
+                {% endfor %}
+        </ul>
+        </div>
 </div>
 {% endblock %}
