@@ -9,12 +9,37 @@
 
 {% block content %}
 <div class="team-list-container">
-    <h1>Team List</h1>
+<h1>Team List</h1>
 
-    <ul>
-        {% for team in teams %}
-            <li><a href="{% url 'team_detail' team.pk %}">{{ team.name }}</a></li>
-        {% endfor %}
-    </ul>
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search by team name..." onkeyup="searchTeams()">
 </div>
+
+<ul class="team-list" id="teamList">
+    {% for team in teams %}
+        <li class="team-box">
+            <a href="{% url 'team_detail' team.pk %}">{{ team.name }}</a>
+            <span class="team-admin">Admin: {{ team.admin }}</span>
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
+    function searchTeams() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase(); /* case insensitive */
+
+        const teamList = document.getElementById('teamList');
+        const teamBoxes = teamList.getElementsByTagName('li');
+
+        for (let i = 0; i < teamBoxes.length; i++) {
+            const teamName = teamBoxes[i].getElementsByTagName('a')[0].textContent || teamBoxes[i].textContent;
+            if (teamName.toLowerCase().indexOf(filter) > -1) {
+                teamBoxes[i].style.display = ""; 
+            } else {
+                teamBoxes[i].style.display = "none"; 
+            }
+        }
+    }
+</script>
 {% endblock %}
