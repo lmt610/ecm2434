@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.timezone import now, timedelta
 from race.models import Race, User, RaceEntry, Location
+from users.models import Profile
 from django.contrib.auth.models import User
 
 
@@ -214,3 +215,67 @@ class RacePageTest(TestCase):
         self.assertEqual(response.status_code, 200)
         # Check template used
         self.assertTemplateUsed(response, 'race/race.html')
+
+class ExeploreTests(TestCase):
+
+    def setUp(self):
+        self.username = 'raceuser'
+        self.password = 'raceuserpassword'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        self.profile, created = Profile.objects.get_or_create(user=self.user)
+        self.client.login(username=self.username, password=self.password)
+
+        self.start_location = Location.objects.create(name="Start", latitude=0.0, longitude=0.0)
+        self.end_location = Location.objects.create(name="Finish", latitude=1.0, longitude=1.0)
+
+        self.race = Race.objects.create(
+            title='100m Dash',
+            start=self.start_location,
+            end=self.end_location,
+            medal_requirements=[10, 20, 30]
+        )
+
+    def test_add_exeplore_points_valid_user(self):
+        request_data = {
+            "user": self.username,
+            "start_latitude": 0.0,
+            "start_longitude": 0.0,
+            "end_latitude": 1.0,
+            "end_longitude": 1.0,
+        }
+
+        response = self.client.post(reverse('add_exeplore_points'),
+                                    json.dumps(request_data),
+                                    content_type='application/json',)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('points', response.json())
+        added_points = response.json()['points']
+
+        self.profile.refresh_from_db()
+
+        self.assertEqual(self.profile.points, int(added_points))
+
+    def test_add_exeplore_points_user_not_found(self):
+        request_data = {
+            "user": "nonexistentuser",
+            "start_latitude": 0.0,
+            "start_longitude": 0.0,
+            "end_latitude": 1.0,
+            "end_longitude": 1.0,
+        }
+
+        response = self.client.post(reverse('add_exeplore_points'),
+                                     json.dumps(request_data),
+                                     content_type='application/json')
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()['status'], "error")
+        self.assertEqual(response.json()['message'], "User not found")
+
+    def test_add_exeplore_points_invalid_request_method(self):
+        response = self.client.get(reverse('add_exeplore_points'))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['status'], "error")
+        self.assertEqual(response.json()['message'], "Invalid request method")
