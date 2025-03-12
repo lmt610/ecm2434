@@ -143,7 +143,8 @@ class RegisterViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
        
         self.assertContains(response, error_message)
-        def test_registration_without_username(self):
+        
+    def test_registration_without_username(self):
         response = self.client.post(reverse('register'), {
             'password': 'testpassword',
             'email': 'test@test.com'
