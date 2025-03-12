@@ -135,7 +135,7 @@ def add_exeplore_points(request):
 
         #distance is calculated in kilometres, multiply by 100 to get points in the 10s + 20 to add base points
         points_to_add = 100 * haversine(start_lat, start_lon, end_lat, end_lon) + 20
-        int(points_to_add)
+        points_to_add = int(points_to_add)
 
         user.points += points_to_add
         user.save()
