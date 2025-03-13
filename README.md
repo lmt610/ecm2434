@@ -1,24 +1,42 @@
 # ExePlore
 ![{7C5F7D47-2E0C-448B-86AC-4A7842D6A7B9}](https://github.com/user-attachments/assets/3cdf4ab0-5ac1-462c-ae98-0d898e3e4feb)
+ExePlore is a web application that allows users to run races between real locations! encoraging exsploration of the outdoors ExePlore aims to get people out and about engaging with nature!
+
 ![GitHub last commit](https://img.shields.io/github/last-commit/lmt610/ecm2434)         ![GitHub top language](https://img.shields.io/github/languages/top/lmt610/ecm2434)         ![GitHub repo size](https://img.shields.io/github/repo-size/lmt610/ecm2434)
 
-## Overview
-ExePlore is a web application that allows users to run races between real locations! encoraging exsploration of the outdoors ExePlore aims to get people out and about engaging with nature!
+
 
 ## Contents 
 - [Features](#features)
+- [Project Structure](#Project-structure)
 - [Dependancies](#Dependencies)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Project Structure](#project-structure)
+- [populating-database](#populate-database]
 
 
 
 ## Fetures
+- User profiles
+- Geographically defined races
+- Leaderbaords For users to compeate for top times!
+- An exsploration mode to soak in the surrounding nature
+- Achievements to reward users for getting outside
+
+## Project-structure
+the project takes advantage of the modular nature of django apps. Section of the web app with compartmental functionality are placed into their own apps. The list of apps includes:
+- users
+- race
+- leaderboard
+- tasks
+within each app:
+- django python files sit at root
+- static folder is used for css, js, images ect...
+- templates folder is used for html files
 
 ## Dependencies
 Python library dependencies are stored in `requirements.txt`. This project
-uses Django 5, so the minimum supported version of Python is `3.10`.
+uses Django 5, the minimum supported version of Python is `3.10`.
 
 ## Installation
 1. Clone the repo:
