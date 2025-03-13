@@ -32,7 +32,7 @@ class LeaderboardTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'leaderboard/user_leaderboard.html')
 
-        users = list(response.context['user_list'])
+        users = list(response.context['ranked_profile_list'])
         self.assertEqual(users[0], self.profile2)
         self.assertEqual(users[1], self.profile1)
 

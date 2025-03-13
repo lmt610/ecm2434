@@ -31,6 +31,7 @@ def populate_database(sender, **kwargs):
             title="Forum (North) to Armory (A)",
             start=loc1,
             end=loc2,
+            medal_requirements=[150, 180, 300],
         )
     #if not Race.objects.filter(title="Armory (A) to Streatham Court (CQ)").exists():
     #    Race.objects.create(
@@ -55,6 +56,7 @@ def populate_database(sender, **kwargs):
             title="Sports Park to Community Gardens",
             start=sports_park_loc,
             end=community_gardens_loc,
+            medal_requirements=[150, 180, 300],
         )
     if not Race.objects.filter(title="Reed Pond to Arab & Islamic Studies").exists(): 
         Race.objects.create(
@@ -67,12 +69,14 @@ def populate_database(sender, **kwargs):
             title="Lemon Grove to East Park Brook",
             start=lemon_grove_loc,
             end=east_park_brook_loc,
+            medal_requirements=[150, 180, 300],
         )
     if  not Race.objects.filter(title="St John's road (Test)").exists(): 
         Race.objects.create(
             title="St John's road (Test)",
             start=locX,
             end=locX,
+            medal_requirements=[5, 10, 15],
         )
 
     if not Race.objects.filter(title="Innovation centre (Test)").exists(): 
@@ -80,5 +84,6 @@ def populate_database(sender, **kwargs):
             title="Innovation centre (Test)",
             start=locY,
             end=locY,
+            medal_requirements=[5, 10, 15],
         )
         print("Database populated with initial race data")

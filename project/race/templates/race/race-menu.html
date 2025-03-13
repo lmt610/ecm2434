@@ -1,20 +1,16 @@
+{% extends 'base.html' %}
 {% load static %}
+{%block content%}
 <head>
     <link rel="stylesheet" href="{% static 'race-menu/race_menu_styles.css' %}">
 
         <!-- Leaflet mapping plugin-->
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
         <!-- Font Awesome for map race icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-
-<body>
-    <header>
-        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
-        <p id="pageTitle">ExePLORE</p>
-    </header>
+<body>  
     <main>
-        <div class="menuBanner">Select Race!</div>
         <div class="raceMenu">
             <div class="row">
                 {% for race in races %}
@@ -23,7 +19,13 @@
                         {{ race.title }}
                     </div>
                     <div id="map-{{ race.id }}" class="map">
-                        
+                        <div class="medalTag">
+                            {% for raceEntry in raceEntries %}
+                                {% if raceEntry.race == race and raceEntry.medal != 'None' %}        
+                                        <img src="{% static 'images/'|add:raceEntry.medal|add:'.png' %}" alt="">
+                                {% endif %}
+                            {% endfor %}   
+                        </div>   
                     </div>
                 </a>
                 {% if forloop.counter|divisibleby:2 and not forloop.last %}
@@ -32,6 +34,7 @@
             {% endfor%}
         </div>
     </main>
+    
     
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
@@ -50,4 +53,4 @@
 
     <script src="{% static 'race-menu/race_menu_map_script.js' %}"></script>
 </body>
-
+{% endblock %}

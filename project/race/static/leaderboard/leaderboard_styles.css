@@ -1,0 +1,315 @@
+/* Leaderboard Page Styles */
+.leaderboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: calc(100vh - 74px);
+    background-color: #f5f7fa;
+}
+
+/* Header Styles */
+.leaderboard-header {
+    background-color: #2f554f;
+    color: white;
+    padding: 15px 0;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Content Layout */
+.leaderboard-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 20px;
+}
+
+/* Table Styles */
+.leaderboard-table-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    padding: 0;
+}
+
+.leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #1e293b;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.leaderboard-table thead {
+    background-color: #2f554f;
+    color: white;
+}
+
+.leaderboard-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.leaderboard-table tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+    animation: slideIn 0.5s ease-in-out forwards;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.leaderboard-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.leaderboard-table tbody tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+.leaderboard-table tbody tr:hover {
+    background-color: #e6f7ff;
+}
+
+.leaderboard-table td {
+    padding: 15px;
+    font-size: 14px;
+}
+
+.rank-cell {
+    font-weight: 700;
+    font-size: 16px;
+    color: #2f554f;
+}
+
+/* Top 3 Styling */
+.leaderboard-table tbody tr:nth-child(1) .rank-cell {
+    color: #ffd700;
+    font-size: 18px;
+}
+
+.leaderboard-table tbody tr:nth-child(2) .rank-cell {
+    color: #c0c0c0;
+    font-size: 17px;
+}
+
+.leaderboard-table tbody tr:nth-child(3) .rank-cell {
+    color: #cd7f32;
+    font-size: 16px;
+}
+
+.empty-row td {
+    text-align: center;
+    padding: 40px 15px;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* Filter Form Styles */
+.filter-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.race-filter-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.race-filter-form h3 {
+    margin: 0 0 10px 0;
+    color: #2f554f;
+    font-size: 18px;
+    font-weight: 600;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    background-color: white;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #2f554f;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(47, 85, 79, 0.1);
+}
+
+.race-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 35px;
+}
+
+.filter-button {
+    margin-top: 10px;
+    background-color: #2f554f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.filter-button:hover {
+    background-color: #3a6a62;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Quick Links */
+.race-quicklinks {
+    margin-top: 5px;
+}
+
+.race-quicklinks h4 {
+    font-size: 15px;
+    margin: 0 0 10px 0;
+    color: #4b5563;
+    font-weight: 500;
+}
+
+.quicklinks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+}
+
+.race-quicklink {
+    display: block;
+    padding: 8px 12px;
+    background-color: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 13px;
+    text-align: center;
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.race-quicklink:hover {
+    background-color: #e0f2fe;
+    border-color: #bae6fd;
+    color: #0284c7;
+    transform: translateY(-2px);
+}
+
+.race-quicklink.active {
+    background-color: #dcfce7;
+    border-color: #86efac;
+    color: #16a34a;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .leaderboard-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .filter-container {
+        order: -1;
+        margin-bottom: 20px;
+    }
+    
+    .quicklinks-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .leaderboard-header h1 {
+        font-size: 20px;
+    }
+    
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 12px 10px;
+        font-size: 13px;
+    }
+    
+    .rank-cell {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 576px) {
+    .leaderboard-table {
+        display: block;
+        overflow-x: auto;
+    }
+    
+    .leaderboard-container {
+        padding: 15px;
+    }
+}

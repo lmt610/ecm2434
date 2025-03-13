@@ -1,0 +1,385 @@
+/* Welcome Page Styles */
+
+/* Main container */
+.welcome-page {
+    min-height: calc(100vh - 74px);
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    background-color: #f5f7fa;
+    overflow: hidden;
+}
+
+/* Background overlay with pattern */
+.background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(47, 85, 79, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(47, 85, 79, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 0;
+}
+
+/* Main content container */
+.welcome-container {
+    max-width: 1100px;
+    width: 100%;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    z-index: 1;
+    margin-bottom: 40px;
+}
+
+/* Content layout */
+.welcome-content {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    min-height: 500px;
+}
+
+/* Welcome text section */
+.welcome-text {
+    padding: 50px;
+    position: relative;
+}
+
+.welcome-text:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../race/images/map-pattern.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0.05;
+    z-index: -1;
+}
+
+.welcome-text h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2f554f;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.welcome-text h1:after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background-color: #2f554f;
+    margin-top: 15px;
+    border-radius: 2px;
+}
+
+.brand-highlight {
+    color: #2f554f;
+    position: relative;
+    display: inline-block;
+}
+
+.welcome-text h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #3a6a62;
+}
+
+.welcome-text p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #4b5563;
+    margin-bottom: 30px;
+}
+
+/* Feature points in main section */
+.feature-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.feature-icon {
+    background-color: rgba(47, 85, 79, 0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2f554f;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.feature-text h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #1f2937;
+}
+
+.feature-text p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+    color: #6b7280;
+}
+
+/* Auth panel section */
+.auth-panel {
+    background-color: #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    position: relative;
+}
+
+.auth-panel:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(135deg, rgba(47, 85, 79, 0.05) 25%, transparent 25%, transparent 50%, rgba(47, 85, 79, 0.05) 50%, rgba(47, 85, 79, 0.05) 75%, transparent 75%, transparent);
+    background-size: 30px 30px;
+    z-index: -1;
+}
+
+.university-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.university-logo img {
+    max-width: 180px;
+    height: auto;
+}
+
+.auth-options {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.auth-options h3 {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2f554f;
+    font-weight: 600;
+}
+
+.auth-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.auth-button {
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.login-btn {
+    background-color: #2f554f;
+    color: white;
+}
+
+.login-btn:hover {
+    background-color: #3a6a62;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.register-btn {
+    background-color: white;
+    color: #2f554f;
+    border: 2px solid #2f554f;
+}
+
+.register-btn:hover {
+    background-color: #ecfdf5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.auth-help {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #6b7280;
+}
+
+.auth-help a {
+    color: #2f554f;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.auth-help a:hover {
+    text-decoration: underline;
+}
+
+/* Messages styling */
+.messages {
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background-color: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.9rem;
+}
+
+.message.success {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.message.error, .message.danger {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.message.warning {
+    background-color: #ffedd5;
+    color: #d97706;
+}
+
+/* Feature cards section */
+.features-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1100px;
+    width: 100%;
+    z-index: 1;
+}
+
+.feature-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card .feature-icon {
+    margin: 0 auto 20px;
+    width: 70px;
+    height: 70px;
+    font-size: 1.6rem;
+}
+
+.feature-card h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #2f554f;
+}
+
+.feature-card p {
+    color: #6b7280;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+    .welcome-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .welcome-text, .auth-panel {
+        padding: 40px;
+    }
+    
+    .features-section {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .welcome-text {
+        padding: 30px;
+    }
+    
+    .welcome-text h1 {
+        font-size: 2rem;
+    }
+    
+    .welcome-text h2 {
+        font-size: 1.3rem;
+    }
+    
+    .feature-points {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .auth-panel {
+        padding: 30px;
+    }
+    
+    .auth-options {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-page {
+        padding: 20px 10px;
+    }
+    
+    .welcome-text, .auth-panel {
+        padding: 25px;
+    }
+    
+    .auth-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .feature-card {
+        padding: 25px;
+    }
+}

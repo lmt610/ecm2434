@@ -1,19 +1,13 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExePLORE - Sign Up</title>
-    <link rel="stylesheet" href="{% static 'users/register_styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>
-    <header>
-        <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="Exeter University Logo">
-        <p id="pageTitle">ExePLORE</p>
-    </header>
 
+{% block title %}ExePLORE - Register{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'users/register_styles.css' %}">
+{% endblock %}
+
+{% block content %}
     <main class="signup-container">
         <div class="signup-card">
             <div class="card-header">
@@ -68,7 +62,7 @@
                     {% endif %}
 
                     <div class="terms-agreement">
-                        <p>By creating an account, you agree to our <a href="#" class="text-link">Terms of Service</a> and <a href="#" class="text-link">Privacy Policy</a></p>
+                        <p>By creating an account, you agree to our <a href="#" class="text-link" onclick="showLegalModal('terms'); return false;">Terms of Service</a> and <a href="#" class="text-link" onclick="showLegalModal('privacy'); return false;">Privacy Policy</a></p>
                     </div>
 
                     <div class="form-actions">
@@ -83,15 +77,182 @@
         </div>
     </main>
 
-    <footer class="signup-footer">
-        <div class="footer-content">
-            <p>&copy; 2025 ExePLORE. University of Exeter</p>
-            <div class="legal-links">
-                <a href="#" class="text-link">Privacy Policy</a>
-                <a href="#" class="text-link">Terms of Service</a>
-                <a href="#" class="text-link">Help</a>
+    <!-- Legal Information Modal -->
+    <div id="legalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="legalModalTitle">Legal Information</h2>
+                <button class="close-button" onclick="hideLegalModal()"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Privacy Policy Content -->
+                <div id="privacyPolicyContent" style="display: none;">
+                    <h3>Privacy Policy</h3>
+                    <p>At ExePLORE, we take your privacy seriously. This policy describes what personal information we collect and how we use it.</p>
+                    
+                    <h4>Information We Collect</h4>
+                    <ul>
+                        <li>User emails: To create and manage your account and send notifications</li>
+                        <li>User names: To personalize your experience on the platform</li>
+                        <li>Password hashes: To secure your account (we never store your actual password)</li>
+                        <li>Geolocation data: To provide location-based services within the app</li>
+                    </ul>
+                    
+                    <h4>How We Use Your Data</h4>
+                    <p>We use your personal information solely to provide and improve ExePLORE's services. This includes:</p>
+                    <ul>
+                        <li>Creating and managing your user account</li>
+                        <li>Providing location-based services when using the app</li>
+                        <li>Calculating your route completion and achievements</li>
+                        <li>Enhancing the app experience based on user patterns</li>
+                    </ul>
+                    
+                    <h4>Data Sharing</h4>
+                    <p>We never share your personal data with third parties. Your information is only used within the ExePLORE application to provide you with our services.</p>
+                    
+                    <h4>Updates to This Policy</h4>
+                    <p>We may update this Privacy Policy as needed. Significant changes will be notified through the app.</p>
+                </div>
+                
+                <!-- Terms of Service Content -->
+                <div id="termsOfServiceContent" style="display: none;">
+                    <h3>Terms of Service</h3>
+                    <p>These Terms of Service govern your use of the ExePLORE application provided by the University of Exeter.</p>
+                    
+                    <h4>Account Terms</h4>
+                    <p>When creating an ExePLORE account, you agree to:</p>
+                    <ul>
+                        <li>Provide accurate and complete information</li>
+                        <li>Keep your password secure and confidential</li>
+                        <li>Be responsible for all activities that occur under your account</li>
+                    </ul>
+                    
+                    <h4>Acceptable Use</h4>
+                    <p>You agree to use ExePLORE only for its intended purposes. You will not:</p>
+                    <ul>
+                        <li>Use the app in any way that violates any applicable laws</li>
+                        <li>Attempt to interfere with the proper functioning of the app</li>
+                        <li>Attempt to access data not intended for your user account</li>
+                    </ul>
+                    
+                    <h4>Termination</h4>
+                    <p>We reserve the right to suspend or terminate your account if you violate these terms or engage in activities that may cause harm to other users or the application itself.</p>
+                    
+                    <h4>Changes to Terms</h4>
+                    <p>We may modify these terms at any time. Continued use of ExePLORE after changes constitutes acceptance of the new terms.</p>
+                </div>
+                
+                <!-- Data Protection Content -->
+                <div id="dataProtectionContent" style="display: none;">
+                    <h3>Data Protection</h3>
+                    <p>ExePLORE is committed to protecting your personal data in accordance with applicable data protection laws.</p>
+                    
+                    <h4>Data Security</h4>
+                    <p>To protect your information, we implement a variety of security measures:</p>
+                    <ul>
+                        <li>Passwords are stored as secure hashed values, not in plain text</li>
+                        <li>Access to user data is restricted to authorized personnel only</li>
+                        <li>Regular security audits and updates to protect against vulnerabilities</li>
+                        <li>Encrypted data transmission to prevent unauthorized access</li>
+                    </ul>
+                    
+                    <h4>Your Data Rights</h4>
+                    <p>You have the right to:</p>
+                    <ul>
+                        <li>Access the personal data we hold about you</li>
+                        <li>Request correction of inaccurate information</li>
+                        <li>Request deletion of your data (subject to any legal obligations)</li>
+                        <li>Opt-out of certain data collection through app settings</li>
+                    </ul>
+                    
+                    <h4>Data Retention</h4>
+                    <p>We retain your personal data only for as long as necessary to provide you with our services and as required by applicable laws.</p>
+                    
+                    <h4>Contact Information</h4>
+                    <p>If you have questions about your data protection rights, please contact the University of Exeter data protection team.</p>
+                </div>
+                
+                <!-- Help Content -->
+                <div id="helpContent" style="display: none;">
+                    <h3>Help</h3>
+                    <p>Need assistance with using ExePLORE? Here are some resources to help you get started:</p>
+                    
+                    <h4>Frequently Asked Questions</h4>
+                    <ul>
+                        <li><strong>What is ExePLORE?</strong> ExePLORE is a University of Exeter application designed to promote sustainability and green spaces by tracking walking routes across campus.</li>
+                        <li><strong>How do I track a route?</strong> Open the app, select a route, and press the "Start" button. The app will track your progress automatically using GPS.</li>
+                        <li><strong>What if I lose connection?</strong> The app will continue to track locally and will sync when connection is restored.</li>
+                    </ul>
+                    
+                    <h4>Contact Support</h4>
+                    <p>If you're experiencing issues with the app or have questions not covered in our FAQ, please contact our support team at <strong>dl558@exeter.ac.uk</strong>.</p>
+                    
+                    <h4>Feedback</h4>
+                    <p>We're constantly improving ExePLORE and value your feedback. Drop us an email and let us know your thoughts.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="hideLegalModal()">Close</button>
             </div>
         </div>
-    </footer>
-</body>
-</html>
+    </div>
+{% endblock %}
+
+{% block footer %}
+<div class="footer-content">
+    <p>&copy; 2025 ExePLORE. University of Exeter</p>
+    <div class="legal-links">
+        <a href="#" class="text-link" onclick="showLegalModal('privacy'); return false;">Privacy Policy</a>
+        <a href="#" class="text-link" onclick="showLegalModal('terms'); return false;">Terms of Service</a>
+        <a href="#" class="text-link" onclick="showLegalModal('help'); return false;">Help</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    /*** Legal Information Modal Functions ***/
+    function showLegalModal(type) {
+        document.getElementById('privacyPolicyContent').style.display = 'none';
+        document.getElementById('termsOfServiceContent').style.display = 'none';
+        document.getElementById('dataProtectionContent').style.display = 'none';
+        document.getElementById('helpContent').style.display = 'none';
+        
+        const modalTitle = document.getElementById('legalModalTitle');
+        if (type === 'privacy') {
+            modalTitle.textContent = 'Privacy Policy';
+            document.getElementById('privacyPolicyContent').style.display = 'block';
+        } else if (type === 'terms') {
+            modalTitle.textContent = 'Terms of Service';
+            document.getElementById('termsOfServiceContent').style.display = 'block';
+        } else if (type === 'data') {
+            modalTitle.textContent = 'Data Protection';
+            document.getElementById('dataProtectionContent').style.display = 'block';
+        } else if (type === 'help') {
+            modalTitle.textContent = 'Help';
+            document.getElementById('helpContent').style.display = 'block';
+        }
+        
+        const modal = document.getElementById('legalModal');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+    }
+    
+    function hideLegalModal() {
+        const modal = document.getElementById('legalModal');
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+    
+    /*** Global Modal Click-Outside Handler ***/
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            hideLegalModal();
+        }
+    }
+</script>
+{% endblock %}

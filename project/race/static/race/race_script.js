@@ -1,6 +1,17 @@
 // Simple Timer Function
 let startTime;
 let isRunActive = false;
+
+let showUserLocationOnMap = false;
+let currentPosition = null;
+if(navigator.geolocation){       
+	// variables to allow older geolocation data if it is more accurate
+	navigator.geolocation.watchPosition(updatePosition, showError);
+} else {
+    alert("Geolocation is not supported by this browser.")
+}
+
+
 function startRace() {
     startTime = Date.now();
     isRunActive = true;
@@ -29,7 +40,7 @@ function resetRace() {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(),
         },
-        body: JSON.stringify({ race_id: raceID, user:loggedInUser, start_time: start_time, end_time: end_time})
+        body: JSON.stringify({ race_id: raceID, start_time: start_time, end_time: end_time})
     })
     .then(response => response.json())
     .then(data => {
@@ -41,21 +52,22 @@ function resetRace() {
         location.reload(); // Still reload even if an error occurs
     });
 }
-//tracking user location
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        alert("Geolocation is not supported by this browser.")
-    }
-}
 
-function showPosition(position) {
-    const lat = position.coords.latitude;
-    const lon = position.coords.longitude;
-
-    //let user see their location 
-    addUserLocationToMap(lat,lon);
+// update the current position if the new position is more accurate
+// or if the old position is older than 5 seconds
+function updatePosition(position) {
+	if(currentPosition==null){
+		currentPosition=position;
+		return;
+	}
+	const currentTime = Date.now();
+    const acc = position.coords.accuracy;
+	if(!currentPosition.coords.accuracy || 
+		acc<currentPosition.coords.accuracy ||
+		currentTime - currentPosition.timestamp > 50000
+	){
+		currentPosition = position;
+	}
 }
 
 function showError(error) {
@@ -123,141 +135,121 @@ function checkEndLocation(position) {
     });
 }
 
-function createRace(title, startId, endId, user) {
-    fetch('/race/create-race/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCSRFToken(),
-        },
-        body: JSON.stringify({
-            title: title,
-            start_id: startId,
-            end_id: endId,
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === "success") {
-            console.log("Race created with ID:", data.race_id);
-            localStorage.setItem("currentRaceId", data.race_id);
-            location.reload(); // reload page for dymaic html content
-        } else {
-            console.error("Error creating race:", data.message);
-        }
-    })
-    .catch(error => console.error("Error:", error));
-}
-
-function addUserLocationToMap(lat, lon){
+function toggleShowUserOnMap(){
     if (typeof map !== 'undefined' && map !== null) {
-        if (playerLocationMarker != null){
+        showUserLocationOnMap = !showUserLocationOnMap;
+		if (playerLocationMarker != null){
             map.removeLayer(playerLocationMarker);
         }
-        playerLocationMarker = L.circle([lat, lon], {
-            color: 'red',      
-            fillColor: 'red',   
-            fillOpacity: 0.5,    
-            radius: 20       
-        }).addTo(map)
-
+		bounds = L.latLngBounds(
+			[raceData.start.lat, raceData.start.lng],
+            [raceData.end.lat, raceData.end.lng]
+		);
+		if(showUserLocationOnMap){
+			const lat = currentPosition.coords.latitude;
+			const long = currentPosition.coords.longitude;
+			const acc = currentPosition.coords.accuracy;
+			playerLocationMarker = L.circle([lat, long], {
+				color: 'red',      
+				fillColor: 'red',   
+				fillOpacity: 0.5,    
+				radius: acc       
+			}).addTo(map);
+			bounds.extend([lat,long]);
+		}
         // fit the user location and race points on the map view
-        const bounds = L.latLngBounds([
-            [raceData.start.lat, raceData.start.lng],
-            [raceData.end.lat, raceData.end.lng],
-            [lat, lon]
-        ]);
         map.fitBounds(bounds, { padding: [50, 50] });
     } else {
         console.error("Map not initialized yet");
     }
 }
 
-function startTimeTrial() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            checkStartLocation(position).then(isAtStartLocation => {
-                if (isAtStartLocation) {
-                    const timeTrialDiv = document.getElementById('activeTimeTrialView');
-                    timeTrialDiv.classList.add('visible');
-                    startRace();
-                } else {
-                    alert("You are not at the start point");
-                }
-            });
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
+async function startTimeTrial() {
+    if(!navigator.geolocation){
+		alert("Geolocation is not supported by this browser.");
+		return;
+	}
+
+	isAtStartLocation = await checkStartLocation(currentPosition);
+	if (isAtStartLocation) {
+		const timeTrialDiv = document.getElementById('activeTimeTrialView');
+		timeTrialDiv.classList.add('visible');
+		startRace();
+	} else {
+		alert("You are not at the start point");
+	}
+}
+
+async function endTimeTrial() {
+    if(!navigator.geolocation){
+		alert("Geolocation is not supported by this browser.");
+		return;
+	}
+
+	isAtEndLocation = await checkEndLocation(currentPosition);
+	if (isAtEndLocation) {
+		resetRace();
+		document.getElementById('activeTimeTrialView').classList.remove('visible');
+	} else {
+		alert("You are not at the end point");
+	}
+}
+
+async function startExePLORE() {
+    if(!navigator.geolocation){
+		alert("Geolocation is not supported by this browser.");
+		return;
+	}
+
+	isAtStartLocation = await checkStartLocation(currentPosition);
+	if (isAtStartLocation) {
+		const timeTrialDiv = document.getElementById('activeExePLOREView');
+		timeTrialDiv.classList.add('visible');
+	} else {
+		alert("You are not at the start point");
     }
 }
 
-function endTimeTrial() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            checkEndLocation(position).then(isAtEndLocation => {
-                if (isAtEndLocation) {
-                    resetRace();
-                    document.getElementById('activeTimeTrialView').classList.remove('visible');
-                } else {
-                    alert("You are not at the end point");
-                }
-            });
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
+async function endExePLORE() {
+    if(!navigator.geolocation){
+		alert("Geolocation is not supported by this browser.");
+		return;
+	}
+
+	isAtEndLocation = await checkEndLocation(currentPosition);
+	if (isAtEndLocation) {
+		addExePlorePoints();
+		document.getElementById("pointsNotif").classList.add("visible");
+		setTimeout(() => {
+			document.getElementById("pointsNotif").classList.remove('visible');
+		}, 2000);
+		setTimeout(() => {
+			document.getElementById('activeExePLOREView').classList.remove('visible');
+			document.querySelectorAll("#activeExePLOREView button").forEach(button => {
+				button.disabled = false;
+			});
+		}, 3000);
+	} else {
+		alert("You are not at the end point");
+	}
 }
 
-function startExePLORE() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            checkStartLocation(position).then(isAtStartLocation => {
-                if (isAtStartLocation) {
-                    const timeTrialDiv = document.getElementById('activeExePLOREView');
-                    timeTrialDiv.classList.add('visible');
-                } else {
-                    alert("You are not at the start point");
-                }
-            });
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
-}
-
-function endExePLORE() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            checkEndLocation(position).then(isAtEndLocation => {
-                if (isAtEndLocation) {
-                    document.getElementById('activeExePLOREView').classList.remove('visible');
-                } else {
-                    alert("You are not at the end point");
-                }
-            });
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
-}
-
-function CreateRaceEntryOrExceptSuccsess(){
-    return fetch('/race/create-race/', {
+function addExePlorePoints() {
+    return fetch('/race/add-exeplore-points/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(), //Include CSRF token
         },
-        body: JSON.stringify({race_id: raceID, user: loggedInUser})
+        body: JSON.stringify({start_latitude: raceData.start.lat, start_longitude: raceData.start.lng, end_latitude: raceData.end.lat, end_longitude: raceData.end.lng, user: loggedInUser})
     })
     .then(response => response.json())
     .then(data => {
-        return data.status === "success";
+        document.getElementById("pointsNotif").textContent = "You just earned " + data.points + " points!";
+        return data.points > 0;
     })
     .catch(error => {
-        console.error("error:", error);
+        console.error("Error:", error);
         return false;
     });
 }
-
-CreateRaceEntryOrExceptSuccsess();

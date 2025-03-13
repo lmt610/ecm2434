@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
@@ -17,6 +17,11 @@ def get_user_settings(request):
 
 def home(request):
     return render(request, 'users/home.html')
+
+def log_out(request):
+    logout(request)
+    return redirect('home')
+    
 
 def sign_in(request):
     if request.method == 'GET':
