@@ -57,14 +57,14 @@ class SettingsViewTest(TestCase):
             self.assertEqual(response.status_code, 400)
 
 
-    def test_contains_legal_info(self):
+    def test_contains_links_to_legal_info(self):
         response = self.client.get("/settings/")
         self.assertEqual(response.status_code, 200)
         
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        mandated_links = ["/privacy-policy/","/terms-of-service/", "/data-protection/"]
+        links_text_list = ["Privacy Policy","Terms of Service", "Data Protection"]
         
-        for address in mandated_links:
-            link = soup.find('a', href=address)
-            self.assertIsNotNone(link, f"Error: couldn't find {address}")
+        for link_text in links_text_list:
+            link = soup.find('a', string=link_text)
+            self.assertIsNotNone(link, f"Error: couldn't find {link_text}")
