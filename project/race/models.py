@@ -45,6 +45,8 @@ class RaceEntry(models.Model):
         super().save(*args, **kwargs)
 
     def get_duration(self):
+        if (self.end_time == None or self.start_time == None):
+            return None
         return (self.end_time - self.start_time).total_seconds()
 
     def get_duration_in_minutes(self):
