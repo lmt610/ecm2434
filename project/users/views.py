@@ -20,6 +20,9 @@ def home(request):
 
 def sign_in(request):
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            return redirect('home')
+
         form = LoginForm()
         return render(request,'users/login.html', {'form': form})
     
@@ -52,8 +55,10 @@ def register(request):
             login(request, user)
             messages.success(request, 'Your account has been created!')
             return redirect('welcome')  
-
     else:
+        if request.user.is_authenticated:
+            return redirect('home')
+
         form = UserRegistrationForm()
 
     return render(request, 'users/register.html', {'form': form})
