@@ -24,11 +24,12 @@ ExePlore is a web application that allows users to run races between real locati
 - Achievements to reward users for getting outside
 
 ## Project-structure
-the project takes advantage of the modular nature of django apps. Section of the web app with compartmental functionality are placed into their own apps. The list of apps includes:
+the project takes advantage of the modular nature of django apps. Sections of the web app with compartmental functionality are placed into their own apps. The list of apps includes:
 - users
 - race
 - leaderboard
 - tasks
+  
 within each app:
 - django python files sit at root
 - static folder is used for css, js, images ect...
