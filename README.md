@@ -1,4 +1,5 @@
-# ecm2434
+# ExePlore
+![{0AF16421-17D4-40A6-8C3E-9911D23705D3}](https://github.com/user-attachments/assets/aa623078-8353-4dd0-a74a-6486c6622f6d)
 
 ## Dependencies
 Python library dependencies are stored in `requirements.txt`. This project
