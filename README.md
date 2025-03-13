@@ -1,5 +1,20 @@
 # ExePlore
-![{0AF16421-17D4-40A6-8C3E-9911D23705D3}](https://github.com/user-attachments/assets/aa623078-8353-4dd0-a74a-6486c6622f6d)
+![{7C5F7D47-2E0C-448B-86AC-4A7842D6A7B9}](https://github.com/user-attachments/assets/3cdf4ab0-5ac1-462c-ae98-0d898e3e4feb)
+![GitHub last commit](https://img.shields.io/github/last-commit/lmt610/ecm2434)         ![GitHub top language](https://img.shields.io/github/languages/top/lmt610/ecm2434)         ![GitHub repo size](https://img.shields.io/github/repo-size/lmt610/ecm2434)
+
+## Overview
+ExePlore is a web application that allows users to run races between real locations! encoraging exsploration of the outdoors ExePlore aims to get people out and about engaging with nature!
+
+## Contents 
+- [Features](#features)
+- [Dependancies](#Dependencies)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+
+
+
+## Fetures
 
 ## Dependencies
 Python library dependencies are stored in `requirements.txt`. This project
