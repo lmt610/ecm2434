@@ -12,7 +12,7 @@ ExePlore is a web application that allows users to run races between real locati
 - [Dependancies](#Dependencies)
 - [Installation](#installation)
 - [Usage](#usage)
-- [populating-database](#populate-database)
+- [Populating-database](#Populating-databases)
 
 
 
@@ -104,7 +104,7 @@ Example tests relevant to sprint 1 assessment:
 
 
 
-## Populating databases
+## Populating-databases
 The databases can be populated with mock data by running commands in your terminal.
 To create teams and users, navigate to the project directory and enter:
 ```sh
