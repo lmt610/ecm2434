@@ -7,12 +7,12 @@ ExePlore is a web application that allows users to run races between real locati
 
 
 ## Contents 
-- [Features](#features)
+- [Features](#Fetures)
 - [Project Structure](#Project-structure)
 - [Dependancies](#Dependencies)
 - [Installation](#installation)
 - [Usage](#usage)
-- [populating-database](#populate-database]
+- [populating-database](#populate-database)
 
 
 
