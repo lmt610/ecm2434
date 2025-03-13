@@ -1,5 +1,5 @@
 # ExePlore
-![{7C5F7D47-2E0C-448B-86AC-4A7842D6A7B9}](https://github.com/user-attachments/assets/3cdf4ab0-5ac1-462c-ae98-0d898e3e4feb)
+![{C41BB442-C6B2-40F0-9812-39882C24F71B}](https://github.com/user-attachments/assets/f28dc08f-3b81-4d7c-b061-0d6505f0e311)
 ExePlore is a web application that allows users to run races between real locations! encoraging exsploration of the outdoors ExePlore aims to get people out and about engaging with nature!
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/lmt610/ecm2434)         ![GitHub top language](https://img.shields.io/github/languages/top/lmt610/ecm2434)         ![GitHub repo size](https://img.shields.io/github/repo-size/lmt610/ecm2434)
