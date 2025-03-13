@@ -10,6 +10,7 @@ ExePlore is a web application that allows users to run races between real locati
 - [Installation](#installation)
 - [Usage](#usage)
 - [Populating-database](#Populating-databases)
+- [Authors](#Authors)
 ## Features
 - User profiles
 - Geographically defined races
@@ -98,3 +99,13 @@ or
 ```sh
 python manage.py delete_races
 ```
+
+## Authors 
+the developers of this project are:
+- Alex Norris
+- Dan Loveless
+- Aria Noroozi
+- Barnaby wreford
+- Laila Tayeb
+- Oliver Greet
+- Nathan Gillings
