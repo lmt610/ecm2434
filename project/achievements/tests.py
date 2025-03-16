@@ -55,3 +55,43 @@ class AchievementTests(TestCase):
         )
         self.assertTrue(achievement.has_user_completed(self.user))
 
+    # checks that achievements works for fields that are derived from other attributes
+    # in this case the duration of a race entry
+    def test_derived_field_subcondition(self):
+        achievement = Achievement.objects.create(
+            title="Sprinter",
+            description="Complete 2 races in under 1 minute",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator="=",
+            main_condition_value="2",
+            subconditions=[
+                ["duration", "<", "60"]
+            ]
+        )
+        # add a single gold medal entry
+        RaceEntry.objects.create(
+            race=self.race1,
+            user=self.user,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=50)
+        )
+        self.assertFalse(achievement.has_user_completed(self.user))
+        
+        # add a silver entry
+        RaceEntry.objects.create(
+            race=self.race2,
+            user=self.user,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=125)
+        )
+        self.assertFalse(achievement.has_user_completed(self.user))
+
+        # add a gold entry
+        RaceEntry.objects.create(
+            race=self.race3,
+            user=self.user,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=45)
+        )
+        self.assertTrue(achievement.has_user_completed(self.user))
+

@@ -6,11 +6,9 @@ from django.core.exceptions import ValidationError
 from .field_labelers import get_labeler_for_field
 
 class Achievement(models.Model):
-    # Basic Fields
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=255)
     
-    # Main Condition Fields
     MODEL_CHOICES = [
         ('COUNT_RACES', 'Count Races'),
         ('COUNT_TEAMS', 'Count Teams'),
@@ -29,10 +27,12 @@ class Achievement(models.Model):
     # Store subconditions as JSON array of [field, operator, value]
     subconditions = models.JSONField(default=list)
     
-    # Static mapping of model fields
+    # Static mapping of all allowed fields that can be used for achievements
+    # make sure a labeler is added for each subcondition field
     MODEL_FIELDS = {
         'COUNT_RACES': [
             'medal',
+            'duration'
         ],
         'COUNT_TEAMS': []
     }
