@@ -32,7 +32,8 @@ class Achievement(models.Model):
     MODEL_FIELDS = {
         'COUNT_RACES': [
             'medal',
-            'duration'
+            'duration',
+            'distance'
         ],
         'COUNT_TEAMS': []
     }

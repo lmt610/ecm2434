@@ -20,3 +20,24 @@ def populate_database(sender, **kwargs):
             ["medal", "=", "gold"]
         ]
     )
+    Achievement.objects.create(
+            title="Sprinter",
+            description="Complete 2 races in under 1 minute",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator=">",
+            main_condition_value="1",
+            subconditions=[
+                ["duration", "<", "60"]
+            ]
+        )
+    Achievement.objects.create(
+            title="The Long Game",
+            description="Complete 2 races with a distance over 0.5km",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator="=",
+            main_condition_value="2",
+            subconditions=[
+                ["distance", ">", "0.5"]
+            ]
+        )
+
