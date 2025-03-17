@@ -15,5 +15,6 @@ urlpatterns = [
     path('change-password/', change_password, name='change_password'),
     path('delete-account/', delete_account, name='delete_account'),
     path('toggle-setting/', toggle_setting, name='toggle_setting'),
-    path('update-email/', update_email, name='update_email')
+    path('update-email/', update_email, name='update_email'),
+    path("export-data/", export_user_data, name="export_user_data")
     ]

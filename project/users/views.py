@@ -11,6 +11,8 @@ from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -185,3 +187,27 @@ def toggle_setting(request):
             return JsonResponse({'status': 'success'})
             
     return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+def export_user_data(request):
+    user = request.user  # Get logged-in user
+    user_settings = UserSettings.objects.filter(user=user).first()
+
+    # Generate user data in JSON format
+    user_data = {
+        "user_data_export": {
+            "username": user.username,
+            "email": user.email,
+            "settings_preferences": {
+                "allow_location_tracking": user_settings.location_tracking,
+                "show_user_activity_on_leaderboard": user_settings.show_on_leaderboard
+            },
+            "notes": [
+                "If you would like to change these details, you can do so in the settings menu.",
+                "If you would like this information to no longer be stored, you can delete your account from the settings menu."
+            ]
+        }
+    }
+
+    # Return a JSON response
+    return JsonResponse(user_data, safe=False)
