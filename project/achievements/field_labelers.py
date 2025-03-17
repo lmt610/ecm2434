@@ -13,7 +13,9 @@ def get_labeler_for_field(field_name):
         'duration': add_label_duration,
         'distance': add_label_distance,
         'position': add_label_position,
-        'number_of_members': add_label_number_of_members
+        'number_of_completions': add_label_number_of_completions,
+        'number_of_members': add_label_number_of_members,
+        'points': add_label_points
     }
     return labelers.get(field_name)
 
@@ -70,9 +72,15 @@ def add_label_position(race_queryset):
     )
     return race_queryset.annotate(position=position_annotation)
 
+def add_label_number_of_completions(race_queryset):
+    return race_queryset.annotate(number_of_completions=F('num_completions'))        
+
 ########################
 ## TEAM LABELERS
 ########################
 
 def add_label_number_of_members(team_queryset):
     return team_queryset.annotate(number_of_members=Count('members'))
+
+def add_label_points(team_queryset):
+    return team_queryset

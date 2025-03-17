@@ -34,10 +34,12 @@ class Achievement(models.Model):
             'medal',
             'duration',
             'distance',
-            'position'
+            'position',
+            'number_of_completions'
         ],
         'COUNT_TEAMS': [
-            'number_of_members'
+            'number_of_members',
+            'points'
         ]
     }
     
