@@ -68,9 +68,11 @@ def register(request):
 @login_required
 def welcome(request):
         if request.user.is_authenticated:
+            #define dynamic values to be passed to the template
             user_profile = Profile.objects.get(user=request.user)
             tasks_complete = UserTaskCompletion.get_num_completed_tasks(user_profile.user)
             races_complete = RaceEntry.get_num_completed_races(user_profile.user)
+            distance_covered = user_profile.exeplore_mode_distance_traveled + RaceEntry.get_total_distance_travled_by_user(user_profile.user)
             print(tasks_complete, races_complete)
             context = {
                 'user_score': user_profile.points,
@@ -79,7 +81,8 @@ def welcome(request):
                 'username': request.user.username,
                 'user_score': user_profile.points,
                 'tasks_completed' : tasks_complete,
-                'races_completed' : races_complete
+                'races_completed' : races_complete,
+                'distance_covered' : distance_covered
             })
         else:
             return redirect('login')
