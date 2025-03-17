@@ -574,12 +574,12 @@
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'  // Optional for CSRF
-                }
+            }
         })
         .then(response => {
             // Extract filename from Content-Disposition header
             const contentDisposition = response.headers.get('Content-Disposition');
-            let filename = "export.txt"; // Default filename
+            let filename = "export.json"; // Default filename (set to .json)
 
             if (contentDisposition) {
                 const match = contentDisposition.match(/filename="(.+)"/);
@@ -588,17 +588,20 @@
                 }
             }
 
-            return response.blob().then(blob => ({ blob, filename }));
+            return response.json().then(jsonData => ({ jsonData, filename }));
         })
-        .then(({ blob, filename }) => {
+        .then(({ jsonData, filename }) => {
+            // Convert JSON data to a Blob with application/json type
+            const blob = new Blob([JSON.stringify(jsonData, null, 4)], { type: 'application/json' });
+
             // Create a download link
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = filename;
+            a.download = filename;  // Set the filename for the download
             document.body.appendChild(a);
             a.click();
-            window.URL.revokeObjectURL(url);
+            window.URL.revokeObjectURL(url);  // Clean up the URL object
         })
         .catch(error => console.error('Error downloading file:', error));
     }

@@ -11,7 +11,8 @@ from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
-from django.http import HttpResponse
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -191,25 +192,22 @@ def toggle_setting(request):
 def export_user_data(request):
     user = request.user  # Get logged-in user
     user_settings = UserSettings.objects.filter(user=user).first()
-    filename = f"user_data_{user.username}.txt"
 
-    # Generate user data 
-    file_content = f"""
-    User Data Export
-    Username: {user.username}
-    Email: {user.email}
+    # Generate user data in JSON format
+    user_data = {
+        "user_data_export": {
+            "username": user.username,
+            "email": user.email,
+            "settings_preferences": {
+                "allow_location_tracking": user_settings.location_tracking,
+                "show_user_activity_on_leaderboard": user_settings.show_on_leaderboard
+            },
+            "notes": [
+                "If you would like to change these details, you can do so in the settings menu.",
+                "If you would like this information to no longer be stored, you can delete your account from the settings menu."
+            ]
+        }
+    }
 
-    Settings preferences 
-    allow location tracking: {user_settings.location_tracking}
-    show user activity on leader boards: {user_settings.show_on_leaderboard}
-
-    If you would like to change these details, you can do so in the settings menu.
-    If you would like this information to no longer be stored, you can delete you account from the settings menu.
-
-    """
-
-    # Create HTTP response with file
-    response = HttpResponse(file_content, content_type="text/plain")
-    response["Content-Disposition"] = f'attachment; filename="{filename}"'
-    
-    return response
+    # Return a JSON response
+    return JsonResponse(user_data, safe=False)
