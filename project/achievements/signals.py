@@ -1,14 +1,24 @@
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
+from django.db.models.signals import post_migrate
 from .models import Achievement
 
 @receiver(post_migrate)
 def populate_database_with_achievements(sender, **kwargs):
     """Populates the database with example achievements."""
     
-    # Ensure this only runs for the 'race' app
+    # Ensure this only runs for the 'achievements' app
     if sender.name != "achievements":
         return
+    
+    Achievement.objects.create(
+            title="A Whole New World",
+            description="Run a Race",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator=">",
+            main_condition_value="0",
+            subconditions=[]
+        )   
 
     Achievement.objects.create(
         title="Gold Collector",
@@ -50,4 +60,6 @@ def populate_database_with_achievements(sender, **kwargs):
                 ["position", "=", "1"]
             ]
         )
+
+    print("Example achievements added")
 
