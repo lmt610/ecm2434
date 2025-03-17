@@ -68,13 +68,7 @@ def update_race_time(request):
 
     start_time = parse_datetime(data.get("start_time"))
     end_time = parse_datetime(data.get("end_time"))
-    entry, created = RaceEntry.objects.get_or_create(
-        race=race,
-        user=request.user,
-        defaults={
-            "user": request.user,
-            "race": race
-        })
+    entry, created = RaceEntry.objects.get_or_create(race=race, user=request.user)
     if created:
         entry.start_time = start_time
         entry.end_time = end_time
@@ -85,6 +79,7 @@ def update_race_time(request):
         if new_time < current_pb:
             entry.start_time = start_time
             entry.end_time = end_time
+        entry.num_completions += 1
     
     entry.save()
     return JsonResponse({"status": "success", "message": "RaceEntry updated"})
@@ -104,10 +99,12 @@ def add_exeplore_points(request):
         end_lon = data.get("end_longitude")
 
         #distance is calculated in kilometres, multiply by 100 to get points in the 10s + 20 to add base points
-        points_to_add = 100 * haversine(start_lat, start_lon, end_lat, end_lon) + 20
-        int(points_to_add)
+        distance = haversine(start_lat, start_lon, end_lat, end_lon)
+        points_to_add = 100 * distance + 20
+        points_to_add = int(points_to_add)
 
         user.points += points_to_add
+        user.exeplore_mode_distance_traveled += distance
         user.save()
 
         return JsonResponse({"points": points_to_add})

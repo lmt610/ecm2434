@@ -33,7 +33,7 @@ class SettingsViewTest(TestCase):
         self.assertEqual(str(messages[0]), "Your account has been successfully deleted.")
         self.assertFalse(User.objects.filter(username=self.user.username).exists())
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("home"))
+        self.assertEqual(response.url, reverse("welcome"))
 
     def test_toggle_setting_valid(self):
         attributes = [field.name for field in UserSettings._meta.get_fields() if field.name not in ["id","user"]]

@@ -117,30 +117,24 @@
             </div>
             
             <div class="actionButtons">
-                <button class="btn-race" onclick="getLocation()">Where am I?</button>
-                <button class="btn-time-trial" onclick="startTimeTrial()">Time Trial</button>
-                <button class="btn-explore" onclick="startExePLORE()">ExePLORE</button>
+                <button style="background-color: red;" onclick="toggleShowUserOnMap()">Toggle Show Current Location</button>
+                <button style="background-color: gold;" onclick="startTimeTrial()">Time Trial</button>
+                <button style="background-color: forestgreen;" onclick="startExePLORE()">ExePLORE</button>
             </div>
         </div>
-    </div>
-</div>
+        <div id="activeTimeTrialView">
+            <div id="timer">00:00</div>
+            <button style="background-color: forestgreen;" onclick="endTimeTrial()">Finish</button>
+            <button style="background-color: red;" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
+        </div>
+        <div id="activeExePLOREView">
+            <div id="pointsNotif">You just earned  points!</div>
+            <div id="qoute">"Leave it better than you found it, Be found better than you where"</div>
+            <button style="background-color: forestgreen;" onclick="this.disabled = true; endExePLORE()">Finish</button>
+            <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
+        </div>
+    </main>
+    
+</body>
 
-<!-- Active Time Trial View -->
-<div id="activeTimeTrialView">
-    <div id="timer">0 seconds</div>
-    <div>
-        <button style="background-color: forestgreen;" onclick="endTimeTrial()">Finish</button>
-        <button style="background-color: red;" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
-    </div>
-</div>
-
-<!-- Active ExePLORE View -->
-<div id="activeExePLOREView">
-    <div id="qoute">"Leave it better than you found it, Be found better than you were"</div>
-    <div>
-        <button style="background-color: forestgreen;" onclick="endExePLORE()">Finish</button>
-        <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
-    </div>
-</div>
 {% endblock %}
-

@@ -20,7 +20,7 @@ class LoginViewTest(TestCase):
     def test_valid_sign_in(self):
         response = self.client.post("/login/", {"username": self.__USER_NAME, "password":self.__USER_PASSWORD})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse("welcome"))
+        self.assertEqual(response.url, reverse("dashboard"))
         self.assertTrue(response.wsgi_request.user.is_authenticated)
 
     def test_wrong_username(self):
@@ -85,7 +85,7 @@ class RegisterViewTest(TestCase):
         self.assertEqual(valid_form["email"], new_user.email)
         hashPrefix = "pbkdf2_sha256$"
         self.assertEqual(hashPrefix, new_user.password[:len(hashPrefix)]) 
-        self.assertEqual(response.url, reverse("welcome"))
+        self.assertEqual(response.url, reverse("dashboard"))
 
     def test_duplicate_username(self):
         duplicate_username = "duplicateUsername"
@@ -196,14 +196,10 @@ class RestrictedUrlUserRedirectTests(TestCase):
         pass
 
 
-    def test_welcome_redirect_on_unauthorized_request(self):
-
-        response = self.client.get(reverse("welcome"))  
-
+    def test_dashboard_redirect_on_unauthorized_request(self):
+        response = self.client.get(reverse("dashboard"))  
         self.assertEqual(response.status_code, 302)
 
     def test_settings_redirect_on_unauthorized_request(self):
-
         response = self.client.get(reverse("settings"))  
-
         self.assertEqual(response.status_code, 302)

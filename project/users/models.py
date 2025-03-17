@@ -10,6 +10,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
     other_field = models.CharField(max_length=100, default='default value')  
     points = models.IntegerField(default=0)
+    exeplore_mode_distance_traveled = models.IntegerField(default=0)
 
     def __str__(self):
         return self.user.username

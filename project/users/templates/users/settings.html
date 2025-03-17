@@ -182,6 +182,8 @@
                         <a href="#" class="text-link" onclick="showLegalModal('terms')">Terms of Service</a>
                         <a href="#" class="text-link" onclick="showLegalModal('data')">Data Protection</a>
                     </div>
+                    <br>
+                    <div><a href="#" class="text-link" onclick="downloadUserData()">download user data</a></div>
                 </div>
             </div>
         </div>
@@ -565,6 +567,43 @@
             document.getElementById('passwordChangeForm').reset();
             clearPasswordErrors();
         }, 300);
+    }
+
+    function downloadUserData(){
+        fetch('/export-data', {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'  // Optional for CSRF
+            }
+        })
+        .then(response => {
+            // Extract filename from Content-Disposition header
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let filename = "export.json"; // Default filename (set to .json)
+
+            if (contentDisposition) {
+                const match = contentDisposition.match(/filename="(.+)"/);
+                if (match) {
+                    filename = match[1];
+                }
+            }
+
+            return response.json().then(jsonData => ({ jsonData, filename }));
+        })
+        .then(({ jsonData, filename }) => {
+            // Convert JSON data to a Blob with application/json type
+            const blob = new Blob([JSON.stringify(jsonData, null, 4)], { type: 'application/json' });
+
+            // Create a download link
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;  // Set the filename for the download
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);  // Clean up the URL object
+        })
+        .catch(error => console.error('Error downloading file:', error));
     }
     
     function clearPasswordErrors() {

@@ -5,26 +5,33 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
+from tasks.models import UserTaskCompletion
+from race.models import RaceEntry
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 
 User = get_user_model()
 
 def get_user_settings(request):
     return UserSettings.objects.get(user=request.user)
 
-def home(request):
-    return render(request, 'users/home.html')
+def welcome(request):
+    return render(request, 'users/welcome.html')
 
 def log_out(request):
     logout(request)
-    return redirect('home')
+    return redirect('welcome')
     
 
 def sign_in(request):
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+
         form = LoginForm()
         return render(request,'users/login.html', {'form': form})
     
@@ -38,7 +45,7 @@ def sign_in(request):
             if user:
                 login(request, user)
                 messages.success(request,f'Hi {username.title()}, welcome back!')
-                return redirect('welcome')
+                return redirect('dashboard')
         
         # form is not valid or user is not authenticated
         messages.error(request,f'Invalid username or password')
@@ -56,24 +63,33 @@ def register(request):
 
             login(request, user)
             messages.success(request, 'Your account has been created!')
-            return redirect('welcome')  
-
+            return redirect('dashboard')  
     else:
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+
         form = UserRegistrationForm()
 
     return render(request, 'users/register.html', {'form': form})
 
 @login_required
-def welcome(request):
+def dashboard(request):
         if request.user.is_authenticated:
+            #define dynamic values to be passed to the template
             user_profile = Profile.objects.get(user=request.user)
-
+            tasks_complete = UserTaskCompletion.get_num_completed_tasks(user_profile.user)
+            races_complete = RaceEntry.get_num_completed_races(user_profile.user)
+            distance_covered = user_profile.exeplore_mode_distance_traveled + RaceEntry.get_total_distance_travled_by_user(user_profile.user)
+            print(tasks_complete, races_complete)
             context = {
                 'user_score': user_profile.points,
                 }
-            return render(request, 'users/welcome.html', {
+            return render(request, 'users/dashboard.html', {
                 'username': request.user.username,
-                'user_score': user_profile.points  
+                'user_score': user_profile.points,
+                'tasks_completed' : tasks_complete,
+                'races_completed' : races_complete,
+                'distance_covered' : distance_covered
             })
         else:
             return redirect('login')
@@ -135,7 +151,7 @@ def delete_account(request):
         user = request.user
         user.delete()
         messages.success(request, 'Your account has been successfully deleted.')
-        return redirect('home')
+        return redirect('welcome')
     return redirect('settings')
 
 @login_required
@@ -172,11 +188,26 @@ def toggle_setting(request):
             
     return JsonResponse({'status': 'error'}, status=400)
 
-def privacy_policy_view(request):
-    return render(request, "legal/privacy_policy.html")
+@login_required
+def export_user_data(request):
+    user = request.user  # Get logged-in user
+    user_settings = UserSettings.objects.filter(user=user).first()
 
-def data_protection_view(request):
-    return render(request, "legal/data_protection.html")
+    # Generate user data in JSON format
+    user_data = {
+        "user_data_export": {
+            "username": user.username,
+            "email": user.email,
+            "settings_preferences": {
+                "allow_location_tracking": user_settings.location_tracking,
+                "show_user_activity_on_leaderboard": user_settings.show_on_leaderboard
+            },
+            "notes": [
+                "If you would like to change these details, you can do so in the settings menu.",
+                "If you would like this information to no longer be stored, you can delete your account from the settings menu."
+            ]
+        }
+    }
 
-def terms_of_service_view(request):
-    return render(request, "legal/terms_of_service.html")
+    # Return a JSON response
+    return JsonResponse(user_data, safe=False)

@@ -4,12 +4,25 @@ ExePlore is a web application that allows users to run races between real locati
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/lmt610/ecm2434)         ![GitHub top language](https://img.shields.io/github/languages/top/lmt610/ecm2434)         ![GitHub repo size](https://img.shields.io/github/repo-size/lmt610/ecm2434)
 ## Contents 
+- [Authors](#Authors)
 - [Features](#Features)
 - [Project Structure](#Project-structure)
 - [Dependencies](#Dependencies)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Populating-database](#Populating-databases)
+
+
+## Authors 
+the developers of this project are:
+- Alex Norris
+- Dan Loveless
+- Aria Noroozi
+- Barnaby wreford
+- Laila Tayeb
+- Oliver Greet
+- Nathan Gillings
+
 ## Features
 - User profiles
 - Geographically defined races
@@ -98,3 +111,5 @@ or
 ```sh
 python manage.py delete_races
 ```
+
+
