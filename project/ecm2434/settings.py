@@ -1,4 +1,5 @@
 import sys
+import dj_database_url
 """
 Django settings for ecm2434 project.
 
@@ -22,13 +23,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k$ru^m$2=ah$-6ta6_x66&868+$v45_r02y+^)2!3_^pfbu$&3'
+SECRET_KEY = 'ajksdhfSjadsfh897qy9*W&AS^D238940k$ru^m$2=ah$-6ta6_x66&868+$v45_r02y+^)2!3_^pfbu$&3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["www.ecm2434.onrender.com"]
 
+# Deployment security
+CSRF_COOKIE_SECURE=True
+SESSION_COOKIE_SECURE=True
+SECURE_SSL_REDIRECT=True
 
 # Application definition
 
@@ -49,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -82,10 +88,11 @@ WSGI_APPLICATION = 'ecm2434.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+            #replace value with the render URL
+            default='postgresql://postgres:postgres@localhost:5432/ecm2434', 
+            conn_max_age=600
+        )
 }
 
 
@@ -127,6 +134,8 @@ LOGIN_URL = 'login'
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
