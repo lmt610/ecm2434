@@ -11,6 +11,7 @@ from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
+from django.http import HttpResponse
 
 User = get_user_model()
 
@@ -185,3 +186,30 @@ def toggle_setting(request):
             return JsonResponse({'status': 'success'})
             
     return JsonResponse({'status': 'error'}, status=400)
+
+@login_required
+def export_user_data(request):
+    user = request.user  # Get logged-in user
+    user_settings = UserSettings.objects.filter(user=user).first()
+    filename = f"user_data_{user.username}.txt"
+
+    # Generate user data 
+    file_content = f"""
+    User Data Export
+    Username: {user.username}
+    Email: {user.email}
+
+    Settings preferences 
+    allow location tracking: {user_settings.location_tracking}
+    show user activity on leader boards: {user_settings.show_on_leaderboard}
+
+    If you would like to change these details, you can do so in the settings menu.
+    If you would like this information to no longer be stored, you can delete you account from the settings menu.
+
+    """
+
+    # Create HTTP response with file
+    response = HttpResponse(file_content, content_type="text/plain")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    
+    return response
