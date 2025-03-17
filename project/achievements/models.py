@@ -33,9 +33,12 @@ class Achievement(models.Model):
         'COUNT_RACES': [
             'medal',
             'duration',
-            'distance'
+            'distance',
+            'position'
         ],
-        'COUNT_TEAMS': []
+        'COUNT_TEAMS': [
+            'number_of_members'
+        ]
     }
     
     def __str__(self):
@@ -49,7 +52,7 @@ class Achievement(models.Model):
         if not isinstance(self.subconditions, list):
             raise ValidationError("Subconditions must be a list")
         
-        valid_fields = self.get_fields_for_model(self.main_condition_model)
+        valid_fields = self.MODEL_FIELDS.get(str(self.main_condition_model),[])
         valid_operators = [op[0] for op in self.OPERATOR_CHOICES]
         
         for subcondition in self.subconditions:
@@ -81,7 +84,8 @@ class Achievement(models.Model):
         # Apply all subconditions
         for subcondition in self.subconditions:
             field, operator, value = subcondition
-            
+           
+
             # Get the appropriate labeler function and apply it
             labeler = get_labeler_for_field(field)
             if labeler:

@@ -16,11 +16,10 @@ class AchievementTests(TestCase):
         self.race2 = Race.objects.create(title="Race 2", start=loc_forum, end=loc_comm_gardens, medal_requirements=[100,200,300]) #distance=0.55
         self.race3 = Race.objects.create(title="Race 3", start=loc_reed_pond, end=loc_comm_gardens, medal_requirements=[100,200,300]) #distance=0.9
 
-        # User needed for authorised get request 
-        self.user = User.objects.create_user(username='testuser', password='password')
-
+        self.user1 = User.objects.create_user(username='testuser1', password='password1')
+        self.user2 = User.objects.create_user(username='testuser2', password='password2')
         
-    def test_single_subcondition(self):
+    def test_medal_field(self):
         achievement = Achievement.objects.create(
             title="Gold Collector",
             description="Get 2 gold medals",
@@ -34,29 +33,29 @@ class AchievementTests(TestCase):
         # add a single gold medal entry
         RaceEntry.objects.create(
             race=self.race1,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=90)
         )
-        self.assertFalse(achievement.has_user_completed(self.user))
+        self.assertFalse(achievement.has_user_completed(self.user1))
         
         # add a silver entry
         RaceEntry.objects.create(
             race=self.race2,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=125)
         )
-        self.assertFalse(achievement.has_user_completed(self.user))
+        self.assertFalse(achievement.has_user_completed(self.user1))
 
         # add a gold entry
         RaceEntry.objects.create(
             race=self.race3,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=50)
         )
-        self.assertTrue(achievement.has_user_completed(self.user))
+        self.assertTrue(achievement.has_user_completed(self.user1))
 
     # checks that achievements works for the 'duration' field
     def test_duration_field(self):
@@ -73,29 +72,29 @@ class AchievementTests(TestCase):
         # add a single gold medal entry
         RaceEntry.objects.create(
             race=self.race1,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=50)
         )
-        self.assertFalse(achievement.has_user_completed(self.user))
+        self.assertFalse(achievement.has_user_completed(self.user1))
         
         # add a silver entry
         RaceEntry.objects.create(
             race=self.race2,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=125)
         )
-        self.assertFalse(achievement.has_user_completed(self.user))
+        self.assertFalse(achievement.has_user_completed(self.user1))
 
         # add a gold entry
         RaceEntry.objects.create(
             race=self.race3,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=45)
         )
-        self.assertTrue(achievement.has_user_completed(self.user))
+        self.assertTrue(achievement.has_user_completed(self.user1))
 
     # checks that achievements works for the 'distance' field
     def test_distance_field(self):
@@ -112,27 +111,83 @@ class AchievementTests(TestCase):
         # add a short race
         RaceEntry.objects.create(
             race=self.race1,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=50)
         )
-        self.assertFalse(achievement.has_user_completed(self.user))
+        self.assertFalse(achievement.has_user_completed(self.user1))
         
         # add a long race
         RaceEntry.objects.create(
             race=self.race2,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=125)
         )
-        self.assertFalse(achievement.has_user_completed(self.user))
+        self.assertFalse(achievement.has_user_completed(self.user1))
 
         # add a long race
         RaceEntry.objects.create(
             race=self.race3,
-            user=self.user,
+            user=self.user1,
             start_time = now(),
             end_time = now()+timedelta(seconds=45)
         )
-        self.assertTrue(achievement.has_user_completed(self.user))
+        self.assertTrue(achievement.has_user_completed(self.user1))
+
+    def test_position_field(self):
+        achievement = Achievement.objects.create(
+            title="Double Crown",
+            description="Hold the top leaderboard position on two races",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator="=",
+            main_condition_value="2",
+            subconditions=[
+                ["position", "=", "1"]
+            ]
+        )
+        # add one race where the user holds the top spot
+        RaceEntry.objects.create(
+            race=self.race1,
+            user=self.user1,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=90)
+        )
+        RaceEntry.objects.create(
+            race=self.race1,
+            user=self.user2,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=120)
+        )
+        self.assertFalse(achievement.has_user_completed(self.user1))
+        
+        # add a race where the user is in 2nd
+        RaceEntry.objects.create(
+            race=self.race2,
+            user=self.user1,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=125)
+        )
+        RaceEntry.objects.create(
+            race=self.race2,
+            user=self.user2,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=90)
+        )
+        self.assertFalse(achievement.has_user_completed(self.user1))
+
+        # add a race where the user is 1st
+        RaceEntry.objects.create(
+            race=self.race3,
+            user=self.user1,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=50)
+        )
+        RaceEntry.objects.create(
+            race=self.race3,
+            user=self.user2,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=90)
+        )
+        self.assertTrue(achievement.has_user_completed(self.user1))
 

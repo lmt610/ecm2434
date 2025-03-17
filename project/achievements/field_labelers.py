@@ -1,6 +1,7 @@
-from django.db.models import F, ExpressionWrapper, DurationField, CharField, IntegerField, Func, FloatField 
-from django.db.models.functions import Round, Cast, Radians, Sqrt, Cos, Power, Sin, ATan2
+from django.db.models import F, ExpressionWrapper, DurationField, CharField, IntegerField, Func, FloatField, Count, Window, Case, When 
+from django.db.models.functions import Round, Cast, Radians, Sqrt, Cos, Power, Sin, ATan2, RowNumber
 from django.db.models.expressions import RawSQL
+from race.models import RaceEntry
 
 def get_labeler_for_field(field_name):
     """
@@ -10,7 +11,9 @@ def get_labeler_for_field(field_name):
     labelers = {
         'medal': add_label_medal,
         'duration': add_label_duration,
-        'distance': add_label_distance
+        'distance': add_label_distance,
+        'position': add_label_position,
+        'number_of_members': add_label_number_of_members
     }
     return labelers.get(field_name)
 
@@ -48,3 +51,28 @@ def add_label_distance(race_queryset):
     
     distance_expr = ExpressionWrapper(distance, output_field=FloatField())
     return race_queryset.annotate(distance=distance_expr)
+
+def add_label_position(race_queryset):
+    duration = ExpressionWrapper(F('end_time')-F('start_time'), output_field=DurationField())
+    all_entry_positions = RaceEntry.objects.annotate(
+        position=Window(
+                expression=RowNumber(),
+                partition_by=[F('race')],
+                order_by=duration.asc()
+        )
+    ).values('id', 'position')
+
+    # Django ordering fails if you don't stop lazy evaluation now
+    position_mapping = [(entry['id'], entry['position']) for entry in all_entry_positions]
+    position_annotation = Case(
+        *[When(id=entry_id, then=pos) for entry_id, pos in position_mapping],
+        output_field=IntegerField()
+    )
+    return race_queryset.annotate(position=position_annotation)
+
+########################
+## TEAM LABELERS
+########################
+
+def add_label_number_of_members(team_queryset):
+    return team_queryset.annotate(number_of_members=Count('members'))
