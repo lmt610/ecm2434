@@ -18,7 +18,82 @@ class AchievementTests(TestCase):
 
         self.user1 = User.objects.create_user(username='testuser1', password='password1')
         self.user2 = User.objects.create_user(username='testuser2', password='password2')
+
+    def test_get_all_user_achievements(self):
+        achievement1 = Achievement.objects.create(
+            title="A Whole New World",
+            description="Run a Race",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator=">",
+            main_condition_value="0",
+            subconditions=[]
+        )
+        achievement2 = Achievement.objects.create(
+            title="Run two races",
+            description="Run two races description",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator=">",
+            main_condition_value="1",
+            subconditions=[]
+        )
+        achievement3 = Achievement.objects.create(
+            title="Gold Collector",
+            description="Get 2 gold medals",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator="=",
+            main_condition_value="2",
+            subconditions=[
+                ["medal", "=", "Gold"]
+            ]
+        )
         
+        RaceEntry.objects.create(
+            race=self.race1,
+            user=self.user1,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=1000)
+        )
+        query1 = Achievement.get_all_user_achievements(self.user1)
+        self.assertEqual(query1.count(), 1)
+        self.assertIn(achievement1, query1) 
+        
+        # add a second race entry (now achievement 1 and 2 are complete)
+        RaceEntry.objects.create(
+            race=self.race2,
+            user=self.user1,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=1000)
+        )
+        query2 = Achievement.get_all_user_achievements(self.user1)
+        self.assertEqual(query2.count(), 2)
+        self.assertIn(achievement1, query2)
+        self.assertIn(achievement2, query2)
+
+        # add a race entry for another use (still achievement 1 and 2 are complete)
+        RaceEntry.objects.create(
+            race=self.race2,
+            user=self.user2,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=3)
+        )
+        query3 = Achievement.get_all_user_achievements(self.user1)
+        self.assertEqual(query2.count(), 2)
+        self.assertIn(achievement1, query2)
+        self.assertIn(achievement2, query2)
+
+        # make the other user complete all 3 achievements
+        RaceEntry.objects.create(
+            race=self.race3,
+            user=self.user2,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=4)
+        )
+        query4 = Achievement.get_all_user_achievements(self.user1)
+        self.assertEqual(query2.count(), 2)
+        self.assertIn(achievement1, query4)
+        self.assertIn(achievement2, query4)
+        
+
     def test_medal_field(self):
         achievement = Achievement.objects.create(
             title="Gold Collector",

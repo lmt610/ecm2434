@@ -72,7 +72,16 @@ class Achievement(models.Model):
             
             if not isinstance(value, str):
                 raise ValidationError("Values must be strings")
-    
+   
+    @staticmethod
+    def get_all_user_achievements(user):
+        completed_achievements_ids = []
+        for achievement in Achievement.objects.all():
+            if achievement.has_user_completed(user):
+                completed_achievements_ids.append(achievement.id)
+ 
+        return Achievement.objects.filter(id__in=completed_achievements_ids)
+
     def has_user_completed(self, user):
         if self.main_condition_model == 'COUNT_RACES':
             base_query = RaceEntry.objects.filter(user=user)
