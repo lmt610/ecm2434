@@ -2,6 +2,7 @@ from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.db.models.signals import post_migrate
 from .models import Achievement
+from django.conf import settings
 
 @receiver(post_migrate)
 def populate_database_with_achievements(sender, **kwargs):
@@ -10,7 +11,11 @@ def populate_database_with_achievements(sender, **kwargs):
     # Ensure this only runs for the 'achievements' app
     if sender.name != "achievements":
         return
-    
+   
+    # skip these if testing
+    if settings.TESTING:
+        return
+
     Achievement.objects.create(
             title="A Whole New World",
             description="Run a Race",
