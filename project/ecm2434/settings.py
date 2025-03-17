@@ -1,5 +1,6 @@
 import sys
 import dj_database_url
+import os
 """
 Django settings for ecm2434 project.
 
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ajksdhfSjadsfh897qy9*W&AS^D238940k$ru^m$2=ah$-6ta6_x66&868+$v45_r02y+^)2!3_^pfbu$&3'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
