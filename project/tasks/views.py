@@ -1,31 +1,36 @@
 from users.models import Profile
 from django.shortcuts import render, redirect
+from tasks.models import Task
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
+@login_required
 def tasks(request):
-    try:
-        user_profile = Profile.objects.get(user=request.user)
-    except Profile.DoesNotExist:
-        user_profile = Profile.objects.create(user=request.user, points=0)
+    user_tasks = []
+    tasks = Task.objects.filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
 
-    context = {
-        'user_score': user_profile.points,
-    }
-    return render(request, 'tasks/tasks.html', context)
-    return render(request, 'user/welcome.html', context) 
+    for task in tasks:
+        if task.task_type == 'single':
+            is_completed = task.is_completed_by_user(request.user)
+            user_tasks.append({
+                'task': task,
+                'is_completed': is_completed,
+                'count': None,
+                'progress_percentage': 100 if is_completed else 0
+            })
+        elif task.task_type == 'multi':
+            completed_count = task.completed_races_count(request.user)
 
-def add_task_score(request, task_id):  
-    user_profile = Profile.objects.get(user=request.user)
-    
-    # placeholder for now
-    task_points = {
-        1: 10,
-        2: 20,
-        3: 30,
-    }
+            if completed_count > task.required_races:
+                completed_count = task.required_races
 
-    points = task_points.get(task_id, 0)
+            progress_percentage = (completed_count / task.required_races * 100)
+            user_tasks.append({
+                'task': task,
+                'is_completed': completed_count >= task.required_races,
+                'count': completed_count,
+                'progress_percentage': progress_percentage
+            })
 
-    user_profile.points += points
-    user_profile.save()
+    return render(request, 'tasks/tasks.html', {'user_tasks': user_tasks})
 
-    return redirect('tasks')

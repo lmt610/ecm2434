@@ -45,6 +45,8 @@ class RaceEntry(models.Model):
         super().save(*args, **kwargs)
 
     def get_duration(self):
+        if (self.end_time == None or self.start_time == None):
+            return None
         return (self.end_time - self.start_time).total_seconds()
 
     def get_duration_in_minutes(self):
@@ -72,13 +74,3 @@ class Location(models.Model):
 
     def __str__(self):
         return self.name
-        
-class LeaderboardEntry(models.Model):
-    """Stores race results for the leaderboard"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    race = models.ForeignKey(Race, on_delete=models.CASCADE)
-    completion_time = models.FloatField(help_text="Time in seconds")
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} - {self.race.title} - {self.completion_time}s"

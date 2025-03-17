@@ -1,0 +1,378 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ExePLORE{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <style>
+        /* Global Reset */
+        body, html {
+            margin: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 0 !important;
+            width: 100% !important;
+            min-height: 100vh !important;
+            overflow-x: hidden !important;
+            font-family: 'Inter', sans-serif !important;
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+        }
+
+        /* Header Reset */
+        .exeplore-header *,
+        .exeplore-header *::before,
+        .exeplore-header *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Enhanced Header Styles */
+        .exeplore-header {
+            background-color: #2f554f !important;
+            background-image: linear-gradient(to right, #2f554f, #3a6a62) !important;
+            padding: 0.75rem 2rem !important;
+            display: flex !important;
+            vertical-align: middle !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            height: 74px !important;
+            position: relative !important;
+            z-index: 1000 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Logo Section */
+        .exeplore-header .header-logo {
+            display: flex !important;
+            align-items: center !important;
+            gap: 1.25rem !important;
+            transition: transform 0.3s ease !important;
+            text-decoration: none !important;
+        }
+
+        .exeplore-header .header-logo:hover {
+            transform: scale(1.02) !important;
+        }
+
+        .exeplore-header .header-logo img {
+            height: 48px !important;
+            width: auto !important;
+            filter: brightness(1.05) !important;
+        }
+
+        .exeplore-header .site-title {
+            color: #ffffff !important;
+            font-size: 1.75rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.5px !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Navigation */
+        .exeplore-header .main-nav {
+            display: flex !important;
+            align-items: center !important;
+            gap: 2rem !important;
+            margin-left: auto !important;
+            height: 100% !important;
+        }
+
+        .exeplore-header .nav-links {
+            display: flex !important;
+            gap: 0.5rem !important;
+            list-style: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: 100% !important;
+            align-items: center !important;
+        }
+
+        .exeplore-header .nav-links a {
+            color: rgba(255,255,255,0.9) !important;
+            text-decoration: none !important;
+            padding: 0.625rem 1rem !important;
+            border-radius: 6px !important;
+            transition: all 0.2s ease !important;
+            font-size: 0.95rem !important;
+            font-weight: 500 !important;
+            letter-spacing: 0.3px !important;
+            position: relative !important;
+        }
+
+        .exeplore-header .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1) !important;
+            color: #ffffff !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .exeplore-header .nav-links a::after {
+            content: '' !important;
+            position: absolute !important;
+            bottom: 0 !important;
+            left: 50% !important;
+            width: 0 !important;
+            height: 2px !important;
+            background-color: #ffffff !important;
+            transition: all 0.2s ease !important;
+            transform: translateX(-50%) !important;
+            opacity: 0 !important;
+        }
+
+        .exeplore-header .nav-links a:hover::after {
+            width: 80% !important;
+            opacity: 1 !important;
+        }
+
+        /* Auth Buttons Container */
+        .exeplore-header .auth-buttons {
+            display: flex !important;
+            gap: 1rem !important;
+            align-items: center !important;
+            margin-left: 1.5rem !important;
+            margin-right: 0.5rem !important;
+            position: relative !important;
+        }
+
+        /* User Menu */
+        .exeplore-header .user-menu {
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+            padding: 0.75rem 1.25rem !important;
+            padding-right: 2.5rem !important;
+            gap: 0.75rem !important;
+            cursor: pointer !important;
+            color: #ffffff !important;
+            background-color: rgba(255,255,255,0.1) !important;
+            border-radius: 8px !important;
+            transition: all 0.2s ease !important;
+            min-width: 140px !important;
+            max-width: 160px !important;
+        }
+
+        .exeplore-header .user-menu:hover {
+            background-color: rgba(255,255,255,0.15) !important;
+        }
+
+        .exeplore-header .user-menu span {
+            font-weight: 500 !important;
+            font-size: 0.95rem !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            max-width: calc(100% - 20px) !important;
+            display: block !important;
+        }
+
+        .exeplore-header .user-menu::after {
+            content: '▾' !important;
+            position: absolute !important;
+            right: 1rem !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            transition: transform 0.2s ease !important;
+            font-size: 1.2rem !important;
+            color: rgba(255,255,255,0.8) !important;
+        }
+
+        .exeplore-header .user-menu:hover::after {
+            transform: translateY(-50%) rotate(180deg) !important;
+            color: #ffffff !important;
+        }
+
+        .exeplore-header .user-menu-content {
+            position: absolute !important;
+            top: calc(100% + 0.5rem) !important;
+            right: 0 !important;
+            background-color: #ffffff !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            min-width: 200px !important;
+            overflow: hidden !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(-10px) !important;
+            transition: all 0.2s ease !important;
+            z-index: 1001 !important;
+        }
+
+        .exeplore-header .user-menu:hover .user-menu-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
+
+        .exeplore-header .user-menu-content a {
+            display: flex !important;
+            padding: 0.875rem 1.25rem !important;
+            color: #2f554f !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease !important;
+            font-size: 0.95rem !important;
+            align-items: center !important;
+            gap: 0.75rem !important;
+            border-left: 3px solid transparent !important;
+        }
+
+        .exeplore-header .user-menu-content a:hover {
+            background-color: #f5f7fa !important;
+            color: #1a3731 !important;
+            border-left-color: #2f554f !important;
+        }
+
+        /* Auth Buttons - Updated to match welcome page */
+        .exeplore-header .auth-button {
+            padding: 0.75rem 1rem !important;
+            border-radius: 8px !important;
+            text-decoration: none !important;
+            transition: all 0.3s ease !important;
+            font-weight: 600 !important;
+            font-size: 0.95rem !important;
+            letter-spacing: 0.3px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            white-space: nowrap !important;
+        }
+
+        .exeplore-header .login-button {
+            background-color: #2f554f !important;
+            color: white !important;
+            min-width: 100px !important;
+        }
+
+        .exeplore-header .login-button:hover {
+            background-color: #3a6a62 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        }
+
+        .exeplore-header .register-button {
+            background-color: white !important;
+            color: #2f554f !important;
+            border: 2px solid #2f554f !important;
+            min-width: 100px !important;
+        }
+
+        .exeplore-header .register-button:hover {
+            background-color: #ecfdf5 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Main content wrapper */
+        .exeplore-content {
+            flex: 1;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            min-height: auto;
+        }
+
+        /* Footer */
+        .site-footer {
+            margin-top: auto;
+            width: 100%;
+            flex-shrink: 0;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .exeplore-header {
+                padding: 0.75rem 1.5rem !important;
+            }
+
+            .exeplore-header .nav-links a {
+                padding: 0.5rem 0.75rem !important;
+            }
+
+            .exeplore-header .site-title {
+                font-size: 1.5rem !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .exeplore-header .nav-links {
+                display: none !important;
+            }
+
+            .exeplore-header .auth-buttons {
+                margin-left: 1rem !important;
+            }
+
+            .exeplore-header .site-title {
+                font-size: 1.25rem !important;
+            }
+
+            .exeplore-header .user-menu {
+                min-width: 140px !important;
+            }
+            
+            .exeplore-header .auth-button {
+                padding: 0.625rem 1rem !important;
+                font-size: 0.9rem !important;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="exeplore-header">
+        <a href="{% url 'welcome' %}" class="header-logo">
+            <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="University of Exeter Logo">
+            <span class="site-title">ExePLORE</span>
+        </a>
+        
+        <nav class="main-nav">
+            <ul class="nav-links">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'welcome' %}">Dashboard</a></li>
+                    <li><a href="{% url 'race' %}">Races</a></li>
+                    <li><a href="{% url 'tasks' %}">Tasks</a></li>
+                    <li><a href="{% url 'team_list' %}">Teams</a></li>
+                    <li><a href="{% url 'team_leaderboard' %}">Leaderboard</a></li>
+                {% endif %}
+            </ul>
+
+            <div class="auth-buttons">
+                {% if user.is_authenticated %}
+                    <div class="user-menu">
+                        <span>{{ user.username }}</span>
+                        <div class="user-menu-content">
+                            <a href="{% url 'settings' %}">Settings</a>
+                            <a href="{% url 'logout' %}">Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="auth-button login-button">
+                        <i class="fas fa-sign-in-alt"></i> <span class="button-text">Sign In</span>
+                    </a>
+                    <a href="{% url 'register' %}" class="auth-button register-button">
+                        <i class="fas fa-user-plus"></i> <span class="button-text">Register</span>
+                    </a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="exeplore-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        {% block footer %}{% endblock %}
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

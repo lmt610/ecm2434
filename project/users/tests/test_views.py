@@ -142,7 +142,54 @@ class RegisterViewTest(TestCase):
         self.assertFalse(response.wsgi_request.user.is_authenticated)
         self.assertEqual(response.status_code, 200)
        
-        self.assertContains(response, error_message) 
+        self.assertContains(response, error_message)
+        
+    def test_registration_without_username(self):
+        response = self.client.post(reverse('register'), {
+            'password': 'testpassword',
+            'email': 'test@test.com'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "This field is required.")
+
+    def test_registration_without_password(self):
+        response = self.client.post(reverse('register'), {
+            'username': 'testuser2',
+            'email': 'test2@example.com'
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "This field is required.")
+
+    def test_registration_without_email(self):
+        response = self.client.post(reverse('register'), {
+            'username': 'testuser3',
+            'password': 'testpassword',
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "This field is required.")
+
+    def test_registration_with_invalid_email(self):
+        response = self.client.post(reverse('register'), {
+            'username': 'testuser4',
+            'password': 'testpassword',
+            'email': 'invalid-email'  # invalid email format
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Enter a valid email address.")
+
+    def test_user_registration(self):
+        response = self.client.post(reverse('register'), {
+            'username': 'testuser1',
+            'password': 'testpassword',
+            'email': 'test1@test.com'
+        })
+
+        # asserts successful registration
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get(response.url)  # follows the redirect
+        self.assertContains(response, "Your account has been created!")
+
+
 
 class RestrictedUrlUserRedirectTests(TestCase):
     def setUp(self):

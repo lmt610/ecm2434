@@ -1,6 +1,5 @@
 import json
 from django.http import JsonResponse
-from .models import LeaderboardEntry
 from django.shortcuts import render, get_object_or_404
 from .models import Race, Location, RaceEntry
 from django.http import JsonResponse
@@ -22,7 +21,8 @@ def race_view(request, race_id=None):
         race = get_object_or_404(Race, id=race_id)
         entry = RaceEntry.objects.filter(race=race, user=request.user).first()
         if(entry):
-            return render(request, "race/race.html", {"race": race, "entry": entry})
+            duration = entry.get_duration()
+            return render(request, "race/race.html", {"race": race, "entry": entry, "duration" : duration})
         else:
             return render(request,"race/race.html", {"race": race})
 
@@ -83,42 +83,6 @@ def update_race_time(request):
     entry.save()
     return JsonResponse({"status": "success", "message": "RaceEntry updated"})
 
-    
-def leaderboard(request):
-    """Returns the leaderboard for a specific race, sorted by completion time"""
-    race_id = request.GET.get("race_id")  # Get race ID from the frontend
-    
-    if race_id:
-        leaderboard_entries = RaceEntry.objects.filter(race_id=race_id).order_by("duration")[:10]
-    else:
-        leaderboard_entries = RaceEntry.objects.order_by("duration")[:10]  # Default top 10 (all races)
-
-    data = [
-        {
-            "user": entry.user.username,
-            "race": entry.race.title,
-            "time": entry.duration,
-            "date": entry.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-        }
-        for entry in leaderboard_entries
-    ]
-    return JsonResponse({"leaderboard": data})
-
-def leaderboard_view(request):
-    race_title = request.GET.get("race_title")
-    if race_title:
-        leaderboard_entries = LeaderboardEntry.objects.filter(race__title__icontains=race_title).order_by('completion_time').select_related('user', 'race')
-    else:
-        leaderboard_entries = LeaderboardEntry.objects.order_by('completion_time').select_related('user', 'race')
-        
-    top_entries = leaderboard_entries[:10]
-    entries_count = leaderboard_entries.count()
-
-    context = {
-        'top_entries': top_entries,
-    }
-    return render(request, 'race/leaderboard.html', context)
-
 def add_exeplore_points(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -143,3 +107,5 @@ def add_exeplore_points(request):
         return JsonResponse({"points": points_to_add})
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
+

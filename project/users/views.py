@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
@@ -13,20 +13,15 @@ from django.core.exceptions import ValidationError
 User = get_user_model()
 
 def get_user_settings(request):
-    try:
-        user_settings = UserSettings.objects.get(user=request.user)
-    except UserSettings.DoesNotExist:
-        user_settings = UserSettings.objects.create(
-            user=request.user,
-            location_tracking=True,
-            show_on_leaderboard=True,
-            route_notifications=True,
-            achievement_notifications=True
-        )
-    return user_settings
+    return UserSettings.objects.get(user=request.user)
 
 def home(request):
     return render(request, 'users/home.html')
+
+def log_out(request):
+    logout(request)
+    return redirect('home')
+    
 
 def sign_in(request):
     if request.method == 'GET':
@@ -164,15 +159,24 @@ def update_email(request):
 def toggle_setting(request):
     if request.method == 'POST':
         setting_name = request.POST.get('setting')
+        if setting_name==None or request.POST.get('value')==None:
+            return JsonResponse({'status':'error'},status=400)
+
         value = request.POST.get('value') == 'true'
         
-        try:
-            user_settings = UserSettings.objects.get(user=request.user)
-            if hasattr(user_settings, setting_name):
-                setattr(user_settings, setting_name, value)
-                user_settings.save()
-                return JsonResponse({'status': 'success'})
-        except UserSettings.DoesNotExist:
-            pass
+        user_settings = UserSettings.objects.get(user=request.user)
+        if hasattr(user_settings, setting_name):
+            setattr(user_settings, setting_name, value)
+            user_settings.save()
+            return JsonResponse({'status': 'success'})
             
     return JsonResponse({'status': 'error'}, status=400)
+
+def privacy_policy_view(request):
+    return render(request, "legal/privacy_policy.html")
+
+def data_protection_view(request):
+    return render(request, "legal/data_protection.html")
+
+def terms_of_service_view(request):
+    return render(request, "legal/terms_of_service.html")
