@@ -29,7 +29,7 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["https://ecm2434-fy7q.onrender.com"]
+ALLOWED_HOSTS = ["ecm2434-fy7q.onrender.com"]
 
 # Deployment security
 CSRF_COOKIE_SECURE=True
