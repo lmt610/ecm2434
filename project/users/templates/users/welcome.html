@@ -29,7 +29,7 @@
     <!-- Quick Stats Summary -->
     <div class="stats-summary">
         <div class="stat-card">
-            <h3 class="stat-value">{{ tasks_completed }}</h3>
+            <h3 class="stat-value">{{ tasks_completed|default:"0"}}</h3>
             <p class="stat-label">Tasks Completed</p>
         </div>
         <div class="stat-card">

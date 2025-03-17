@@ -24,4 +24,4 @@ def populate_database(sender, **kwargs):
         user_b = User.objects.create_user(username="UserB", password="Password")
     
 
-        
+    print("database populated with test users")
