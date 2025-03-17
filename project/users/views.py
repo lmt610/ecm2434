@@ -7,6 +7,7 @@ from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
 from tasks.models import UserTaskCompletion
 from race.models import RaceEntry
+from achievements.models import Achievement 
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
@@ -79,6 +80,7 @@ def dashboard(request):
             user_profile = Profile.objects.get(user=request.user)
             tasks_complete = UserTaskCompletion.get_num_completed_tasks(user_profile.user)
             races_complete = RaceEntry.get_num_completed_races(user_profile.user)
+            achievements_earned = len(Achievement.get_all_user_achievements(user_profile.user))
             distance_covered = user_profile.exeplore_mode_distance_traveled + RaceEntry.get_total_distance_travled_by_user(user_profile.user)
             print(tasks_complete, races_complete)
             context = {
@@ -89,6 +91,7 @@ def dashboard(request):
                 'user_score': user_profile.points,
                 'tasks_completed' : tasks_complete,
                 'races_completed' : races_complete,
+                'achievements_earned' : achievements_earned,
                 'distance_covered' : distance_covered
             })
         else:
