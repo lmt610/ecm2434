@@ -9,8 +9,8 @@ services:
     plan: free
     name: ecm2434
     runtime: python
-    buildCommand: "./build.sh"
-    startCommand: "python -m gunicorn ecm2434.asgi:application -k uvicorn.workers.UvicornWorker" 
+    buildCommand: "cd project && ./build.sh"  # Change the build command to navigate to the project folder
+    startCommand: "cd project && python -m gunicorn ecm2434.asgi:application -k uvicorn.workers.UvicornWorker"  # Adjust the start command to run inside the project folder
     envVars:
       - key: DATABASE_URL
         fromDatabase:
