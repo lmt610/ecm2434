@@ -6,7 +6,9 @@ let showUserLocationOnMap = false;
 let currentPosition = null;
 if(navigator.geolocation){       
 	// variables to allow older geolocation data if it is more accurate
-	navigator.geolocation.watchPosition(updatePosition, showError);
+    if(LocationTrackingPreferance){
+        navigator.geolocation.watchPosition(updatePosition, showError);
+    }
 } else {
     alert("Geolocation is not supported by this browser.")
 }
@@ -136,31 +138,35 @@ function checkEndLocation(position) {
 }
 
 function toggleShowUserOnMap(){
-    if (typeof map !== 'undefined' && map !== null) {
-        showUserLocationOnMap = !showUserLocationOnMap;
-		if (playerLocationMarker != null){
-            map.removeLayer(playerLocationMarker);
+    if (LocationTrackingPreferance){
+        if (typeof map !== 'undefined' && map !== null) {
+            showUserLocationOnMap = !showUserLocationOnMap;
+            if (playerLocationMarker != null){
+                map.removeLayer(playerLocationMarker);
+            }
+            bounds = L.latLngBounds(
+                [raceData.start.lat, raceData.start.lng],
+                [raceData.end.lat, raceData.end.lng]
+            );
+            if(showUserLocationOnMap){
+                const lat = currentPosition.coords.latitude;
+                const long = currentPosition.coords.longitude;
+                const acc = currentPosition.coords.accuracy;
+                playerLocationMarker = L.circle([lat, long], {
+                    color: 'red',      
+                    fillColor: 'red',   
+                    fillOpacity: 0.5,    
+                    radius: acc       
+                }).addTo(map);
+                bounds.extend([lat,long]);
+            }
+            // fit the user location and race points on the map view
+            map.fitBounds(bounds, { padding: [50, 50] });
+        } else {
+            console.error("Map not initialized yet");
         }
-		bounds = L.latLngBounds(
-			[raceData.start.lat, raceData.start.lng],
-            [raceData.end.lat, raceData.end.lng]
-		);
-		if(showUserLocationOnMap){
-			const lat = currentPosition.coords.latitude;
-			const long = currentPosition.coords.longitude;
-			const acc = currentPosition.coords.accuracy;
-			playerLocationMarker = L.circle([lat, long], {
-				color: 'red',      
-				fillColor: 'red',   
-				fillOpacity: 0.5,    
-				radius: acc       
-			}).addTo(map);
-			bounds.extend([lat,long]);
-		}
-        // fit the user location and race points on the map view
-        map.fitBounds(bounds, { padding: [50, 50] });
-    } else {
-        console.error("Map not initialized yet");
+    }else{
+        alert("location tracking is turned off in settings")
     }
 }
 

@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from users.models import Profile
 from achievements.models import Achievement
 from math import radians, sin, cos, sqrt, atan2
+from users.views import UserSettings
 
 @login_required
 def race_view(request, race_id=None):
@@ -21,11 +22,12 @@ def race_view(request, race_id=None):
     else:
         race = get_object_or_404(Race, id=race_id)
         entry = RaceEntry.objects.filter(race=race, user=request.user).first()
+        user_location_preferance = UserSettings.objects.filter(user=request.user).first().location_tracking
         if(entry):
             duration = entry.get_duration()
-            return render(request, "race/race.html", {"race": race, "entry": entry, "duration" : duration})
+            return render(request, "race/race.html", {"race": race, "entry": entry, "duration" : duration, "location_tracking" : user_location_preferance})
         else:
-            return render(request,"race/race.html", {"race": race})
+            return render(request,"race/race.html", {"race": race, "location_tracking" : user_location_preferance})
 
 #haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):

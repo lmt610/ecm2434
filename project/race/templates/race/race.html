@@ -62,6 +62,8 @@
 <script>
     const loggedInUser = "{{ request.user }}";  
     const raceID="{{ race.id }}";
+    const locationTracking = "{{ location_tracking|lower }}"
+    let LocationTrackingPreferance = locationTracking === "false" ? false : true;
 </script>
 {% csrf_token %}
 <script src="{% static 'race/race_script.js' %}"></script>
