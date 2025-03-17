@@ -1,3 +1,4 @@
+import sys
 """
 Django settings for ecm2434 project.
 
@@ -135,3 +136,9 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# add checks for testing to let signals choose not to run during testing
+if 'test' in sys.argv:
+    TESTING = True
+else:
+    TESTING = False
