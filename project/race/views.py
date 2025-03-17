@@ -86,9 +86,9 @@ def update_race_time(request):
     
     entry.save()
     achievements_after_race = Achievement.get_all_user_achievements(request.user)
-    new_achievements = achievements_after_race.difference(achievements_before_race) 
+    new_achievements = achievements_after_race.difference(achievements_before_race).values("title", "description")
     if(new_achievements.count()>0):
-        return JsonResponse({"status":"success", "message": "RaceEntry updated", "new_achievements":new_achievements})
+        return JsonResponse({"status":"success", "message": "RaceEntry updated", "new_achievements":list(new_achievements)})
     else:
          return JsonResponse({"status": "success", "message": "RaceEntry updated"})
 
