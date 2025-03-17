@@ -3,8 +3,8 @@ from django.dispatch import receiver
 from .models import Achievement
 
 @receiver(post_migrate)
-def populate_database(sender, **kwargs):
-    """Populates essential data into the database after migrations."""
+def populate_database_with_achievements(sender, **kwargs):
+    """Populates the database with example achievements."""
     
     # Ensure this only runs for the 'race' app
     if sender.name != "achievements":
@@ -38,6 +38,16 @@ def populate_database(sender, **kwargs):
             main_condition_value="2",
             subconditions=[
                 ["distance", ">", "0.5"]
+            ]
+        )
+    Achievement.objects.create(
+            title="Double Crown",
+            description="Hold the top leaderboard position on two races",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator=">",
+            main_condition_value="1",
+            subconditions=[
+                ["position", "=", "1"]
             ]
         )
 
