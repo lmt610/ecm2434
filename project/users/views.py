@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
+from tasks.models import UserTaskCompletion
+from race.models import RaceEntry
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
 from django.core.validators import EmailValidator
@@ -67,13 +69,17 @@ def register(request):
 def welcome(request):
         if request.user.is_authenticated:
             user_profile = Profile.objects.get(user=request.user)
-
+            tasks_complete = UserTaskCompletion.get_num_completed_tasks(user_profile.user)
+            races_complete = RaceEntry.get_num_completed_races(user_profile.user)
+            print(tasks_complete, races_complete)
             context = {
                 'user_score': user_profile.points,
                 }
             return render(request, 'users/welcome.html', {
                 'username': request.user.username,
-                'user_score': user_profile.points  
+                'user_score': user_profile.points,
+                'tasks_completed' : tasks_complete,
+                'races_completed' : races_complete
             })
         else:
             return redirect('login')

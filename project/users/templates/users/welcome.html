@@ -29,20 +29,20 @@
     <!-- Quick Stats Summary -->
     <div class="stats-summary">
         <div class="stat-card">
-            <h3 class="stat-value">12</h3>
+            <h3 class="stat-value">{{ tasks_completed }}</h3>
             <p class="stat-label">Tasks Completed</p>
         </div>
         <div class="stat-card">
             <h3 class="stat-value">5</h3>
-            <p class="stat-label">Active Races</p>
+            <p class="stat-label">Achievements Completed</p>
         </div>
         <div class="stat-card">
-            <h3 class="stat-value">3</h3>
-            <p class="stat-label">Team Achievements</p>
+            <h3 class="stat-value">{{ races_completed|default:"0"}}</h3>
+            <p class="stat-label">Races Completed</p>
         </div>
         <div class="stat-card">
             <h3 class="stat-value">82%</h3>
-            <p class="stat-label">Sustainability Score</p>
+            <p class="stat-label">Distance Traveled</p>
         </div>
     </div>
 

@@ -60,6 +60,10 @@ class RaceEntry(models.Model):
                 self.medal = medals[i]
                 break
 
+    @classmethod
+    def get_num_completed_races(cls,user):
+        return cls.objects.filter(user=user).count()
+
     @property
     def race_date(self):
         return self.start_time.date()  # This extracts the date part from the start_time

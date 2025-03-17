@@ -64,5 +64,11 @@ class UserTaskCompletion(models.Model):
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     completed_at = models.DateTimeField(auto_now_add=True)
 
+    @classmethod
+    def get_num_completed_tasks(cls,user):
+        return cls.objects.filter(user=user).count()
+    
     class Meta:
         unique_together = ('user', 'task')
+
+
