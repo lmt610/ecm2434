@@ -336,7 +336,7 @@
         <nav class="main-nav">
             <ul class="nav-links">
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'welcome' %}">Dashboard</a></li>
+                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                     <li><a href="{% url 'race' %}">Races</a></li>
                     <li><a href="{% url 'tasks' %}">Tasks</a></li>
                     <li><a href="{% url 'team_list' %}">Teams</a></li>

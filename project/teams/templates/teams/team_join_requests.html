@@ -4,7 +4,7 @@
 {% block title %}ExePLORE - Team Join Requests{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'teams/teams_styles.css' %}">
+<link rel="stylesheet" href="{% static 'teams/teams_join_requests_styles.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -15,22 +15,24 @@
         <ul>
             {% for request in join_requests %}
                 <li>
-                    {{ request.user.username }} -
-                    <form method="post" action="{% url 'approve_join_request' team.pk request.pk %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit">Approve</button>
-                    </form>
-                    <form method="post" action="{% url 'reject_join_request' team.pk request.pk %}" style="display: inline;">
-                        {% csrf_token %}
-                        <button type="submit">Reject</button>
-                    </form>
-                </li>
+                    {{ request.user.username }} 
+                    <div class="button-group">
+                            <form method="post" action="{% url 'approve_join_request' team.pk request.pk %}" style="display: inline;">
+                    {% csrf_token %}
+                            <button type="submit" class="approve-button">Approve</button>
+                            </form>
+                            <form method="post" action="{% url 'reject_join_request' team.pk request.pk %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="reject-button">Reject</button>
+                            </form>
+                    </div>
+                    </li>
             {% endfor %}
         </ul>
     {% else %}
         <p>No pending join requests.</p>
     {% endif %}
 
-    <a href="{% url 'team_detail' team.pk %}">Back to Team Details</a>
+        <a href="{% url 'team_detail' team.pk %}" class="back-to-teams">Back to Team Details</a>
 </div>
 {% endblock %}

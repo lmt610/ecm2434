@@ -17,16 +17,19 @@ User = get_user_model()
 def get_user_settings(request):
     return UserSettings.objects.get(user=request.user)
 
-def home(request):
-    return render(request, 'users/home.html')
+def welcome(request):
+    return render(request, 'users/welcome.html')
 
 def log_out(request):
     logout(request)
-    return redirect('home')
+    return redirect('welcome')
     
 
 def sign_in(request):
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+
         form = LoginForm()
         return render(request,'users/login.html', {'form': form})
     
@@ -40,7 +43,7 @@ def sign_in(request):
             if user:
                 login(request, user)
                 messages.success(request,f'Hi {username.title()}, welcome back!')
-                return redirect('welcome')
+                return redirect('dashboard')
         
         # form is not valid or user is not authenticated
         messages.error(request,f'Invalid username or password')
@@ -58,15 +61,17 @@ def register(request):
 
             login(request, user)
             messages.success(request, 'Your account has been created!')
-            return redirect('welcome')  
-
+            return redirect('dashboard')  
     else:
+        if request.user.is_authenticated:
+            return redirect('dashboard')
+
         form = UserRegistrationForm()
 
     return render(request, 'users/register.html', {'form': form})
 
 @login_required
-def welcome(request):
+def dashboard(request):
         if request.user.is_authenticated:
             #define dynamic values to be passed to the template
             user_profile = Profile.objects.get(user=request.user)
@@ -77,7 +82,7 @@ def welcome(request):
             context = {
                 'user_score': user_profile.points,
                 }
-            return render(request, 'users/welcome.html', {
+            return render(request, 'users/dashboard.html', {
                 'username': request.user.username,
                 'user_score': user_profile.points,
                 'tasks_completed' : tasks_complete,
@@ -144,7 +149,7 @@ def delete_account(request):
         user = request.user
         user.delete()
         messages.success(request, 'Your account has been successfully deleted.')
-        return redirect('home')
+        return redirect('welcome')
     return redirect('settings')
 
 @login_required
@@ -180,12 +185,3 @@ def toggle_setting(request):
             return JsonResponse({'status': 'success'})
             
     return JsonResponse({'status': 'error'}, status=400)
-
-def privacy_policy_view(request):
-    return render(request, "legal/privacy_policy.html")
-
-def data_protection_view(request):
-    return render(request, "legal/data_protection.html")
-
-def terms_of_service_view(request):
-    return render(request, "legal/terms_of_service.html")
