@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from users.models import Profile
+from achievements.models import Achievement
 from math import radians, sin, cos, sqrt, atan2
 
 @login_required
@@ -66,6 +67,8 @@ def update_race_time(request):
     if race == None:
          return JsonResponse({"status": "error", "message": "Race not found"}, status=404)
 
+    achievements_before_race = Achievement.get_all_user_achievements(request.user) 
+
     start_time = parse_datetime(data.get("start_time"))
     end_time = parse_datetime(data.get("end_time"))
     entry, created = RaceEntry.objects.get_or_create(race=race, user=request.user)
@@ -82,7 +85,13 @@ def update_race_time(request):
         entry.num_completions += 1
     
     entry.save()
-    return JsonResponse({"status": "success", "message": "RaceEntry updated"})
+    achievements_after_race = Achievement.get_all_user_achievements(request.user)
+    new_achievements = achievements_after_race.difference(achievements_before_race) 
+    if(new_achievements.count()>0):
+        return JsonResponse({"status":"success", "message": "RaceEntry updated", "new_achievements":new_achievements})
+    else:
+         return JsonResponse({"status": "success", "message": "RaceEntry updated"})
+
 
 def add_exeplore_points(request):
     if request.method == "POST":
