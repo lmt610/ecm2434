@@ -16,3 +16,5 @@ driveupload/
 
 # Ignore static files
 staticfiles/
+
+.env
