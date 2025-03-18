@@ -5,41 +5,128 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'teams/teams_details_styles.css' %}">
+<style>
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .action-button {
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .primary-button {
+        background-color: #2f554f;
+        color: white;
+    }
+    
+    .primary-button:hover {
+        background-color: #3a6a62;
+        transform: translateY(-2px);
+    }
+    
+    .secondary-button {
+        background-color: #f3f4f6;
+        color: #4b5563;
+        border: 1px solid #e5e7eb;
+    }
+    
+    .secondary-button:hover {
+        background-color: #e5e7eb;
+        transform: translateY(-2px);
+    }
+    
+    .team-stats {
+        display: flex;
+        gap: 20px;
+        margin: 20px 0;
+    }
+    
+    .stat-card {
+        background-color: #f9fafb;
+        border-radius: 8px;
+        padding: 15px;
+        flex: 1;
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #2f554f;
+    }
+    
+    .stat-label {
+        color: #6b7280;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="team-detail-container">
     <h1>{{ team.name }}</h1>
 
-    <p>Points: {{ team.points }}</p>
-    <p>Admin: {{ team.admin.username }}</p>
+    <div class="team-stats">
+        <div class="stat-card">
+            <div class="stat-value">{{ team.points }}</div>
+            <div class="stat-label">Team Points</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ team.members.count }}</div>
+            <div class="stat-label">Members</div>
+        </div>
+    </div>
+
+    <p>Team Admin: {{ team.admin.username }}</p>
 
     {% if user.is_authenticated %}
         {% if not has_joined and not join_request_pending %}
             <form method="post" action="{% url 'request_join_team' team.pk %}">
                 {% csrf_token %}
-                <button type="submit">Request to Join</button>
+                <button type="submit" class="action-button primary-button">Request to Join</button>
             </form>
         {% elif has_joined %}
             <p class="member-status">You are a member of this team!</p>
-            {% elif join_request_pending %}
-                <p class="pending-status">You have requested to join this team. Waiting for approval.</p>
+        {% elif join_request_pending %}
+            <p class="pending-status">You have requested to join this team. Waiting for approval.</p>
         {% endif %}
     {% else %}
         <p>Please log in to request to join this team.</p>
     {% endif %}
 
-    {% if user == team.admin %}
-        <p><a href="{% url 'team_join_requests' team.pk %}">View Join Requests</a></p>
+    <!-- Admin section - only visible to team admin -->
+    {% if is_team_admin %}
+        <div class="admin-section">
+            <h2>Admin Controls</h2>
+            <div class="action-buttons">
+                <a href="{% url 'team_join_requests' team.pk %}" class="action-button primary-button">View Join Requests</a>
+                <a href="{% url 'manage_team' team.pk %}" class="action-button secondary-button">Manage Team</a>
+            </div>
+        </div>
     {% endif %}
 
     <h2>Members</h2>
-        <div class="member-container">
+    <div class="member-container">
         <ul>
-                {% for member in team.members.all %}
-                <li>{{ member.username }}</li>
-                {% endfor %}
+            {% for member in team.members.all %}
+                <li>
+                    {{ member.username }}
+                    {% if member == team.admin %}
+                        <span style="background-color: #2f554f; color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; margin-left: 5px;">Admin</span>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>No members yet.</li>
+            {% endfor %}
         </ul>
-        </div>
+    </div>
 </div>
 {% endblock %}

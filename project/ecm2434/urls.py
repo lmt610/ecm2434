@@ -24,5 +24,6 @@ urlpatterns = [
     path('', include('users.urls')),
     path('race/', include('race.urls')),
     path('logout/', auth_views.LogoutView.as_view(next_page='welcome'), name='logout'),
-    path('leaderboard/', include('leaderboard.urls'))
+    path('leaderboard/', include('leaderboard.urls')),
+    path('achievements/', include('achievements.urls'))
     ]

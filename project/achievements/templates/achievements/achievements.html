@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ExePLORE - Achievements{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'achievements/achievements_styles.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="achievements-container">
+    <div class="achievements-header">
+        <h1>Your Achievements</h1>
+        <p>Track your progress and unlock new achievements as you explore!</p>
+    </div>
+
+    <div class="achievement-categories">
+        <button class="category-btn active" data-category="all">All</button>
+        <button class="category-btn" data-category="race">Races</button>
+        <button class="category-btn" data-category="team">Teams</button>
+    </div>
+
+    <div class="achievements-grid">
+        {% for achievement in achievements %}
+            <div class="achievement-card {% if achievement.completed %}completed{% else %}locked{% endif %}" data-category="{{ achievement.category }}">
+                <div class="achievement-icon">
+                    {% if achievement.completed %}
+                        <i class="fas fa-medal"></i>
+                    {% else %}
+                        <i class="fas fa-lock"></i>
+                    {% endif %}
+                </div>
+                <div class="achievement-content">
+                    <h3>{{ achievement.title }}</h3>
+                    <p>{{ achievement.description }}</p>
+                </div>
+            </div>
+        {% empty %}
+            <div class="empty-achievements">
+                <p>No achievements yet. Start exploring to earn some!</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const achievementCards = document.querySelectorAll('.achievement-card');
+        
+        // Filter achievements by category
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Update active button
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const category = this.dataset.category;
+                
+                // Show/hide achievements based on category
+                achievementCards.forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -92,17 +92,15 @@ class Achievement(models.Model):
         else:
             return False
         
-        # Apply all subconditions
-        for subcondition in self.subconditions:
-            field, operator, value = subcondition
-           
-
-            # Get the appropriate labeler function and apply it
+        # Special case: Check if subconditions is flattened instead of nested
+        if (self.subconditions and len(self.subconditions) == 3 and 
+                all(isinstance(item, str) for item in self.subconditions)):
+            # The subconditions is formatted as [field, operator, value] directly
+            field, operator, value = self.subconditions
+            
             labeler = get_labeler_for_field(field)
             if labeler:
-                # Apply the custom field labeler
                 base_query = labeler(base_query)
-                # Build dynamic query based on operator
                 if operator == '<':
                     query_kwargs = {f"{field}__lt": value}
                 elif operator == '=':
@@ -111,8 +109,31 @@ class Achievement(models.Model):
                     query_kwargs = {f"{field}__gt": value}
                 
                 base_query = base_query.filter(**query_kwargs)
+        else:
+            # Normal case: subconditions is a list of lists
+            for subcondition in self.subconditions:
+                # Skip if not a list or doesn't have exactly 3 elements
+                if not isinstance(subcondition, list) or len(subcondition) != 3:
+                    continue
+                
+                field, operator, value = subcondition
+                
+                # Get the appropriate labeler function and apply it
+                labeler = get_labeler_for_field(field)
+                if labeler:
+                    # Apply the custom field labeler
+                    base_query = labeler(base_query)
+                    # Build dynamic query based on operator
+                    if operator == '<':
+                        query_kwargs = {f"{field}__lt": value}
+                    elif operator == '=':
+                        query_kwargs = {f"{field}": value}
+                    elif operator == '>':
+                        query_kwargs = {f"{field}__gt": value}
+                    
+                    base_query = base_query.filter(**query_kwargs)
 
-        # check whether main condition has been met
+        # Check whether main condition has been met
         count = base_query.count()
         if self.main_condition_operator == '<':
             return count < int(self.main_condition_value)
