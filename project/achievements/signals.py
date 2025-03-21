@@ -128,7 +128,7 @@ def populate_database_with_achievements(sender, **kwargs):
         main_condition_operator=">",
         main_condition_value="0",
         subconditions=[
-            "number_of_members", ">", "19"
+            ["number_of_members", ">", "19"]
         ]
     )
 
