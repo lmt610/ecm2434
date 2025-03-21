@@ -35,6 +35,7 @@ The project takes advantage of the modular nature of Django apps. Sections of th
 - race
 - leaderboard
 - tasks
+- achievements
   
 Within each app:
 - Django Python files sit at root
@@ -93,6 +94,16 @@ Example tests relevant to sprint 1 assessment:
     - login page - `users.tests.test_views.LoginViewTest`, `users.tests.test_forms.LoginFormTest`
     - sign up    - `users.tests.test_views.RegisterViewTest`, `users.tests.test_forms.UserRegistrationFormTest`
     - race page  - `race.tests.RaceMenuPageTests`, `race.tests.CalculateDistanceViewTest`, `race.tests.UpdateRaceTimeViewTest`
+## Process
+A kanban board was used during production to organise and manage tasks. 
+
+Link to Kanban Board: https://trello.com/b/ak80OHzE/exeplore-group-software-eng-project-natywinat
+  
+  
+  Github was used to host our code. 
+
+Link to Github: https://github.com/lmt610/ecm2434
+
 ## Populating-databases
 The databases can be populated with mock data by running commands in your terminal.
 To create teams and users, navigate to the project directory and enter:
