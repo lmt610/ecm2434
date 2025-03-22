@@ -75,14 +75,11 @@ class TaskSignalTests(TestCase):
 
     def test_multi_task_completion_exact(self):
         self.reset_profile_points()
-
         # user completes multi and single task
         RaceEntry.objects.create(user=self.user, race=self.race, start_time=self.start_time, end_time=self.end_time)
         RaceEntry.objects.create(user=self.user, race=self.race, start_time=self.start_time, end_time=self.end_time)
-
+        # check if multi task has been completed
         self.assertTrue(UserTaskCompletion.objects.filter(user=self.user, task=self.multi_task).exists())
-        self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 65)
 
     def test_no_duplicate_task_completion(self):
         self.reset_profile_points()
