@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from users.models import Profile, UserSettings
 from teams.models import Team
-from race.models import RaceEntry
 from django.db.models import F, ExpressionWrapper, DurationField
-
+from django.db.models.functions import Extract
+from django.db import models
+from race.models import Race, RaceEntry
+from django.db.models.functions import Round, Cast
+from django.db.models import FloatField
 
 def user_leaderboard(request):
     # Fetch all profiles ordered by points
@@ -58,7 +61,6 @@ def team_leaderboard(request):
     team_list = Team.objects.all().order_by('-points')
     return render(request, 'leaderboard/team_leaderboard.html', {'team_list': team_list})
 
-
 def race_leaderboard(request):
     race_title = request.GET.get("race_title")
     if race_title:
@@ -66,20 +68,28 @@ def race_leaderboard(request):
     else:
         race_entries = RaceEntry.objects
     
+    # annotate entries with their duration (seconds to complete a race to 2 decimal places)
     ordered_entries = race_entries.annotate(
-            duration=ExpressionWrapper(F('end_time')-F('start_time'), output_field=DurationField())
-        ).order_by('duration')
+        duration=Cast(
+            Round(
+                ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField()) / 1000000,
+                2
+            ),
+            output_field=FloatField()
+        )
+    ).order_by("duration")
+    ordered_entries = ordered_entries.select_related("user", "race")
     
     # remove entries of users with their "Show my activities on leaderboards" setting off
     leaderboard_prefereance_settings = UserSettings.objects.filter(show_on_leaderboard=False)
     users_not_to_be_shown = [user_setting.user for user_setting in leaderboard_prefereance_settings]
     ordered_entries = ordered_entries.exclude(user__in=users_not_to_be_shown)
-
-
-
-
-    top_entries = ordered_entries.select_related("user", "race")
-
-    return render(request, 'leaderboard/race_leaderboard.html', {'top_entries':top_entries})
-
-
+    
+    all_races = Race.objects.all()
+    context = {
+        'top_entries': ordered_entries[:10],
+        'all_races': all_races,
+        'selected_race': race_title,
+        'entry_count': ordered_entries.count()
+    }
+    return render(request, 'leaderboard/race_leaderboard.html', context)

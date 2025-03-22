@@ -182,8 +182,14 @@
                         <a href="#" class="text-link" onclick="showLegalModal('terms')">Terms of Service</a>
                         <a href="#" class="text-link" onclick="showLegalModal('data')">Data Protection</a>
                     </div>
-                    <br>
-                    <div><a href="#" class="text-link" onclick="downloadUserData()">download user data</a></div>
+                    
+                    <div class="data-export-section">
+                        <h4>Your Personal Data</h4>
+                        <p>Download a copy of your personal data that ExePLORE stores. This includes your account information, preferences, and app settings.</p>
+                        <button class="download-data-btn" onclick="downloadUserData()">
+                            <i class="fas fa-download"></i> Download My Data
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -390,6 +396,7 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
 <script>
     /*** Tab Switching ***/
     document.querySelectorAll('.nav-item').forEach(item => {
