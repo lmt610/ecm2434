@@ -131,9 +131,9 @@ class TaskSignalTests(TestCase):
         # user 1 completes the race
         RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
-        # user 2 completes the race
-        RaceEntry.objects.create(user=other_user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
-        RaceEntry.objects.create(user=other_user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
+        # user 2 completes the race, +15 and +10 points for 2nd and 3rd place
+        RaceEntry.objects.create(user=other_user, race=self.race, start_time=timezone.now(), end_time=timezone.now() + timezone.timedelta(days=1))
+        RaceEntry.objects.create(user=other_user, race=self.race, start_time=timezone.now(), end_time=timezone.now() + timezone.timedelta(days=2))
 
         # check if both users are awarded points correctly
         self.assertTrue(UserTaskCompletion.objects.filter(user=self.user, task=self.single_task).exists())
@@ -143,7 +143,8 @@ class TaskSignalTests(TestCase):
         self.assertTrue(UserTaskCompletion.objects.filter(user=other_user, task=self.single_task).exists())
         other_user_profile = Profile.objects.get(user=other_user)
         other_user_profile.refresh_from_db()
-        self.assertEqual(other_user_profile.points, 145)
+        self.assertEqual(other_user_profile.points, 120)
+
 
     def test_race_completed_task_not_complete_until_task_assigned(self):
         self.reset_profile_points()
