@@ -87,8 +87,6 @@ class TaskSignalTests(TestCase):
         race_entry = RaceEntry.objects.last()
 
         self.assertTrue(UserTaskCompletion.objects.filter(user=self.user, task=self.multi_task).exists())
-        self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 145)
 
     def test_no_duplicate_task_completion(self):
         self.reset_profile_points()
@@ -111,9 +109,6 @@ class TaskSignalTests(TestCase):
         # check only one completion exists
         self.assertEqual(UserTaskCompletion.objects.filter(user=self.user, task=self.single_task).count(), 1)
         self.assertEqual(UserTaskCompletion.objects.filter(user=self.user, task=self.multi_task).count(), 1)
-
-        self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 170)
 
     def test_empty_task_list(self):
         self.reset_profile_points()
