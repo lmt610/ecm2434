@@ -109,9 +109,9 @@ def add_exeplore_points(request):
         end_lat = data.get("end_latitude")
         end_lon = data.get("end_longitude")
 
-        #distance is calculated in kilometres, multiply by 100 to get points in the 10s + 20 to add base points
+        #distance is calculated in kilometres, students earn 2 points for every 10 meters, and a baseline 30 pointsas a bias
         distance = haversine(start_lat, start_lon, end_lat, end_lon)
-        points_to_add = 100 * distance + 20
+        points_to_add = 200 * distance + 30
         points_to_add = int(points_to_add)
 
         user.points += points_to_add
