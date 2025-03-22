@@ -110,6 +110,30 @@ def populate_database_with_achievements(sender, **kwargs):
                 ["number_of_completions", ">", "49"]
             ]
         )
+    
+    Achievement.objects.create(
+        title="Peak Performance",
+        description="Get a gold medal on an uphill race",
+        main_condition_model="COUNT_RACES",
+        main_condition_operator=">",
+        main_condition_value="0",
+        subconditions=[
+            ["tags", "contains", "uphill"],
+            ["medal", "=", "gold"]
+        ]
+    )
+
+    Achievement.objects.create(
+        title="Summit to be Proud Of",
+        description="Complete 5 uphill races",
+        main_condition_model="COUNT_RACES",
+        main_condition_operator=">",
+        main_condition_value="4",
+        subconditions=[
+            ["tags", "contains", "uphill"],
+        ]
+    )
+
     ############
     ## TEAM
     ############
@@ -128,7 +152,7 @@ def populate_database_with_achievements(sender, **kwargs):
         main_condition_operator=">",
         main_condition_value="0",
         subconditions=[
-            "number_of_members", ">", "19"
+            ["number_of_members", ">", "19"]
         ]
     )
 
@@ -141,6 +165,5 @@ def populate_database_with_achievements(sender, **kwargs):
         subconditions=[]
     )
 
-
-    print("Example achievements added")
+    print("Default achievements added")
 

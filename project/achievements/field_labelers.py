@@ -1,29 +1,34 @@
 from django.db.models import F, ExpressionWrapper, DurationField, CharField, IntegerField, Func, FloatField, Count, Window, Case, When 
 from django.db.models.functions import Round, Cast, Radians, Sqrt, Cos, Power, Sin, ATan2, RowNumber
-from django.db.models.expressions import RawSQL
 from race.models import RaceEntry
 
-def get_labeler_for_field(field_name):
+def get_labeler_for_field(model_name, field_name):
     """
         Return the appropriate labeler function for the given field.
-        This function should named add_label_{field_name}
+        This function should named add_label_{model}_{field}
     """
     labelers = {
-        'medal': add_label_medal,
-        'duration': add_label_duration,
-        'distance': add_label_distance,
-        'position': add_label_position,
-        'number_of_completions': add_label_number_of_completions,
-        'number_of_members': add_label_number_of_members,
-        'points': add_label_points
+        'COUNT_RACES': {
+            'medal': add_label_race_medal,
+            'duration': add_label_race_duration,
+            'distance': add_label_race_distance,
+            'position': add_label_race_position,
+            'number_of_completions': add_label_race_number_of_completions,
+            'tags': add_label_race_tags
+        },
+        'COUNT_TEAMS': {
+            'number_of_members': add_label_team_number_of_members,
+            'points': add_label_team_points,
+            'tags': add_label_team_tags
+        }
     }
-    return labelers.get(field_name)
+    return labelers.get(model_name, {}).get(field_name)
 
-def add_label_medal(race_queryset):
-    # races already have a medal property
+def add_label_race_medal(race_queryset):
+    # race entries already have a medal property
     return race_queryset
 
-def add_label_duration(race_queryset):
+def add_label_race_duration(race_queryset):
     return race_queryset.annotate(
         duration=Cast(
             Round(
@@ -34,7 +39,7 @@ def add_label_duration(race_queryset):
         )
     )
 
-def add_label_distance(race_queryset):
+def add_label_race_distance(race_queryset):
     """Uses the Haversine formula to annotate a query containing Race objects with their distance"""
     race_queryset = race_queryset.select_related('race__start', 'race__end')
     
@@ -54,7 +59,7 @@ def add_label_distance(race_queryset):
     distance_expr = ExpressionWrapper(distance, output_field=FloatField())
     return race_queryset.annotate(distance=distance_expr)
 
-def add_label_position(race_queryset):
+def add_label_race_position(race_queryset):
     duration = ExpressionWrapper(F('end_time')-F('start_time'), output_field=DurationField())
     all_entry_positions = RaceEntry.objects.annotate(
         position=Window(
@@ -72,15 +77,21 @@ def add_label_position(race_queryset):
     )
     return race_queryset.annotate(position=position_annotation)
 
-def add_label_number_of_completions(race_queryset):
-    return race_queryset.annotate(number_of_completions=F('num_completions'))        
+def add_label_race_number_of_completions(race_queryset):
+    return race_queryset.annotate(number_of_completions=F('num_completions'))
+
+def add_label_race_tags(race_queryset):
+    return race_queryset.annotate(tags=F("race__tags"))
 
 ########################
 ## TEAM LABELERS
 ########################
 
-def add_label_number_of_members(team_queryset):
+def add_label_team_number_of_members(team_queryset):
     return team_queryset.annotate(number_of_members=Count('members'))
 
-def add_label_points(team_queryset):
+def add_label_team_points(team_queryset):
+    return team_queryset
+
+def add_label_team_tags(team_queryset):
     return team_queryset
