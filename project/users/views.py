@@ -77,22 +77,69 @@ def register(request):
 def dashboard(request):
         if request.user.is_authenticated:
             #define dynamic values to be passed to the template
+            user = request.user
             user_profile = Profile.objects.get(user=request.user)
+            users_total = len(Profile.objects.all())
             tasks_complete = UserTaskCompletion.get_num_completed_tasks(user_profile.user)
             races_complete = RaceEntry.get_num_completed_races(user_profile.user)
             achievements_earned = len(Achievement.get_all_user_achievements(user_profile.user))
+            achievements_total = len(Achievement.objects.all())
+            teams_total = len(Team.objects.all())
+            team_first_queryset  = Team.objects.all().order_by('-points')[:1]
+            team_second_queryset = Team.objects.all().order_by('-points')[1:2]
+            team_third_queryset = Team.objects.all().order_by('-points')[2:3]
+            tasks_total = len(Task.objects.all())
+            race_entries_total = len(RaceEntry.objects.filter(user=user))
+
+            # extract the team names from the QuerySets
+            team_first = team_first_queryset[0].name if team_first_queryset else None
+            team_second = team_second_queryset[0].name if team_second_queryset else None
+            team_third = team_third_queryset[0].name if team_third_queryset else None
+
+
+            user = request.user
+            race_entries = RaceEntry.objects.filter(user=user).exclude(Q(start_time=None) | Q(end_time=None))
+
+            user = request.user
+            race_entries = (
+                RaceEntry.objects.filter(user=user)
+                .annotate(duration=Min('end_time') - Min('start_time'))
+                .filter(duration__gt=timezone.timedelta(seconds=0))  # ensures the duration is greater than 0
+            )
+
+            fastest_race_entry = race_entries.order_by('duration').first()
+
+            fastest_race_name = None
+            fastest_race_time = None
+
+            if fastest_race_entry:
+                fastest_race_name = fastest_race_entry.race.title  
+                fastest_time = fastest_race_entry.end_time - fastest_race_entry.start_time
+                fastest_race_time = round(fastest_time.total_seconds()) if fastest_time else None
+
             distance_covered = user_profile.exeplore_mode_distance_traveled + RaceEntry.get_total_distance_travled_by_user(user_profile.user)
             print(tasks_complete, races_complete)
             context = {
                 'user_score': user_profile.points,
-                }
+            }
             return render(request, 'users/dashboard.html', {
                 'username': request.user.username,
                 'user_score': user_profile.points,
+                'users_total' : users_total,
                 'tasks_completed' : tasks_complete,
                 'races_completed' : races_complete,
                 'achievements_earned' : achievements_earned,
-                'distance_covered' : distance_covered
+                'achievements_total' : achievements_total,
+                'teams_total' : teams_total,
+                'team_first' : team_first,
+                'team_second' : team_second,
+                'team_third' : team_third, 
+                'tasks_total' : tasks_total,
+                'distance_covered' : distance_covered,
+                'fastest_race_name': fastest_race_name,
+                'fastest_race_time': fastest_race_time,
+                'race_entries_total' : race_entries_total,
+                
             })
         else:
             return redirect('login')
