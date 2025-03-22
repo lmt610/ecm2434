@@ -57,7 +57,8 @@ class RaceEntry(models.Model):
     medal = models.CharField(max_length=6, default='None')
     num_completions=models.IntegerField(default=0)
     rank = models.IntegerField(null=True, blank=True) 
-
+    updated_at = models.DateTimeField(auto_now=True)
+    
     def save(self, *args, **kwargs):
         if not self.name:
             self.name = f"{self.race} {self.user}"
