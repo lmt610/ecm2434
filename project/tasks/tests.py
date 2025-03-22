@@ -12,9 +12,11 @@ from django.utils import timezone
 User = get_user_model()
 
 class TaskSignalTests(TestCase):
+    """Tests race and tasks point functionality.
+       All races ran in these tests will award 25 points to users"""
     def setUp(self):
         # creates user
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.user = User.objects.create_user(username='testusertasks', password='testpass')
 
         # ensures profile only gets created once
         self.profile, created = Profile.objects.get_or_create(user=self.user, defaults={'points': 0})
@@ -41,7 +43,7 @@ class TaskSignalTests(TestCase):
         self.single_task = Task.objects.create(
             title='Single Task',
             race=self.race,
-            points_awarded=20,
+            points_awarded=40,
             required_races=1,
             task_type='single',
             start_date = self.start_date,
@@ -50,7 +52,7 @@ class TaskSignalTests(TestCase):
         self.multi_task = Task.objects.create(
             title='Multi Task',
             race=None,
-            points_awarded=20,
+            points_awarded=55,
             required_races=2,
             task_type='multi',
             start_date = self.start_date,
@@ -67,42 +69,42 @@ class TaskSignalTests(TestCase):
         self.reset_profile_points()
 
         # user completes race for single task
-        RaceEntry.objects.create(user=self.user, race=self.race,)
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         race_entry = RaceEntry.objects.last()
 
         self.assertTrue(UserTaskCompletion.objects.filter(user=self.user, task=self.single_task).exists())
         self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 20)
+        self.assertEqual(self.profile.points, 65)
 
     def test_multi_task_completion_exact(self):
         self.reset_profile_points()
 
         # user completes multi and single task
-        RaceEntry.objects.create(user=self.user, race=self.race,)
-        RaceEntry.objects.create(user=self.user, race=self.race,)
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         race_entry = RaceEntry.objects.last()
 
         self.assertTrue(UserTaskCompletion.objects.filter(user=self.user, task=self.multi_task).exists())
         self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 40)
+        self.assertEqual(self.profile.points, 145)
 
     def test_no_duplicate_task_completion(self):
         self.reset_profile_points()
 
-        RaceEntry.objects.create(user=self.user, race=self.race,)
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         race_entry = RaceEntry.objects.last()
         # first completion
         self.assertTrue(UserTaskCompletion.objects.filter(user=self.user, task=self.single_task).exists())
 
         # user completes the race again
-        RaceEntry.objects.create(user=self.user, race=self.race,)
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         race_entry = RaceEntry.objects.last()
 
-        RaceEntry.objects.create(user=self.user, race=self.race,)
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         race_entry = RaceEntry.objects.last()
 
@@ -111,47 +113,47 @@ class TaskSignalTests(TestCase):
         self.assertEqual(UserTaskCompletion.objects.filter(user=self.user, task=self.multi_task).count(), 1)
 
         self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 40)
+        self.assertEqual(self.profile.points, 170)
 
     def test_empty_task_list(self):
         self.reset_profile_points()
-
+        self.assertEqual(self.profile.points, 0)
         # clears all tasks
         Task.objects.all().delete()
 
         # user completes a race
-        RaceEntry.objects.create(user=self.user, race=self.race,)
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         # no tasks should trigger any completion
         self.assertEqual(UserTaskCompletion.objects.count(), 0)
         self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 0)
+        self.assertEqual(self.profile.points, 25)
 
     def test_multiple_users_completion(self):
         other_user = User.objects.create_user(username='another_user', password='password')
         Profile.objects.get_or_create(user=other_user, defaults={'points': 0})
 
         # user 1 completes the race
-        RaceEntry.objects.create(user=self.user, race=self.race,)
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         # user 2 completes the race
-        RaceEntry.objects.create(user=other_user, race=self.race,)
-        RaceEntry.objects.create(user=other_user, race=self.race,)
+        RaceEntry.objects.create(user=other_user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
+        RaceEntry.objects.create(user=other_user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         # check if both users are awarded points correctly
         self.assertTrue(UserTaskCompletion.objects.filter(user=self.user, task=self.single_task).exists())
         self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 20)
+        self.assertEqual(self.profile.points, 65)
 
         self.assertTrue(UserTaskCompletion.objects.filter(user=other_user, task=self.single_task).exists())
         other_user_profile = Profile.objects.get(user=other_user)
         other_user_profile.refresh_from_db()
-        self.assertEqual(other_user_profile.points, 40)
+        self.assertEqual(other_user_profile.points, 145)
 
     def test_race_completed_task_not_complete_until_task_assigned(self):
         self.reset_profile_points()
 
-        RaceEntry.objects.create(user=self.user, race=self.race,)
+        RaceEntry.objects.create(user=self.user, race=self.race, start_time=timezone.now(), end_time=timezone.now())
 
         self.assertTrue(RaceEntry.objects.filter(user=self.user, race=self.race,).exists())
 
@@ -172,4 +174,4 @@ class TaskSignalTests(TestCase):
 
         self.assertTrue(UserTaskCompletion.objects.filter(user=self.user, task=delayed_single_task).exists())
         self.profile.refresh_from_db()
-        self.assertEqual(self.profile.points, 20)
+        self.assertEqual(self.profile.points, 65)
