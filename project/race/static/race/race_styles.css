@@ -1,22 +1,22 @@
+/* Race content styles */
 .race-content * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.exeplore-header {
-    height: 74px !important;
-}
-
-/* Main Race Page Container */
 .race-page {
     min-height: calc(100vh - 74px);
     display: flex;
     flex-direction: column;
     background-color: #f5f7fa;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+    position: relative;
 }
 
-/* Race Main Content */
+/* Main Race Content */
 .race-main {
     display: grid;
     grid-template-rows: 60px 1fr 120px 180px;
@@ -26,6 +26,7 @@
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
+    overflow-x: hidden;
 }
 
 /* Title Bar */
@@ -41,6 +42,12 @@
     font-weight: 600;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     letter-spacing: 1px;
+    height: 60px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 15px;
 }
 
 /* Map Container */
@@ -52,6 +59,8 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     border: 2px solid #e2e8f0;
+    width: 100%;
+    position: relative;
 }
 
 .medalTag {
@@ -63,20 +72,18 @@
     z-index: 500;
 }
 
-.medalTag img{
+.medalTag img {
     width: 100%;
     height: 100%;
 }
 
-.flag-border{
-	text-shadow:
-		-2px 0 black,
-		0 2px black,
-		  2px 0 black,
-          0 -2px black;
+.flag-border {
+    text-shadow:
+        -2px 0 black,
+        0 2px black,
+        2px 0 black,
+        0 -2px black;
 }
-
-
 
 /* Menu Grid */
 .menu {
@@ -85,6 +92,8 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto auto;
     gap: 15px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 /* Route POIs Button */
@@ -105,6 +114,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #routePOIs:hover {
@@ -117,7 +129,7 @@
 #leaderboard {
     grid-column: 1/2;
     grid-row: 2/3;
-    background-color: royalblue;
+    background-color: #3b82f6;
     color: white;
     padding: 12px 20px;
     border-radius: 8px;
@@ -128,11 +140,17 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 90%;
     margin: 0 auto;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #leaderboard:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background-color: #2563eb;
 }
 
 /* Status Display */
@@ -192,32 +210,33 @@
 }
 
 .actionButtons button {
+    position: relative;
     width: 100%;
     padding: 14px;
-    border: none;
+    border: 2px solid transparent;
     border-radius: 8px;
     color: white;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .actionButtons button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    border: 2px solid black;
+    border-color: #000;
 }
 
-.btn-race {
+.toggle-location-btn {
     background-color: #ef4444;
 }
 
-.btn-time-trial {
+.time-trial-btn {
     background-color: #eab308;
 }
 
-.btn-explore {
+.explore-btn {
     background-color: #2f554f;
 }
 
@@ -229,6 +248,210 @@
 
 .status-incomplete {
     color: #6b7280;
+}
+
+/* Nature fact modal styles */
+.nature-fact-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.nature-fact-modal.fade-in {
+    opacity: 1;
+}
+
+.nature-fact-modal.fade-out {
+    opacity: 0;
+}
+
+.nature-fact-content {
+    background-color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.5s ease;
+}
+
+.nature-fact-modal.fade-in .nature-fact-content {
+    transform: scale(1);
+}
+
+.nature-fact-content h3 {
+    color: #2f554f;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+.nature-fact-content p {
+    color: #4b5563;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.nature-fact-icon {
+    font-size: 3rem;
+    margin: 1rem 0;
+    color: #2f554f;
+}
+
+.continue-button {
+    background-color: #2f554f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.continue-button:hover {
+    background-color: #3a6a62;
+}
+
+/* Time trial view */
+#activeTimeTrialView {  
+    position: fixed;
+    top: 0;                  
+    left: 0;                 
+    right: 0;                
+    bottom: 0;              
+    background-color: rgba(0, 0, 0, 0.7);  
+    z-index: 9999;    
+    opacity: 0;             
+    transform: translateY(-100%); 
+    transition: opacity 1s ease, transform 1s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+#activeTimeTrialView.visible {
+    opacity: 1;              
+    transform: translateY(0); 
+}
+
+#activeTimeTrialView button {
+    width: 200px;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#activeTimeTrialView .finish-btn {
+    background-color: #2f554f;
+}
+
+#activeTimeTrialView .exit-btn {
+    background-color: #ef4444;
+}
+
+#timer {
+    font-size: 48px;
+    font-weight: bold;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px 40px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* ExePLORE view */
+#activeExePLOREView {  
+    position: fixed;
+    top: 0;                  
+    left: 0;                 
+    right: 0;                
+    bottom: 0;              
+    background-color: rgba(0, 0, 0, 0.7);  
+    z-index: 9999;
+    opacity: 0;              
+    transform: translateY(-100%); 
+    transition: opacity 1s ease, transform 1s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+#activeExePLOREView.visible {
+    opacity: 1;              
+    transform: translateY(0); 
+}
+
+#activeExePLOREView button {
+    width: 200px;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#activeExePLOREView .finish-btn {
+    background-color: #2f554f;
+}
+
+#activeExePLOREView .exit-btn {
+    background-color: #ef4444;
+}
+
+#qoute {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #1f2937;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px;
+    font-style: italic;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 20px;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+#pointsNotif {
+    background-color: rgb(239, 182, 39);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 18px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(-100%); 
+    transition: opacity 1s ease, transform 1s ease; 
+}
+
+#pointsNotif.visible {
+    opacity: 1;
+    transform: translateY(0); 
 }
 
 /* Responsive Design */
@@ -245,10 +468,27 @@
 
     .title-bar {
         font-size: 20px;
+        padding: 0 10px;
     }
 
     #routePOIs, #leaderboard, #status, .time, .actionButtons {
         width: 100%;
+    }
+
+    #timer {
+        font-size: 36px;
+        padding: 15px 30px;
+    }
+
+    #qoute {
+        max-width: 90%;
+        padding: 15px;
+        font-size: 16px;
+    }
+
+    #activeTimeTrialView button, #activeExePLOREView button {
+        width: 180px;
+        padding: 12px;
     }
 }
 
@@ -276,128 +516,13 @@
     .actionButtons {
         grid-row: 5/6;
     }
-}
-/* Time trial view */
 
-#activeTimeTrialView{  
-    position: fixed;
-    top: 0;                  
-    left: 0;                 
-    right: 0;                
-    bottom: 0;              
-    background-color: rgba(0, 0, 0, 0.7);  
-    z-index: 9999;    
-    opacity: 0;             
-    transform: translateY(-100%); 
-    transition: opacity 1s ease, transform 1s ease; 
-}
+    .title-bar {
+        font-size: 18px;
+    }
 
-#activeTimeTrialView.visible {
-    opacity: 1;              
-    transform: translateY(0); 
-}
-
-#activeTimeTrialView button{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 10%;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    width: 30%;
-    aspect-ratio: 20/1;
-    padding: 10px;
-    border: none;
-    color: white;
- 
-}
-
-button:hover{
-    border: 2px solid black;
-}
-
-#timer{
-    margin-top: 25%;
-    margin-bottom: 10px;
-    justify-self: center;
-    width: 30%;
-    color: black;
-    border-radius: 10px;
-    background-color: white;
-    box-shadow: 10px;
-    
-}
-/* Exsplore view */
-
-#activeExePLOREView{  
-    position: fixed;
-    display: grid;
-    place-items: center;
-    top: 0;                  
-    left: 0;                 
-    right: 0;                
-    bottom: 0;              
-    background-color: rgba(0, 0, 0, 0.7);  
-    z-index: 9999;
-    opacity: 0;              
-    transform: translateY(-100%); 
-    transition: opacity 1s ease, transform 1s ease; 
-}
-
-#activeExePLOREView.visible {
-    opacity: 1;              
-    transform: translateY(0); 
-}
-
-#activeExePLOREView button{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 30%;
-    border-radius: 10px;
-    width: 30%;
-    aspect-ratio: 20/1;
-    padding: 10px;
-    border: none;
-    color: white;
-}
-
-#activeExePLOREView button:hover{
-    border: 2px solid black;
-}
-
-button:hover{
-    border: 2px solid black;
-}
-
-#qoute{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 30%;
-    opacity: 70%;
-    color: black;
-    border-radius: 10px;
-    background-color: white;
-    box-shadow: 10px;   
-}
-
-#pointsNotif{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 30%;
-    opacity: 70%;
-    color: white;
-    border-radius: 20px;
-    background-color: rgb(239, 182, 39);
-    box-shadow: 10px;
-    opacity: 0;
-    transform: translateY(-100%); 
-    transition: opacity 1s ease, transform 1s ease; 
-}
-
-#pointsNotif.visible {
-    opacity: 1;
-    transform: translateY(0); 
+    #timer {
+        font-size: 32px;
+        padding: 12px 24px;
+    }
 }

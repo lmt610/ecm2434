@@ -1,192 +1,144 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task List</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Lato', sans-serif;
-            background-color: #fcfffc;
-            color: #374151;
-        }
+{% extends 'base.html' %}
+{% load static %}
 
-        .rectangle {
-            width: 100%;
-            height: 120px;
-            background-color: #286d57;
-            z-index: 500;
-            text-align: center;
-            position: fixed;
-            left: 0;
-			right: 0;
-            top: 0;
-			padding: 0;
-        }
+{% block title %}ExePLORE - Tasks{% endblock %}
 
-        .header-text {
-            padding-top: 25px;
-            color: #eeeeee;
-            font-family: "Garamond", serif;
-            font-size: 2.5rem; 
-            letter-spacing: 0.01em;
-            margin: auto;
-        }
+{% block extra_css %}
+<style>
+    /* Task List Styles */
+    .tasks-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        margin-top: 40px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 80%; 
+        background-color: #d5e0da;
+        border-radius: 25px;
+    }
 
-        .home-link {
-            display: inline-block;
-            color: #eefeee;
-            position: absolute;
-            left: 20px;
-            top: 30px;
-            padding: 10px 20px;
-            z-index: 1000;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            letter-spacing: 0.2em;
-            font-weight: bold;
-            transition: background-color 0.3s, transform 0.3s;
-        }
+    .tasks-container h1 {
+        text-align: center; 
+        color: #2f554f; 
+        margin-bottom: 1rem; 
+        font-size: 2.6rem;
+    }
 
-        .home-link:hover {
-            transform: scale(1.1);
-        }
+    .task-box {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s;
+    }
 
+    .task-box:hover {
+        transform: scale(1.01);
+    }
+
+    .task-details {
+        display: flex;
+        flex-direction: column; 
+    }
+
+    .task-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .task-points {
+        color: #6b7280;
+        font-size: 1rem; 
+        margin: 10px 0 0; 
+    }
+
+    .status {
+        margin-top: auto;
+    }
+
+    .progress-bar {
+        width: 100%;
+        background-color: #e5e7eb;
+        border-radius: 30px;
+        margin-top: 10px;
+        height: 15px;
+    }
+
+    .progress {
+        height: 100%;
+        background-color: #4CAF50;
+        text-align: center;
+        color: white;
+        font-weight: bold;
+        border-radius: 30px;
+    }
+
+    .completed {
+        color: #4CAF50; 
+        font-weight: bold;
+    }
+
+    .not-completed {
+        color: #f44336;
+        font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
         .tasks-container {
-            max-width: 1000px;
-            margin: 0 auto;
-			margin-top: 160px;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            padding-top: 50px; 
-            gap: 1.5rem;
-            width: 80%; 
-            background-color: #d5e0da;
-            border-radius: 25px;
+            width: 90%;
         }
+    }
 
-        .task-box {
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .task-box:hover {
-            transform: scale(1.01);
-            transition: transform 0.2s;
-        }
-
-        .task-details {
-            display: flex;
-            flex-direction: column; 
-        }
-
+    @media (max-width: 480px) {
         .task-title {
-            font-size: 2rem;
-            font-weight: 600;
-            color: #1f2937;
-            margin: 0;
+            font-size: 1.2rem;
         }
-
         .task-points {
-            color: #6b7280;
-            font-size: 1rem; 
-            margin: 10px 0 0; 
+            font-size: 0.8rem;
         }
+    }
+</style>
+{% endblock %}
 
-        .status {
-            margin-top: auto;
-        }
-
-        .progress-bar {
-            width: 100%;
-            background-color: #e5e7eb;
-            border-radius: 30px;
-            margin-top: 10px;
-            height: 15px;
-        }
-
-        .progress {
-            height: 100%;
-            background-color: #4CAF50;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-            border-radius: 30px;
-        }
-
-        .completed {
-            color: #4CAF50; 
-            font-weight: bold;
-        }
-
-        .not-completed {
-            color: #f44336;
-            font-weight: bold;
-        }
-
-
-        @media (max-width: 480px) {
-            .header-text {
-                font-size: 2.5rem; 
-            }
-            .task-title {
-                font-size: 1.2rem;
-            }
-            .task-points {
-                font-size: 0.8rem;
-            }
-			.task-container {
-				width: 90%;
-			}
-        }
-    </style>
-</head>
-<body>
-    <div class="rectangle">
-        <div class="header-text">ExePLORE</div>
-        <a href="{% url 'dashboard' %}" class="home-link">Dashboard</a>
-    </div>
-    <div class="tasks-container">
-        <h1 style="text-align: center; color: #2f554f; margin-bottom: 1rem; font-size: 2.6rem;">This Week's Missions</h1>
-        {% for user_task in user_tasks %}
-            <div class="task-box">
-                <div class="task-details">
-                    <p class="task-title">{{ user_task.task.title }}</p>
-                    <p class="task-points">Points Awarded: {{ user_task.task.points_awarded }}</p>
-                </div>
-                <div class="status">
-                    {% if user_task.task.task_type == 'multi' %}
-                        <div>Completed: {{ user_task.count }}/{{ user_task.task.required_races }}</div>
-                        <div class="progress-bar">
-                            <div class="progress" style="width: {{ user_task.progress_percentage|floatformat:0 }}%;">
-                            </div>
-                        </div>
-                        {% if user_task.is_completed %}
-                            <span class="completed">Completed</span>
-                        {% else %}
-                            <span class="not-completed">Not Completed</span>
-                        {% endif %}
-                    {% else %}
-                        {% if user_task.is_completed %}
-                            <span class="completed">Completed</span>
-                        {% else %}
-                            <span class="not-completed">Not Completed</span>
-                        {% endif %}
-                    {% endif %}
-                </div>
+{% block content %}
+<div class="tasks-container">
+    <h1>This Week's Missions</h1>
+    {% for user_task in user_tasks %}
+        <div class="task-box">
+            <div class="task-details">
+                <p class="task-title">{{ user_task.task.title }}</p>
+                <p class="task-points">Points Awarded: {{ user_task.task.points_awarded }}</p>
             </div>
-        {% empty %}
-            <p>No tasks available.</p>
-        {% endfor %}
-    </div>
-</body>
-</html>
+            <div class="status">
+                {% if user_task.task.task_type == 'multi' %}
+                    <div>Completed: {{ user_task.count }}/{{ user_task.task.required_races }}</div>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: {{ user_task.progress_percentage|floatformat:0 }}%;">
+                        </div>
+                    </div>
+                    {% if user_task.is_completed %}
+                        <span class="completed">Completed</span>
+                    {% else %}
+                        <span class="not-completed">Not Completed</span>
+                    {% endif %}
+                {% else %}
+                    {% if user_task.is_completed %}
+                        <span class="completed">Completed</span>
+                    {% else %}
+                        <span class="not-completed">Not Completed</span>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No tasks available.</p>
+    {% endfor %}
+</div>
+{% endblock %}

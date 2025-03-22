@@ -7,55 +7,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="{% static 'race/race_styles.css' %}">
-<style>
-/* Additional styles for modals */
-#activeTimeTrialView, #activeExePLOREView {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: white;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-#activeTimeTrialView.visible, #activeExePLOREView.visible {
-    transform: translateY(0);
-}
-
-#timer {
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-#qoute {
-    font-size: 18px;
-    font-style: italic;
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-#activeTimeTrialView button, #activeExePLOREView button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    margin: 5px;
-    min-width: 100px;
-}
-</style>
 {% endblock %}
 
 {% block content %}
@@ -92,9 +43,9 @@
             </script>
             <script src="{% static 'race/race_map_script.js' %}"></script>
             <div class="medalTag">
-                    {% if entry and entry.medal != 'None' %}
-                        <img src="{% static 'images/'|add:entry.medal|add:'.png' %}" alt="">
-                    {% endif %} 
+                {% if entry and entry.medal != 'None' %}
+                    <img src="{% static 'images/'|add:entry.medal|add:'.png' %}" alt="">
+                {% endif %} 
             </div> 
             <!-- Map will be initialized by JavaScript -->
         </div>
@@ -119,24 +70,24 @@
             </div>
             
             <div class="actionButtons">
-                <button style="background-color: red;" onclick="toggleShowUserOnMap()">Toggle Show Current Location</button>
-                <button style="background-color: gold;" onclick="startTimeTrial()">Time Trial</button>
-                <button style="background-color: forestgreen;" onclick="startExePLORE()">ExePLORE</button>
+                <button class="toggle-location-btn" onclick="toggleShowUserOnMap()">Toggle Show Current Location</button>
+                <button class="time-trial-btn" onclick="startTimeTrial()">Time Trial</button>
+                <button class="explore-btn" onclick="startExePLORE()">ExePLORE</button>
             </div>
         </div>
-        <div id="activeTimeTrialView">
-            <div id="timer">00:00</div>
-            <button style="background-color: forestgreen;" onclick="endTimeTrial()">Finish</button>
-            <button style="background-color: red;" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
-        </div>
-        <div id="activeExePLOREView">
-            <div id="pointsNotif">You just earned  points!</div>
-            <div id="qoute">"Leave it better than you found it, Be found better than you where"</div>
-            <button style="background-color: forestgreen;" onclick="this.disabled = true; endExePLORE()">Finish</button>
-            <button style="background-color: red;" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
-        </div>
-    </main>
+    </div>
     
-</body>
-
+    <div id="activeTimeTrialView">
+        <div id="timer">00:00</div>
+        <button class="finish-btn" onclick="endTimeTrial()">Finish</button>
+        <button class="exit-btn" onclick="document.getElementById('activeTimeTrialView').classList.remove('visible')">Exit</button>
+    </div>
+    
+    <div id="activeExePLOREView">
+        <div id="pointsNotif">You just earned points!</div>
+        <div id="qoute">"Leave it better than you found it, Be found better than you where"</div>
+        <button class="finish-btn" onclick="this.disabled = true; endExePLORE()">Finish</button>
+        <button class="exit-btn" onclick="document.getElementById('activeExePLOREView').classList.remove('visible')">Exit</button>
+    </div>
+</div>
 {% endblock %}
