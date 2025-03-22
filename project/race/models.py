@@ -26,15 +26,22 @@ def validate_ascending_three_items(value):
     if value[0] > value[1] or value[1] > value[2]:
         raise ValidationError("Values in this field must be in ascending order")
 
+def validate_list_of_strings(value):
+    if not isinstance(value, list):
+        raise ValidationError("Field Value must be a list.")
+    
+    if not all(isinstance(item, str) for item in value):
+        raise ValidationError("All items in the list must be strings.")
+
 class Race(models.Model):
     title = models.CharField(max_length=255)
     start = models.ForeignKey('Location', related_name='start_races', on_delete=models.CASCADE)
     end = models.ForeignKey('Location', related_name='end_races', on_delete=models.CASCADE)
     medal_requirements = models.JSONField(default=list, validators=[validate_ascending_three_items])
-    
+    tags = models.JSONField(default=list, validators=[validate_list_of_strings])    
 
     def __str__(self):
-        return self.title
+        return str(self.title)
     
     def get_distance(self):
         return haversine(self.start.latitude,self.start.longitude,self.end.latitude,self.end.longitude)

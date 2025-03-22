@@ -12,9 +12,9 @@ class AchievementTests(TestCase):
         loc_comm_gardens = Location.objects.create(name="Community Gardens", latitude=50.740448, longitude=-3.529612)
         loc_reed_pond = Location.objects.create(name="Reed Pond", latitude=50.733950, longitude=-3.537296)
 
-        self.race1 = Race.objects.create(title="Race 1", start=loc_forum, end=loc_armory, medal_requirements=[100,200,300]) #distance=0.1
-        self.race2 = Race.objects.create(title="Race 2", start=loc_forum, end=loc_comm_gardens, medal_requirements=[100,200,300]) #distance=0.55
-        self.race3 = Race.objects.create(title="Race 3", start=loc_reed_pond, end=loc_comm_gardens, medal_requirements=[100,200,300]) #distance=0.9
+        self.race1 = Race.objects.create(title="Race 1", start=loc_forum, end=loc_armory, medal_requirements=[100,200,300], tags=["funky"]) #distance=0.1
+        self.race2 = Race.objects.create(title="Race 2", start=loc_forum, end=loc_comm_gardens, medal_requirements=[100,200,300], tags=["funky", "cool"]) #distance=0.55
+        self.race3 = Race.objects.create(title="Race 3", start=loc_reed_pond, end=loc_comm_gardens, medal_requirements=[100,200,300], tags=["water"]) #distance=0.9
 
         self.user1 = User.objects.create_user(username='testuser1', password='password1')
         self.user2 = User.objects.create_user(username='testuser2', password='password2')
@@ -263,6 +263,44 @@ class AchievementTests(TestCase):
             user=self.user2,
             start_time = now(),
             end_time = now()+timedelta(seconds=90)
+        )
+        self.assertTrue(achievement.has_user_completed(self.user1))
+
+    def test_tags_field(self):
+        achievement = Achievement.objects.create(
+            title="TEST - funky town",
+            description="Complete two funky races",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator="=",
+            main_condition_value="2",
+            subconditions=[
+                ["tags", "contains", "funky"]
+            ]
+        )
+        # complete a funky race
+        RaceEntry.objects.create(
+            race=self.race1,
+            user=self.user1,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=100)
+        )
+        self.assertFalse(achievement.has_user_completed(self.user1))
+
+        # complete a non-funky race
+        RaceEntry.objects.create(
+            race=self.race3,
+            user=self.user1,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=100)
+        )
+        self.assertFalse(achievement.has_user_completed(self.user1))
+
+        # complete the final funky race to get the achievement
+        RaceEntry.objects.create(
+            race=self.race2,
+            user=self.user1,
+            start_time = now(),
+            end_time = now()+timedelta(seconds=50)
         )
         self.assertTrue(achievement.has_user_completed(self.user1))
 
