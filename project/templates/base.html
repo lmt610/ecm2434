@@ -351,6 +351,9 @@
                     <div class="user-menu">
                         <span>{{ user.username }}</span>
                         <div class="user-menu-content">
+                            {% if user.is_staff %}
+                                <a href="{% url 'admin:index' %}">Admin</a>
+                            {% endif %} 
                             <a href="{% url 'settings' %}">
                                 <i class="fas fa-cog"></i> Settings
                             </a>
