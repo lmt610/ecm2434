@@ -49,13 +49,15 @@ class RaceEntry(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     medal = models.CharField(max_length=6, default='None')
     num_completions=models.IntegerField(default=0)
+    rank = models.IntegerField(null=True, blank=True) 
 
     def save(self, *args, **kwargs):
         if not self.name:
             self.name = f"{self.race} {self.user}"
 
-        if self.start_time != None and self.end_time!=None:
-            self.assign_medal()
+        if self.start_time is not None and self.end_time is not None:
+            self.assign_medal()  
+
         super().save(*args, **kwargs)
 
     def get_duration(self):
@@ -66,13 +68,24 @@ class RaceEntry(models.Model):
     def get_duration_in_minutes(self):
         duration = self.get_duration()
         return duration / 60
-    
+
     def assign_medal(self):
-        medals=["Gold", "Silver", "Bronze"]
+        """Assigns a medal based on race completion time."""
+        medals = ["Gold", "Silver", "Bronze"]
+
         for i in range(len(self.race.medal_requirements)):
             if self.get_duration() <= self.race.medal_requirements[i]:
                 self.medal = medals[i]
                 break
+        else:
+            self.medal = "None"
+
+    def assign_ranks():
+        race_entries = RaceEntry.objects.all().order_by('duration')  # Sort by race duration
+        for i, entry in enumerate(race_entries):
+            entry.rank = i + 1  # 1st place gets rank 1, 2nd place gets rank 2, etc.
+            entry.save()
+
 
     @classmethod
     def get_num_completed_races(cls,user):
@@ -90,8 +103,8 @@ class RaceEntry(models.Model):
 
     @property
     def race_date(self):
-        return self.start_time.date()  # This extracts the date part from the start_time
-    
+        return self.start_time.date()
+
     def __str__(self):
         return self.name
 

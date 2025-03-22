@@ -27,11 +27,11 @@
                 </thead>
                 <tbody>
                     {% for entry in top_entries %}
-                        <tr>
+                        <tr {% if entry.user == request.user %} class="highlight-user" {% endif %}>
                             <td class="rank-cell">{{ forloop.counter }}</td>
                             <td>{{ entry.user.username }}</td>
                             <td>{{ entry.race.title }}</td>
-                            <td>{{ entry.completion_time }} seconds</td>
+                            <td>{{ entry.duration }} </td>
                             <td>{{ entry.timestamp|date:"d M Y, H:i" }}</td>
                         </tr>
                     {% empty %}
@@ -42,6 +42,8 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    
         
         <div class="filter-container">
             <form method="GET" action="" class="race-filter-form">
