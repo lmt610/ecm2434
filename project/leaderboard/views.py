@@ -1,16 +1,21 @@
 from django.shortcuts import render
-from users.models import Profile
+from users.models import Profile, UserSettings
 from teams.models import Team
 from django.db.models import F, ExpressionWrapper, DurationField
 from django.db.models.functions import Extract
 from django.db import models
 from race.models import Race, RaceEntry
-import logging
-
+from django.db.models.functions import Round, Cast
+from django.db.models import FloatField
 
 def user_leaderboard(request):
     # Fetch all profiles ordered by points
     ranked_profiles = Profile.objects.all().order_by('-points')
+
+    # Don't show users on the leaderboard if their "Show my activities on leaderboards" setting off
+    leaderboard_prefereance_settings = UserSettings.objects.filter(show_on_leaderboard=False)
+    users_not_to_be_shown = [user_setting.user for user_setting in leaderboard_prefereance_settings]
+    ranked_profiles = ranked_profiles.exclude(user__in=users_not_to_be_shown)
 
     # Get all teams
     teams = Team.objects.all()
@@ -53,7 +58,7 @@ def user_leaderboard(request):
 
 
 def team_leaderboard(request):
-    team_list = Team.objects.all().order_by('-points')[:10]
+    team_list = Team.objects.all().order_by('-points')
     return render(request, 'leaderboard/team_leaderboard.html', {'team_list': team_list})
 
 def race_leaderboard(request):
@@ -63,10 +68,22 @@ def race_leaderboard(request):
     else:
         race_entries = RaceEntry.objects
     
+    # annotate entries with their duration (seconds to complete a race to 2 decimal places)
     ordered_entries = race_entries.annotate(
-            duration=ExpressionWrapper(F('end_time')-F('start_time'), output_field=DurationField())
-        ).order_by('duration')
+        duration=Cast(
+            Round(
+                ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField()) / 1000000,
+                2
+            ),
+            output_field=FloatField()
+        )
+    ).order_by("duration")
     ordered_entries = ordered_entries.select_related("user", "race")
+    
+    # remove entries of users with their "Show my activities on leaderboards" setting off
+    leaderboard_prefereance_settings = UserSettings.objects.filter(show_on_leaderboard=False)
+    users_not_to_be_shown = [user_setting.user for user_setting in leaderboard_prefereance_settings]
+    ordered_entries = ordered_entries.exclude(user__in=users_not_to_be_shown)
     
     all_races = Race.objects.all()
     context = {
@@ -75,5 +92,4 @@ def race_leaderboard(request):
         'selected_race': race_title,
         'entry_count': ordered_entries.count()
     }
-    
     return render(request, 'leaderboard/race_leaderboard.html', context)

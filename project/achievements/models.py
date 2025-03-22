@@ -4,6 +4,7 @@ from race.models import RaceEntry
 from teams.models import Team
 from django.core.exceptions import ValidationError
 from .field_labelers import get_labeler_for_field
+from django.db import connection
 
 class Achievement(models.Model):
     title = models.CharField(max_length=100)
@@ -15,13 +16,14 @@ class Achievement(models.Model):
     ]
     
     OPERATOR_CHOICES = [
-        ('<', 'Less than'),
-        ('=', 'Equal to'),
-        ('>', 'Greater than'),
+        ('<', '<'),
+        ('=','='),
+        ('>', '>'),
+        ('contains', 'contains')
     ]
     
     main_condition_model = models.CharField(max_length=20, choices=MODEL_CHOICES)
-    main_condition_operator = models.CharField(max_length=2, choices=OPERATOR_CHOICES)
+    main_condition_operator = models.CharField(max_length=8, choices=OPERATOR_CHOICES)
     main_condition_value = models.CharField(max_length=50)
     
     # Store subconditions as JSON array of [field, operator, value]
@@ -35,11 +37,13 @@ class Achievement(models.Model):
             'duration',
             'distance',
             'position',
-            'number_of_completions'
+            'number_of_completions',
+            'tags'
         ],
         'COUNT_TEAMS': [
             'number_of_members',
-            'points'
+            'points',
+            'tags'
         ]
     }
     
@@ -92,48 +96,32 @@ class Achievement(models.Model):
         else:
             return False
         
-        # Special case: Check if subconditions is flattened instead of nested
-        if (self.subconditions and len(self.subconditions) == 3 and 
-                all(isinstance(item, str) for item in self.subconditions)):
-            # The subconditions is formatted as [field, operator, value] directly
-            field, operator, value = self.subconditions
-            
-            labeler = get_labeler_for_field(field)
+        # Apply all subconditions
+        for subcondition in self.subconditions:
+            field, operator, value = subcondition
+
+            # Get the appropriate labeler function and apply it
+            labeler = get_labeler_for_field(self.main_condition_model, field)
             if labeler:
+                # Apply the custom field labeler
                 base_query = labeler(base_query)
+                # Build dynamic query based on operator
                 if operator == '<':
                     query_kwargs = {f"{field}__lt": value}
                 elif operator == '=':
                     query_kwargs = {f"{field}": value}
                 elif operator == '>':
                     query_kwargs = {f"{field}__gt": value}
-                
-                base_query = base_query.filter(**query_kwargs)
-        else:
-            # Normal case: subconditions is a list of lists
-            for subcondition in self.subconditions:
-                # Skip if not a list or doesn't have exactly 3 elements
-                if not isinstance(subcondition, list) or len(subcondition) != 3:
-                    continue
-                
-                field, operator, value = subcondition
-                
-                # Get the appropriate labeler function and apply it
-                labeler = get_labeler_for_field(field)
-                if labeler:
-                    # Apply the custom field labeler
-                    base_query = labeler(base_query)
-                    # Build dynamic query based on operator
-                    if operator == '<':
-                        query_kwargs = {f"{field}__lt": value}
-                    elif operator == '=':
-                        query_kwargs = {f"{field}": value}
-                    elif operator == '>':
-                        query_kwargs = {f"{field}__gt": value}
-                    
-                    base_query = base_query.filter(**query_kwargs)
+                elif operator == 'contains':
+                    #sqlite doesn't support 'contains' for JSON fields
+                    if "sqlite" in connection.settings_dict["ENGINE"]:
+                        query_kwargs = {f"{field}__icontains": value}
+                    else:
+                        query_kwargs = {f"{field}__contains": value}
 
-        # Check whether main condition has been met
+                base_query = base_query.filter(**query_kwargs)
+
+        # check whether main condition has been met
         count = base_query.count()
         if self.main_condition_operator == '<':
             return count < int(self.main_condition_value)

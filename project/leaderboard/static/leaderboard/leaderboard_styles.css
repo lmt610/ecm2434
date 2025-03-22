@@ -271,6 +271,18 @@
     font-weight: 500;
 }
 
+.highlight-user {
+    border: 2px solid yellow !important;
+    font-weight: bold;
+    border-collapse: collapse; /* Ensure borders are properly displayed */
+}
+
+.highlight-user td {
+    border-bottom: 2px solid yellow !important; /* Explicitly apply to table cells */
+}
+
+
+
 /* Responsive Design */
 @media (max-width: 992px) {
     .leaderboard-content {

@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from users.models import Profile
 from achievements.models import Achievement
 from math import radians, sin, cos, sqrt, atan2
+from users.views import UserSettings
 
 
 @login_required
@@ -22,11 +23,12 @@ def race_view(request, race_id=None):
     else:
         race = get_object_or_404(Race, id=race_id)
         entry = RaceEntry.objects.filter(race=race, user=request.user).first()
+        user_location_preferance = UserSettings.objects.filter(user=request.user).first().location_tracking
         if(entry):
             duration = entry.get_duration()
-            return render(request, "race/race.html", {"race": race, "entry": entry, "duration" : duration})
+            return render(request, "race/race.html", {"race": race, "entry": entry, "duration" : duration, "location_tracking" : user_location_preferance})
         else:
-            return render(request,"race/race.html", {"race": race})
+            return render(request,"race/race.html", {"race": race, "location_tracking" : user_location_preferance})
 
 #haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -72,10 +74,14 @@ def update_race_time(request):
 
     start_time = parse_datetime(data.get("start_time"))
     end_time = parse_datetime(data.get("end_time"))
-    entry, created = RaceEntry.objects.get_or_create(race=race, user=request.user)
-    if created:
-        entry.start_time = start_time
-        entry.end_time = end_time
+    entry = RaceEntry.objects.filter(race=race, user=request.user).first() 
+    if entry is None: 
+        RaceEntry.objects.create(
+            race=race,
+            user=request.user,
+            start_time=start_time,
+            end_time=end_time
+        )
     else:
         current_pb = entry.get_duration()
         new_time = (end_time - start_time).total_seconds()
@@ -83,11 +89,9 @@ def update_race_time(request):
             entry.start_time = start_time
             entry.end_time = end_time
         entry.num_completions += 1
-    
-    entry.save()
+        entry.save()
     
     nature_fact = get_random_nature_fact()
-    
     achievements_after_race = Achievement.get_all_user_achievements(request.user)
     new_achievements = achievements_after_race.difference(achievements_before_race).values("title", "description")
     if(new_achievements.count()>0):
@@ -119,9 +123,9 @@ def add_exeplore_points(request):
         end_lat = data.get("end_latitude")
         end_lon = data.get("end_longitude")
 
-        #distance is calculated in kilometres, multiply by 100 to get points in the 10s + 20 to add base points
+        #distance is calculated in kilometres, students earn 2 points for every 10 meters, and a baseline 30 pointsas a bias
         distance = haversine(start_lat, start_lon, end_lat, end_lon)
-        points_to_add = 100 * distance + 20
+        points_to_add = 200 * distance + 30
         points_to_add = int(points_to_add)
 
         user.points += points_to_add
