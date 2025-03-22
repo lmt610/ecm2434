@@ -73,10 +73,14 @@ def update_race_time(request):
 
     start_time = parse_datetime(data.get("start_time"))
     end_time = parse_datetime(data.get("end_time"))
-    entry, created = RaceEntry.objects.get_or_create(race=race, user=request.user)
-    if created:
-        entry.start_time = start_time
-        entry.end_time = end_time
+    entry = RaceEntry.objects.filter(race=race, user=request.user).first() 
+    if entry is None: 
+        RaceEntry.objects.create(
+            race=race,
+            user=request.user,
+            start_time=start_time,
+            end_time=end_time
+        )
     else:
         #compare time to previous best
         current_pb = entry.get_duration()
@@ -85,8 +89,8 @@ def update_race_time(request):
             entry.start_time = start_time
             entry.end_time = end_time
         entry.num_completions += 1
+        entry.save()
     
-    entry.save()
     achievements_after_race = Achievement.get_all_user_achievements(request.user)
     new_achievements = achievements_after_race.difference(achievements_before_race).values("title", "description")
     if(new_achievements.count()>0):

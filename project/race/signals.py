@@ -66,6 +66,7 @@ def populate_database(sender, **kwargs):
             title="Reed Pond to Arab & Islamic Studies",
             start=reed_pond_loc,
             end=arab_studies_loc,
+            tags="uphill"
         )
     if not Race.objects.filter(title="Lemon Grove to East Park Brook").exists(): 
         Race.objects.create(
@@ -73,6 +74,7 @@ def populate_database(sender, **kwargs):
             start=lemon_grove_loc,
             end=east_park_brook_loc,
             medal_requirements=[150, 180, 300],
+            tags="uphill"
         )
     if  not Race.objects.filter(title="St John's road (Test)").exists(): 
         Race.objects.create(
