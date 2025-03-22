@@ -7,9 +7,7 @@ ExePlore is a web application that allows users to run races between real locati
 - [Authors](#Authors)
 - [Features](#Features)
 - [Project Structure](#Project-structure)
-- [Depployed App Info](#Deployed-App-Info )
-  - [Deployment Adress](#Deployment-Adress)
-  - [App Demo](#App-Demo)
+- [Depployed App Demo](#Live-Deployment-Demo-Link )
 - [Running the App Locally](#Running-the-app-locally )
   - [Dependencies](#Dependencies)
   - [Installation](#installation)
@@ -46,11 +44,10 @@ Within each app:
 - Static folder is used for CSS, JS, images etc...
 - Templates folder is used for HTML files
 
-# Deployed-App-Info 
+## Live-Deployment-Demo-Link
+The project demo can be found here: 
+  https://ecm2434-fy7q.onrender.com/
 
-## Deployment-Adress
-
-## App-Demo 
 
 # Running-The-App-Locally 
 
