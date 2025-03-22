@@ -8,6 +8,7 @@ ExePlore is a web application that allows users to run races between real locati
 - [Features](#Features)
 - [Project Structure](#Project-structure)
 - [Depployed App Demo](#Live-Deployment-Demo-Link )
+- [Process Documents](#Process)
 - [Running the App Locally](#Running-the-app-locally )
   - [Dependencies](#Dependencies)
   - [Installation](#installation)
@@ -50,6 +51,15 @@ The project demo can be found here:
   
 **NOTE: Upon opening this page, The server will take a few minuets to boot the project. Please allow for this time.**
 
+## Process
+A kanban board was used during production to organise and manage tasks. 
+
+Link to Kanban Board: https://trello.com/b/ak80OHzE/exeplore-group-software-eng-project-natywinat
+  
+  
+  Github was used to host our code. 
+
+Link to Github: https://github.com/lmt610/ecm2434
 
 # Running-The-App-Locally 
 
@@ -106,15 +116,7 @@ Example tests relevant to sprint 1 assessment:
     - login page - `users.tests.test_views.LoginViewTest`, `users.tests.test_forms.LoginFormTest`
     - sign up    - `users.tests.test_views.RegisterViewTest`, `users.tests.test_forms.UserRegistrationFormTest`
     - race page  - `race.tests.RaceMenuPageTests`, `race.tests.CalculateDistanceViewTest`, `race.tests.UpdateRaceTimeViewTest`
-## Process
-A kanban board was used during production to organise and manage tasks. 
 
-Link to Kanban Board: https://trello.com/b/ak80OHzE/exeplore-group-software-eng-project-natywinat
-  
-  
-  Github was used to host our code. 
-
-Link to Github: https://github.com/lmt610/ecm2434
 
 ## Populating-databases
 The databases can be populated with mock data by running commands in your terminal.
