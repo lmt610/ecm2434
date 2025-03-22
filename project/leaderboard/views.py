@@ -56,69 +56,24 @@ def team_leaderboard(request):
     team_list = Team.objects.all().order_by('-points')[:10]
     return render(request, 'leaderboard/team_leaderboard.html', {'team_list': team_list})
 
-logger = logging.getLogger(__name__)
 def race_leaderboard(request):
-    try:
-        # Get all races for the filter dropdown - log to verify we're getting races
-        all_races = Race.objects.all()
-        logger.info(f"Found {all_races.count()} races")
-        
-        # Get race title from query parameters
-        race_title = request.GET.get("race_title")
-        logger.info(f"Filtering by race title: {race_title}")
-        
-        # Get all race entries with related user and race data
-        race_entries = RaceEntry.objects.select_related("user", "race").all()
-        
-        # Log initial count
-        logger.info(f"Initial race entries count: {race_entries.count()}")
-        
-        # Filter race entries by race title if provided
-        if race_title:
-            race_entries = race_entries.filter(race__title__icontains=race_title)
-            logger.info(f"After filtering by race title: {race_entries.count()} entries")
-        
-        # Filter out entries without start or end times
-        valid_entries = []
-        for entry in race_entries:
-            if entry.start_time and entry.end_time:
-                # Calculate the completion time in seconds
-                try:
-                    entry.completion_time = (entry.end_time - entry.start_time).total_seconds()
-                    valid_entries.append(entry)
-                except Exception as e:
-                    logger.error(f"Error calculating completion time for entry {entry.id}: {e}")
-        
-        logger.info(f"Valid entries after filtering: {len(valid_entries)}")
-        
-        # Sort by completion time (fastest first)
-        sorted_entries = sorted(valid_entries, key=lambda x: x.completion_time)
-        
-        # Get the top 10 entries
-        top_entries = sorted_entries[:10]
-        
-        logger.info(f"Final top entries count: {len(top_entries)}")
-        
-        # Log some sample data for debugging
-        if top_entries:
-            sample = top_entries[0]
-            logger.info(f"Sample entry - Race: {sample.race.title}, User: {sample.user.username}, Time: {sample.completion_time}")
-        
-        context = {
-            'top_entries': top_entries,
-            'all_races': all_races,
-            'selected_race': race_title,
-            'entry_count': len(valid_entries)
-        }
-        
-        return render(request, 'leaderboard/race_leaderboard.html', context)
+    race_title = request.GET.get("race_title")
+    if race_title:
+        race_entries = RaceEntry.objects.filter(race__title__icontains=race_title)
+    else:
+        race_entries = RaceEntry.objects
     
-    except Exception as e:
-        logger.error(f"Error in race_leaderboard view: {e}", exc_info=True)
-        # Return a simple error view if something goes wrong
-        context = {
-            'error': str(e),
-            'all_races': Race.objects.all(),
-            'selected_race': race_title
-        }
-        return render(request, 'leaderboard/race_leaderboard.html', context)
+    ordered_entries = race_entries.annotate(
+            duration=ExpressionWrapper(F('end_time')-F('start_time'), output_field=DurationField())
+        ).order_by('duration')
+    ordered_entries = ordered_entries.select_related("user", "race")
+    
+    all_races = Race.objects.all()
+    context = {
+        'top_entries': ordered_entries[:10],
+        'all_races': all_races,
+        'selected_race': race_title,
+        'entry_count': ordered_entries.count()
+    }
+    
+    return render(request, 'leaderboard/race_leaderboard.html', context)
