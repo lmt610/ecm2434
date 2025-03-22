@@ -47,6 +47,7 @@ Within each app:
 ## Live-Deployment-Demo-Link
 The project demo can be found here: 
   https://ecm2434-fy7q.onrender.com/
+**NOTE: Upon opening this page, The server will take a few minuets to boot the project. Please allow for this time.**
 
 
 # Running-The-App-Locally 
