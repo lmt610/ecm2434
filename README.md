@@ -7,10 +7,12 @@ ExePlore is a web application that allows users to run races between real locati
 - [Authors](#Authors)
 - [Features](#Features)
 - [Project Structure](#Project-structure)
-- [Dependencies](#Dependencies)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Populating-database](#Populating-databases)
+- [Depployed App Demo](#Live-Deployment-Demo-Link )
+- [Running the App Locally](#Running-the-app-locally )
+  - [Dependencies](#Dependencies)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Populating-database](#Populating-databases)
 
 
 ## Authors 
@@ -41,6 +43,14 @@ Within each app:
 - Django Python files sit at root
 - Static folder is used for CSS, JS, images etc...
 - Templates folder is used for HTML files
+
+## Live-Deployment-Demo-Link
+The project demo can be found here: 
+  https://ecm2434-fy7q.onrender.com/
+
+
+# Running-The-App-Locally 
+
 ## Dependencies
 Python library dependencies are stored in `requirements.txt`. This project
 uses Django 5, the minimum supported version of Python is `3.10`.
