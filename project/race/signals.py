@@ -1,7 +1,10 @@
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, post_save
 from django.dispatch import receiver
 from django.utils import timezone
-from .models import Location, Race
+from .models import Location, Race, RaceEntry 
+from users.models import Profile  
+from django.db.models import F, ExpressionWrapper, DurationField, Min
+
 
 @receiver(post_migrate)
 def populate_database(sender, **kwargs):
@@ -87,3 +90,46 @@ def populate_database(sender, **kwargs):
             medal_requirements=[5, 10, 15],
         )
         print("Database populated with initial race data")
+
+
+
+
+@receiver(post_save, sender=RaceEntry)
+def award_medal_points(sender, instance, created, **kwargs):
+    """Awards points to the user when a medal is assigned."""
+    if created:  # Only process newly created RaceEntry objects
+        medal_points = {"Gold": 30, "Silver": 20, "Bronze": 10}
+        ranking_points = {1: 20, 2: 15, 3: 10}
+
+        profile = Profile.objects.get(user=instance.user)
+
+        # Award medal points
+        if instance.medal in medal_points:
+            profile.points += medal_points[instance.medal]
+        else:
+            profile.points += 5  # Default points for participation
+
+        # Calculate the ranking **based on each user's best time**
+        duration = ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField())
+
+        # Get the best (fastest) entry per user
+        best_entries = (
+            RaceEntry.objects
+            .filter(race=instance.race)
+            .values("user_id")
+            .annotate(best_time=Min(duration))
+        )
+
+        # Convert to a sorted list of times
+        sorted_times = sorted([entry["best_time"] for entry in best_entries])
+
+        # Find where the current user's new entry ranks
+        user_time = instance.end_time - instance.start_time
+        user_rank = sorted_times.index(user_time) + 1 if user_time in sorted_times else None
+
+        # Award ranking points if applicable
+        if user_rank and user_rank in ranking_points:
+            profile.points += ranking_points[user_rank]
+
+        profile.save()  # Save the updated profile
+

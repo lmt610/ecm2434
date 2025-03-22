@@ -50,7 +50,7 @@ def user_leaderboard(request):
 
 
 def team_leaderboard(request):
-    team_list = Team.objects.all().order_by('-points')[:10]
+    team_list = Team.objects.all().order_by('-points')
     return render(request, 'leaderboard/team_leaderboard.html', {'team_list': team_list})
 
 
@@ -65,7 +65,7 @@ def race_leaderboard(request):
             duration=ExpressionWrapper(F('end_time')-F('start_time'), output_field=DurationField())
         ).order_by('duration')
 
-    top_entries = ordered_entries.select_related("user", "race")[:10]
+    top_entries = ordered_entries.select_related("user", "race")
     return render(request, 'leaderboard/race_leaderboard.html', {'top_entries':top_entries})
 
 
