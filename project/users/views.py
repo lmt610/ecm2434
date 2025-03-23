@@ -2,10 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
-from tasks.models import UserTaskCompletion
 from race.models import RaceEntry
 from achievements.models import Achievement 
 from django.contrib.auth import get_user_model, logout
@@ -14,6 +12,11 @@ from django.core.validators import EmailValidator
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from tasks.models import Task, UserTaskCompletion
+from teams.models import Team
+from django.db.models import Min, Q 
+from django.utils import timezone
+
 
 User = get_user_model()
 
