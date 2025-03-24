@@ -49,7 +49,7 @@
             <a href="{% url 'race' %}" id="routePOIs">{{ race.title }} ►</a>
             <a id="leaderboard" href="{% url 'race_leaderboard'%}?race_title={{ race.title }}">Leaderboards</a>
             <div id="status">
-                {% if entry %}
+                {% if entry.end_time is not Null %}
                 <p>Race status: Completed!</p>
                 {% else %}
                 <p class="status-incomplete"><i class="fas fa-hourglass-half"></i> You haven't explored this route yet!</p>
@@ -57,7 +57,7 @@
             </div>
             
             <div class="time">
-                {% if entry %}
+                {% if entry.end_time is not Null %}
                 <p>Personal Best Time: {{ duration }}</p>
                 {% else %}
                 <p>Personal Best Time: No time found</p>

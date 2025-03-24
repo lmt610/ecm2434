@@ -218,14 +218,15 @@ class ExeploreTests(TestCase):
             end=self.end_location,
             medal_requirements=[10, 20, 30]
         )
+        self.entry=RaceEntry.objects.create(
+            user = self.user,
+            race = self.race
+        )
 
     def test_add_exeplore_points_valid_user(self):
         request_data = {
             "user": self.username,
-            "start_latitude": 0.0,
-            "start_longitude": 0.0,
-            "end_latitude": 1.0,
-            "end_longitude": 1.0,
+            "race_id": self.race.id
         }
 
         response = self.client.post(reverse('add_exeplore_points'),
@@ -242,11 +243,8 @@ class ExeploreTests(TestCase):
 
     def test_add_exeplore_points_user_not_found(self):
         request_data = {
-            "user": "nonexistentuser",
-            "start_latitude": 0.0,
-            "start_longitude": 0.0,
-            "end_latitude": 1.0,
-            "end_longitude": 1.0,
+            "user": "not a user",
+            "race_id": self.race.id
         }
 
         response = self.client.post(reverse('add_exeplore_points'),

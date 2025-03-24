@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from .models import Location, Race, RaceEntry 
 from users.models import Profile  
-from django.db.models import F, ExpressionWrapper, DurationField, Min
+from django.db.models import F, ExpressionWrapper, DurationField, Min, Q
 from teams.models import Team
 
 @receiver(post_migrate)
@@ -81,45 +81,49 @@ def populate_database(sender, **kwargs):
 
 @receiver(post_save, sender=RaceEntry)
 def award_medal_points(sender, instance, created, **kwargs):
-    """Awards points to the user when a medal is assigned."""
-    medal_points = {"Gold": 30, "Silver": 20, "Bronze": 10}
-    ranking_points = {1: 20, 2: 15, 3: 10}
+    if instance.end_time is not None:
+        """Awards points to the user when a medal is assigned."""
+        medal_points = {"Gold": 30, "Silver": 20, "Bronze": 10}
+        ranking_points = {1: 20, 2: 15, 3: 10}
 
-    profile = Profile.objects.get(user=instance.user)
+        profile = Profile.objects.get(user=instance.user)
 
-    points_to_add = 0
+        points_to_add = 0
 
-    # Award medal points
-    if instance.medal in medal_points:
-        points_to_add += medal_points[instance.medal]
-    else:
-        points_to_add += 5  # Default points for participation
+        # Award medal points
+        if instance.medal in medal_points:
+            points_to_add += medal_points[instance.medal]
+        else:
+            points_to_add += 5  # Default points for participation
 
-    # Calculate the ranking **based on each user's best time**
-    duration = ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField())
+        # Calculate the ranking **based on each user's best time**
+        duration = ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField())
 
-    # Get the best (fastest) entry per user
-    best_entries = (
-        RaceEntry.objects
-        .filter(race=instance.race)
-        .values("user_id")
-        .annotate(best_time=Min(duration))
-    )
+        # Get the best (fastest) entry per user
+        best_entries = (
+            RaceEntry.objects
+            .filter(race=instance.race)
+            .exclude(Q(start_time__isnull=True) | Q(end_time__isnull=True))
+            .values("user_id")
+            .annotate(best_time=Min(duration))
+        )
 
-    # Convert to a sorted list of times
-    sorted_times = sorted([entry["best_time"] for entry in best_entries])
+        # Convert to a sorted list of times
+        sorted_times = sorted([entry["best_time"] for entry in best_entries])
 
-    # Find where the current user's new entry ranks
-    user_time = instance.end_time - instance.start_time
-    user_rank = sorted_times.index(user_time) + 1 if user_time in sorted_times else None
+        # if the user has completed the race caclulate whether they earn bonus points depending on their posistion in the leaderboard
+        if instance.end_time is not None:
+            # Find where the current user's new entry ranks
+            user_time = instance.end_time - instance.start_time
+            user_rank = sorted_times.index(user_time) + 1 if user_time in sorted_times else None
 
-    # Award ranking points if applicable
-    if user_rank and user_rank in ranking_points:
-        points_to_add += ranking_points[user_rank]
-        
-    for team in Team.objects.filter(members=instance.user):
-        team.points += points_to_add
-        team.save()
+            # Award ranking points if applicable
+            if user_rank and user_rank in ranking_points:
+                points_to_add += ranking_points[user_rank]
+                
+        for team in Team.objects.filter(members=instance.user):
+            team.points += points_to_add
+            team.save()
 
-    profile.points += points_to_add
-    profile.save()  # Save the updated profile
+        profile.points += points_to_add
+        profile.save()  # Save the updated profile

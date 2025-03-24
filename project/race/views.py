@@ -29,7 +29,11 @@ def race_view(request, race_id=None):
             duration = entry.get_duration()
             return render(request, "race/race.html", {"race": race, "entry": entry, "duration" : duration, "location_tracking" : user_location_preferance})
         else:
-            return render(request,"race/race.html", {"race": race, "location_tracking" : user_location_preferance})
+            entry = RaceEntry.objects.create(
+            race=race,
+            user=request.user
+            )
+            return render(request,"race/race.html", {"race": race, "entry": entry, "location_tracking" : user_location_preferance})
 
 #haversine formula to calculate distance
 def haversine(lat1, lon1, lat2, lon2):
@@ -76,22 +80,20 @@ def update_race_time(request):
     start_time = parse_datetime(data.get("start_time"))
     end_time = parse_datetime(data.get("end_time"))
     entry = RaceEntry.objects.filter(race=race, user=request.user).first() 
-    if entry is None: 
-        RaceEntry.objects.create(
-            race=race,
-            user=request.user,
-            start_time=start_time,
-            end_time=end_time
-        )
+    if entry.end_time is None: 
+        entry.start_time=start_time
+        entry.end_time=end_time
+
+        
     else:
         current_pb = entry.get_duration()
         new_time = (end_time - start_time).total_seconds()
         if new_time < current_pb:
             entry.start_time = start_time
             entry.end_time = end_time
-        entry.num_completions += 1
-        entry.save()
-
+       
+    entry.num_completions += 1
+    entry.save()
     update_streak(request.user)    
     
     nature_fact = get_random_nature_fact()
@@ -120,21 +122,24 @@ def add_exeplore_points(request):
             user = Profile.objects.get(user__username=data.get("user"))
         except Profile.DoesNotExist:
             return JsonResponse({"status": "error", "message": "User not found"}, status=404)
-        
-        start_lat = data.get("start_latitude")
-        start_lon = data.get("start_longitude")
-        end_lat = data.get("end_latitude")
-        end_lon = data.get("end_longitude")
+        race_id = data.get("race_id")
+        race = Race.objects.filter(id = race_id).first()
+        start_lat = race.start.latitude
+        start_lon = race.start.longitude
+        end_lat = race.end.latitude
+        end_lon = race.end.longitude
 
-        #distance is calculated in kilometres, students earn 2 points for every 10 meters, and a baseline 30 pointsas a bias
+        #distance is calculated in kilometres, students earn 2 points for every 10 meters, and a baseline 30 points 
         distance = haversine(start_lat, start_lon, end_lat, end_lon)
         points_to_add = 200 * distance + 30
         points_to_add = int(points_to_add)
 
         user.points += points_to_add
-        user.exeplore_mode_distance_traveled += distance
+        entry = RaceEntry.objects.filter(race=race,user=user.user).first()
+        entry.num_completions += 1
         update_streak(request.user)
         user.save()
+        entry.save()
 
         nature_fact = get_random_nature_fact()
 
