@@ -122,7 +122,6 @@ def dashboard(request):
                 fastest_race_time = round(fastest_time.total_seconds()) if fastest_time else None
 
             distance_covered = user_profile.exeplore_mode_distance_traveled + RaceEntry.get_total_distance_travled_by_user(user_profile.user)
-            print(tasks_complete, races_complete)
             context = {
                 'user_score': user_profile.points,
             }
