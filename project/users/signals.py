@@ -1,8 +1,6 @@
-from django.db.models.signals import post_migrate, post_save
+from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.contrib.auth import get_user_model
-from .models import Profile
-from teams.models import Team
 
 User = get_user_model()
 
@@ -26,8 +24,3 @@ def populate_database(sender, **kwargs):
     
 
     print("database populated with test users")
-
-@receiver (post_save, sender=Profile)
-def update_team_points(sender, instance, **kwargs):
-    for team in instance.user.teams.all():
-        team.update_points()
