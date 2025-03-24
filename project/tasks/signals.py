@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from race.models import RaceEntry
 from tasks.models import Task, UserTaskCompletion
 from users.models import Profile
+from teams.models import Team
 
 @receiver(post_save, sender=RaceEntry)
 def check_task_completion(sender, instance, created, **kwargs):
@@ -19,6 +20,9 @@ def check_task_completion(sender, instance, created, **kwargs):
                     if not UserTaskCompletion.objects.filter(user=instance.user, task=task).exists():
                         profile = Profile.objects.get(user=instance.user)
                         profile.points += task.points_awarded
+                        for team in Team.objects.filter(members=instance.user):
+                            team.points += task.points_awarded
+                            team.save()
                         profile.save()
                         UserTaskCompletion.objects.create(user=instance.user, task=task)
             elif task.task_type == 'single':
@@ -26,5 +30,8 @@ def check_task_completion(sender, instance, created, **kwargs):
                     if not UserTaskCompletion.objects.filter(user=instance.user, task=task).exists():
                         profile = Profile.objects.get(user=instance.user)
                         profile.points += task.points_awarded
+                        for team in Team.objects.filter(members=instance.user):
+                            team.points += task.points_awarded
+                            team.save()
                         profile.save()
                         UserTaskCompletion.objects.create(user=instance.user, task=task)
