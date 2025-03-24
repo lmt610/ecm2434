@@ -15,7 +15,7 @@ class Team(models.Model):
         return str(self.name)
     
     def update_points(self):
-        self.points = self.members.aggregate(total_points=Sum('points'))['total_points'] or 0
+        self.points = self.members.aggregate(total_points=Sum('user_profile__points'))['total_points'] or 0
         self.save()
 
 class TeamJoinRequest(models.Model):
