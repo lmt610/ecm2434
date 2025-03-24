@@ -36,24 +36,7 @@ def populate_database(sender, **kwargs):
             end=loc2,
             medal_requirements=[150, 180, 300],
         )
-    #if not Race.objects.filter(title="Armory (A) to Streatham Court (CQ)").exists():
-    #    Race.objects.create(
-    #        title="Armory (A) to Streatham Court (CQ)",
-    #        start=loc2,
-    #        end=loc3,
-    #    )
-    #if not Race.objects.filter(title="Forum (North) to Physics Entrance").exists():    
-    #    Race.objects.create(
-    #        title="Forum (North) to Physics Entrance",
-    #        start=loc1,
-    #        end=loc4,
-    #    ),
-    #if not Race.objects.filter(title="Physics Entrance to Armory (A)").exists(): 
-    #    Race.objects.create(
-    #        title="Physics Entrance to Armory (A)",
-    #        start=loc4,
-    #        end=loc2,
-    #    )
+
     if not Race.objects.filter(title="Sports Park to Community Gardens").exists(): 
         Race.objects.create(
             title="Sports Park to Community Gardens",
