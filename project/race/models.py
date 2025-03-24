@@ -123,3 +123,9 @@ class Location(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Streak(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    current_streak = models.IntegerField(default=0)
+    longest_streak = models.IntegerField(default=0)
+    date_of_last_race = models.DateField(null=True, blank=True)

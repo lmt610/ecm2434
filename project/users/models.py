@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from race.models import Streak
 
 User = get_user_model() 
 
@@ -11,6 +12,7 @@ class Profile(models.Model):
     other_field = models.CharField(max_length=100, default='default value')  
     points = models.IntegerField(default=0)
     exeplore_mode_distance_traveled = models.IntegerField(default=0)
+    streak = models.OneToOneField(Streak, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.user.username

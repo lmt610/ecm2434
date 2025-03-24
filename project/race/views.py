@@ -1,10 +1,11 @@
 import json, random
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
-from .models import Race, Location, RaceEntry
+from .models import Race, Location, RaceEntry, Streak
 from django.http import JsonResponse
 from django.utils.dateparse import parse_datetime
-from datetime import datetime
+from django.utils.timezone import localdate
+from datetime import timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -89,7 +90,9 @@ def update_race_time(request):
             entry.start_time = start_time
             entry.end_time = end_time
         entry.num_completions += 1
-        entry.save()
+
+    update_streak(request.user)    
+    entry.save()
     
     nature_fact = get_random_nature_fact()
     achievements_after_race = Achievement.get_all_user_achievements(request.user)
@@ -135,6 +138,24 @@ def add_exeplore_points(request):
         return JsonResponse({"points": points_to_add})
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
+
+def update_streak(user):
+    streak, created = Streak.objects.get_or_create(user=user)
+
+    if streak.date_of_last_race == localdate():
+        return #race already completed
+    
+    if streak.date_of_last_race == localdate() - timedelta(days=1):
+        streak.current_streak += 1 #continue the streak
+    else:
+        streak.current_streak = 1 #reset the streak
+
+    #update longest_streak
+    streak.longest_streak = max(streak.longest_streak, streak.current_streak)
+
+    #update date_of_last_race and save
+    streak.date_of_last_race = localdate()
+    streak.save()
 
 def get_random_nature_fact():
     """Return a random nature fact about University of Exeter campus."""
