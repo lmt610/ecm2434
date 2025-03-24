@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .forms import LoginForm, UserRegistrationForm
 from .models import Profile, UserSettings
-from race.models import RaceEntry
+from race.models import RaceEntry, Streak
 from achievements.models import Achievement 
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.forms import PasswordChangeForm
@@ -125,6 +125,14 @@ def dashboard(request):
             context = {
                 'user_score': user_profile.points,
             }
+
+            try:
+                current_streak = user_profile.streak.current_streak if user_profile.streak else 0
+                longest_streak = user_profile.streak.longest_streak if user_profile.streak else 0
+            except Streak.DoesNotExist:
+                current_streak = 0
+                longest_streak = 0
+
             return render(request, 'users/dashboard.html', {
                 'username': request.user.username,
                 'user_score': user_profile.points,
@@ -142,7 +150,8 @@ def dashboard(request):
                 'fastest_race_name': fastest_race_name,
                 'fastest_race_time': fastest_race_time,
                 'race_entries_total' : race_entries_total,
-                
+                'current_streak': current_streak,
+                'longest_streak': longest_streak,
             })
         else:
             return redirect('login')

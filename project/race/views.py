@@ -90,15 +90,11 @@ def update_race_time(request):
             entry.start_time = start_time
             entry.end_time = end_time
         entry.num_completions += 1
-<<<<<<< HEAD
 
     update_streak(request.user)    
     entry.save()
-=======
-        entry.save()
     
     nature_fact = get_random_nature_fact()
->>>>>>> origin/main
     achievements_after_race = Achievement.get_all_user_achievements(request.user)
     new_achievements = achievements_after_race.difference(achievements_before_race).values("title", "description")
     if(new_achievements.count()>0):
@@ -143,7 +139,6 @@ def add_exeplore_points(request):
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
-<<<<<<< HEAD
 def update_streak(user):
     streak, created = Streak.objects.get_or_create(user=user)
 
@@ -155,15 +150,9 @@ def update_streak(user):
     else:
         streak.current_streak = 1 #reset the streak
 
-    streak.longest_streak = max(streak.longest_streak, streak.current_streak)
     streak.date_of_last_race = localdate()
     streak.save()
 
-
-
-    
-
-=======
 def get_random_nature_fact():
     """Return a random nature fact about University of Exeter campus."""
     nature_facts = [
@@ -184,4 +173,3 @@ def get_random_nature_fact():
         "The University of Exeter has several champion trees - specimens that are the largest of their species in Devon!"
     ]
     return random.choice(nature_facts)
->>>>>>> origin/main

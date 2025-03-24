@@ -134,4 +134,3 @@ def award_medal_points(sender, instance, created, **kwargs):
             profile.points += ranking_points[user_rank]
 
         profile.save()  # Save the updated profile
-
