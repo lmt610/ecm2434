@@ -28,6 +28,14 @@ def populate_database_with_achievements(sender, **kwargs):
             subconditions=[]
         )
     Achievement.objects.create(
+            title="Rising Star",
+            description="Run 10 races",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator=">",
+            main_condition_value="9",
+            subconditions=[]
+        )
+    Achievement.objects.create(
             title="Seasoned Veteran",
             description="Run 100 races",
             main_condition_model="COUNT_RACES",
@@ -36,15 +44,15 @@ def populate_database_with_achievements(sender, **kwargs):
             subconditions=[]
         )
     Achievement.objects.create(
-            title="Golden Glory",
-            description="Get a gold medal",
+            title="Bronze Beginnings",
+            description="Get a bronze medal",
             main_condition_model="COUNT_RACES",
             main_condition_operator=">",
             main_condition_value="0",
             subconditions=[
-                ["medal", "=", "gold"]
+                ["medal", "=", "bronze"]
             ]
-        )
+    )
     Achievement.objects.create(
             title="Silvery Success",
             description="Get a silver medal",
@@ -56,15 +64,15 @@ def populate_database_with_achievements(sender, **kwargs):
             ]
     )
     Achievement.objects.create(
-            title="Bronze Beginnings",
-            description="Get a bronze medal",
+            title="Golden Glory",
+            description="Get a gold medal",
             main_condition_model="COUNT_RACES",
             main_condition_operator=">",
             main_condition_value="0",
             subconditions=[
-                ["medal", "=", "bronze"]
+                ["medal", "=", "gold"]
             ]
-    )
+        )
     Achievement.objects.create(
             title="Sprinter",
             description="Complete 2 races in under 1 minute",
