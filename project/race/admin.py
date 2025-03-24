@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Race, Location, RaceEntry
+from .models import Race, Location, RaceEntry, Streak
 
 class RaceAdmin(admin.ModelAdmin):
     list_display = ('title', 'start', 'end',)
@@ -16,3 +16,4 @@ class RaceEntryAdmin(admin.ModelAdmin):
 admin.site.register(Race, RaceAdmin)
 admin.site.register(RaceEntry, RaceEntryAdmin)
 admin.site.register(Location, LocationAdmin)
+admin.site.register(Streak)

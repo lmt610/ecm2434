@@ -85,6 +85,7 @@ def dashboard(request):
             users_total = len(Profile.objects.all())
             tasks_complete = UserTaskCompletion.get_num_completed_tasks(user_profile.user)
             races_complete = RaceEntry.get_num_completed_races(user_profile.user)
+            streak_model = Streak.objects.filter(user=request.user).first()
             achievements_earned = len(Achievement.get_all_user_achievements(user_profile.user))
             achievements_total = len(Achievement.objects.all())
             teams_total = len(Team.objects.all())
@@ -127,8 +128,8 @@ def dashboard(request):
             }
 
             try:
-                current_streak = user_profile.streak.current_streak if user_profile.streak else 0
-                longest_streak = user_profile.streak.longest_streak if user_profile.streak else 0
+                current_streak = streak_model.current_streak if streak_model else 0
+                longest_streak = streak_model.longest_streak if streak_model else 0
             except Streak.DoesNotExist:
                 current_streak = 0
                 longest_streak = 0

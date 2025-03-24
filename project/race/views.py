@@ -133,6 +133,7 @@ def add_exeplore_points(request):
 
         user.points += points_to_add
         user.exeplore_mode_distance_traveled += distance
+        update_streak(request.user)
         user.save()
 
         return JsonResponse({"points": points_to_add})
@@ -140,6 +141,7 @@ def add_exeplore_points(request):
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
 def update_streak(user):
+    print("updateing streak")
     streak, created = Streak.objects.get_or_create(user=user)
 
     if streak.date_of_last_race == localdate():
