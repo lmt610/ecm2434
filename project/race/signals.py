@@ -5,6 +5,7 @@ from .models import Location, Race, RaceEntry
 from users.models import Profile  
 from django.db.models import F, ExpressionWrapper, DurationField, Min, Q
 from teams.models import Team
+from tasks.models import Task
 
 @receiver(post_migrate)
 def populate_database(sender, **kwargs):
@@ -59,6 +60,18 @@ def populate_database(sender, **kwargs):
             tags="uphill"
         )
         print("Database populated with initial race data")
+
+    """Populates example task into the database after migrations."""
+    start_date=timezone.now()
+    Task.objects.get_or_create(
+                title='Complete the Lemon Grove to East Park Brook root',
+                race=Race.objects.get(title="Lemon Grove to East Park Brook"),
+                points_awarded=20,
+                required_races=1,
+                task_type='single',
+                start_date = start_date,
+                end_date = start_date + timezone.timedelta(days=7)
+    )
 
 
 
