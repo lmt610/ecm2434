@@ -1,3 +1,4 @@
+
 /* Race content styles */
 .race-content * {
     margin: 0;
@@ -19,14 +20,14 @@
 /* Main Race Content */
 .race-main {
     display: grid;
-    grid-template-rows: 60px 1fr 120px 180px;
+    grid-template-rows: 1fr 5fr 1fr 3fr;
     gap: 20px;
     padding: 20px;
     height: 100%;
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
-    overflow-x: hidden;
+    height: 100vh;
 }
 
 /* Title Bar */
@@ -43,7 +44,6 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     letter-spacing: 1px;
     height: 60px;
-    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -59,17 +59,12 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     border: 2px solid #e2e8f0;
-    width: 100%;
     position: relative;
 }
 
 .medalTag {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 15%;
+    height: 5ch;
     aspect-ratio: 1/1; 
-    z-index: 500;
 }
 
 .medalTag img {
@@ -184,7 +179,7 @@
     justify-content: center;
     background-color: white;
     border-radius: 8px;
-    padding: 15px;
+    gap: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     border: 1px solid #e2e8f0;
     width: 90%;

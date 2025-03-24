@@ -42,11 +42,6 @@
                 };
             </script>
             <script src="{% static 'race/race_map_script.js' %}"></script>
-            <div class="medalTag">
-                {% if entry and entry.medal != 'None' %}
-                    <img src="{% static 'images/'|add:entry.medal|add:'.png' %}" alt="">
-                {% endif %} 
-            </div> 
             <!-- Map will be initialized by JavaScript -->
         </div>
         
@@ -67,6 +62,11 @@
                 {% else %}
                 <p>Personal Best Time: No time found</p>
                 {% endif %}
+                <div class="medalTag">
+                    {% if entry and entry.medal != 'None' %}
+                        <img src="{% static 'images/'|add:entry.medal|add:'.png' %}" alt="">
+                    {% endif %} 
+                </div> 
             </div>
             
             <div class="actionButtons">
