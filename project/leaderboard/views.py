@@ -21,7 +21,6 @@ def user_leaderboard(request):
     teams = Team.objects.all()
     selected_team = request.GET.get('team', 'all')  # Default to 'all' if no team selected
 
-
     if selected_team != 'all':
         try:
             # Try to get the selected team
@@ -55,7 +54,6 @@ def user_leaderboard(request):
     }
 
     return render(request, 'leaderboard/user_leaderboard.html', context)
-
 
 def team_leaderboard(request):
     team_list = Team.objects.all().order_by('-points')
