@@ -21,12 +21,20 @@ def populate_database_with_achievements(sender, **kwargs):
     ############
     Achievement.objects.create(
             title="A Whole New World",
-            description="Run a Race",
+            description="Run a race",
             main_condition_model="COUNT_RACES",
             main_condition_operator=">",
             main_condition_value="0",
             subconditions=[]
-        )   
+        )
+    Achievement.objects.create(
+            title="Seasoned Veteran",
+            description="Run 100 races",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator=">",
+            main_condition_value="99",
+            subconditions=[]
+        )
     Achievement.objects.create(
             title="Golden Glory",
             description="Get a gold medal",
@@ -69,10 +77,10 @@ def populate_database_with_achievements(sender, **kwargs):
         )
     Achievement.objects.create(
             title="The Long Game",
-            description="Complete 5 races with a distance over 0.5km",
+            description="Complete 10 races with a distance over 0.5km",
             main_condition_model="COUNT_RACES",
             main_condition_operator=">",
-            main_condition_value="4",
+            main_condition_value="9",
             subconditions=[
                 ["distance", ">", "0.5"]
             ]
@@ -87,7 +95,16 @@ def populate_database_with_achievements(sender, **kwargs):
                 ["distance", ">", "1.0"]
             ]
         )
-
+    Achievement.objects.create(
+            title="Marathon Master",
+            description="Complete 10 races longer than 1km",
+            main_condition_model="COUNT_RACES",
+            main_condition_operator=">",
+            main_condition_value="9",
+            subconditions=[
+                ["distance", ">", "1.0"]
+            ]
+        )
     Achievement.objects.create(
             title="Double Crown",
             description="Hold the top leaderboard position on two races",
@@ -108,7 +125,6 @@ def populate_database_with_achievements(sender, **kwargs):
                 ["number_of_completions", ">", "4"]
             ]
         )
-    
     Achievement.objects.create(
             title="Can't Stop, Won't Stop",
             description="Complete the same route 10 times",
@@ -119,7 +135,6 @@ def populate_database_with_achievements(sender, **kwargs):
                 ["number_of_completions", ">", "19"]
             ]
         )
-
     Achievement.objects.create(
             title="Tour Guide",
             description="Complete the same route 50 times",
@@ -130,7 +145,6 @@ def populate_database_with_achievements(sender, **kwargs):
                 ["number_of_completions", ">", "49"]
             ]
         )
-    
     Achievement.objects.create(
         title="Peak Performance",
         description="Get a gold medal on an uphill race",
@@ -142,7 +156,6 @@ def populate_database_with_achievements(sender, **kwargs):
             ["medal", "=", "gold"]
         ]
     )
-
     Achievement.objects.create(
         title="Summit to be Proud Of",
         description="Complete 5 uphill races",
@@ -153,7 +166,26 @@ def populate_database_with_achievements(sender, **kwargs):
             ["tags", "contains", "uphill"],
         ]
     )
-
+    Achievement.objects.create(
+        title="Summit Special",
+        description="Complete 10 uphill races",
+        main_condition_model="COUNT_RACES",
+        main_condition_operator=">",
+        main_condition_value="9",
+        subconditions=[
+            ["tags", "contains", "uphill"],
+        ]
+    )
+    Achievement.objects.create(
+        title="Break a Leg",
+        description="Complete 100 uphill races",
+        main_condition_model="COUNT_RACES",
+        main_condition_operator=">",
+        main_condition_value="99",
+        subconditions=[
+            ["tags", "contains", "uphill"],
+        ]
+    )
     ############
     ## TEAM
     ############
@@ -175,7 +207,6 @@ def populate_database_with_achievements(sender, **kwargs):
             ["number_of_members", ">", "19"]
         ]
     )
-
     Achievement.objects.create(
         title="Playing the Field",
         description="Be a member of 5 teams",
