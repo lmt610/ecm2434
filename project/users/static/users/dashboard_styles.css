@@ -121,6 +121,15 @@ body {
     opacity: 0.9;
     position: relative;
 }
+.streak-display h2{
+    display: flex;
+    align-items: center;
+}
+
+.streak-img{
+    aspect-ratio: 1/1;
+    height: 2ch;
+}
 
 /* Stats Summary */
 .stats-summary {

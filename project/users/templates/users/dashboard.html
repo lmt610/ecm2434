@@ -20,12 +20,14 @@
                 <p>Stay green, keep exploring</p>
             </div>
         </div>
-        <div class="current-streak-display">
-            <p>CURRENT STREAK</p>
-            <h2>{{ current_streak }}
-        <div class="longest-streak-display">
-            <p>LONGEST STREAK</p>
-            <h2>{{ longest_streak }}
+        <div class="current-streak-display streak-display">
+            <p>CURRENT STREAK:</p>
+            <h2>{{ current_streak }}<img class="streak-img" src="{% static 'users/images/flame_icon.png' %}" alt="flame icon" ></img></h2>
+        </div>
+        <div class="longest-streak-display streak-display">
+            <p>LONGEST STREAK:</p>
+            <h2>{{ longest_streak }}<img class="streak-img" src="{% static 'users/images/calander_icon.png' %}" alt="calender icon" ></img></h2>
+        </div>
         <div class="points-display">
             <p>TOTAL POINTS</p>
             <h2>{{ user_score }}</h2>
