@@ -90,9 +90,9 @@ def update_race_time(request):
             entry.start_time = start_time
             entry.end_time = end_time
         entry.num_completions += 1
+        entry.save()
 
     update_streak(request.user)    
-    entry.save()
     
     nature_fact = get_random_nature_fact()
     achievements_after_race = Achievement.get_all_user_achievements(request.user)
@@ -143,7 +143,6 @@ def add_exeplore_points(request):
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
 def update_streak(user):
-    print("updateing streak")
     streak, created = Streak.objects.get_or_create(user=user)
 
     if streak.date_of_last_race == localdate():
