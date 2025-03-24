@@ -115,7 +115,7 @@ python manage.py test app_name
 ```
 To run a specific test class, use the full import path. E.g.
 ```sh
-python manage.py test project.users.tests.test_views.LoginViewTest
+python manage.py test users.tests.test_views.LoginViewTest
 ```
 Example tests class paths:
 - All login and signup tests - `users`
