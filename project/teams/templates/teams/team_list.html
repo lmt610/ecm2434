@@ -8,32 +8,76 @@
 {% endblock %}
 
 {% block content %}
-<div class="team-list-container">
-<h1>Team List</h1>
+<div class="teams-container">
+    <h1>Teams</h1>
+    
+    <p class="teams-intro">Join teams to compete together, complete challenges, and climb the leaderboards. Collaborating with others enhances your ExePLORE experience!</p>
 
-<div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search by team name..." onkeyup="searchTeams()">
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Search by team name..." onkeyup="searchTeams()">
+    </div>
+
+    {% if teams %}
+        <ul class="team-list" id="teamList">
+            {% for team in teams %}
+                <li class="team-box">
+                    <a href="{% url 'team_detail' team.pk %}">
+                        <div class="team-header">
+                            <h3>{{ team.name }}</h3>
+                        </div>
+                        <div class="team-content">
+                            <div class="team-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">{{ team.members.count }}</div>
+                                    <div class="stat-label">Members</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">{{ team.points }}</div>
+                                    <div class="stat-label">Points</div>
+                                </div>
+                            </div>
+                            <div class="team-admin">
+                                <div class="admin-avatar">
+                                    {{ team.admin.username|first|upper }}
+                                </div>
+                                <div class="admin-name">Admin: {{ team.admin.username }}</div>
+                            </div>
+                            <div class="view-team-btn">View Team</div>
+                        </div>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-users-slash"></i>
+            </div>
+            <h3>No Teams Available</h3>
+            <p>There are no teams created yet. {% if user.is_authenticated %}Be the first to create a team!{% endif %}</p>
+        </div>
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+    <div class="create-team-container">
+        <a href="{% url 'create_team' %}" class="create-team-btn">
+            <i class="fas fa-plus"></i> Create New Team
+        </a>
+    </div>
+    {% endif %}
 </div>
-
-<ul class="team-list" id="teamList">
-    {% for team in teams %}
-        <li class="team-box">
-            <a href="{% url 'team_detail' team.pk %}">{{ team.name }}</a>
-            <span class="team-admin">Admin: {{ team.admin }}</span>
-        </li>
-    {% endfor %}
-</ul>
 
 <script>
     function searchTeams() {
         const input = document.getElementById('searchInput');
-        const filter = input.value.toLowerCase(); /* case insensitive */
+        const filter = input.value.toLowerCase();
 
         const teamList = document.getElementById('teamList');
         const teamBoxes = teamList.getElementsByTagName('li');
 
         for (let i = 0; i < teamBoxes.length; i++) {
-            const teamName = teamBoxes[i].getElementsByTagName('a')[0].textContent || teamBoxes[i].textContent;
+            const teamName = teamBoxes[i].querySelector('.team-header h3').textContent;
             if (teamName.toLowerCase().indexOf(filter) > -1) {
                 teamBoxes[i].style.display = ""; 
             } else {
@@ -42,4 +86,8 @@
         }
     }
 </script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
 {% endblock %}

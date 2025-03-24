@@ -10,7 +10,7 @@
 {% block content %}
 <div class="leaderboard-container">
     <div class="leaderboard-header">
-        <h1>Race Leaderboard</h1>
+        <h1>{% if selected_race %}Leaderboard: {{ selected_race }}{% else %}Race Leaderboard{% endif %}</h1>
     </div>
 
     <div class="leaderboard-content">
@@ -27,11 +27,11 @@
                 </thead>
                 <tbody>
                     {% for entry in top_entries %}
-                        <tr>
+                        <tr {% if entry.user == request.user %} class="highlight-user" {% endif %}>
                             <td class="rank-cell">{{ forloop.counter }}</td>
                             <td>{{ entry.user.username }}</td>
                             <td>{{ entry.race.title }}</td>
-                            <td>{{ entry.completion_time }} seconds</td>
+                            <td>{{ entry.duration|floatformat:2 }} seconds</td>
                             <td>{{ entry.timestamp|date:"d M Y, H:i" }}</td>
                         </tr>
                     {% empty %}
@@ -42,6 +42,8 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    
         
         <div class="filter-container">
             <form method="GET" action="" class="race-filter-form">
@@ -51,7 +53,7 @@
                     <select id="race_title" name="race_title" class="race-select">
                         <option value="">All Races</option>
                         {% for race in all_races %}
-                            <option value="{{ race.title }}" {% if request.GET.race_title == race.title %}selected{% endif %}>
+                            <option value="{{ race.title }}" {% if selected_race == race.title %}selected{% endif %}>
                                 {{ race.title }}
                             </option>
                         {% endfor %}
@@ -67,7 +69,7 @@
                 <h4>Quick Select:</h4>
                 <div class="quicklinks-grid">
                     {% for race in all_races %}
-                        <a href="?race_title={{ race.title|urlencode }}" class="race-quicklink {% if request.GET.race_title == race.title %}active{% endif %}">
+                        <a href="?race_title={{ race.title|urlencode }}" class="race-quicklink {% if selected_race == race.title %}active{% endif %}">
                             {{ race.title }}
                         </a>
                     {% endfor %}
@@ -82,13 +84,6 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Highlight current race in title if filtered
-        const raceTitle = document.getElementById('race_title').value;
-        if (raceTitle) {
-            document.querySelector('.leaderboard-header h1').textContent = 
-                'Leaderboard: ' + raceTitle;
-        }
-        
         // Add animation to table rows
         const tableRows = document.querySelectorAll('.leaderboard-table tbody tr');
         tableRows.forEach((row, index) => {

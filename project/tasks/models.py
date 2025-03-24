@@ -24,19 +24,18 @@ class Task(models.Model):
     def __str__(self):
         return self.title
 
-    # for multi-race tasks
     def completed_races_count(self, user):
         if self.race:
             count = RaceEntry.objects.filter(
                 user=user,
                 race=self.race,
-                timestamp__gte=self.created_at
+                updated_at__gte=self.created_at  
             ).count()
             return count
         else:
             count = RaceEntry.objects.filter(
                 user=user,
-                timestamp__gte=self.created_at
+                updated_at__gte=self.created_at 
             ).count()
             return count
 
@@ -45,13 +44,10 @@ class Task(models.Model):
             return RaceEntry.objects.filter(
                 user=user,
                 race=self.race,
-                timestamp__gte=self.created_at
-                ).exists()
+                updated_at__gte=self.created_at 
+            ).exists()
         elif self.task_type == 'multi':
-            if completed_races_count(self, user) == self.required_races:
-                return True
-            else:
-                return False
+            return self.completed_races_count(user) >= self.required_races
 
     def is_active(self):
         now = timezone.now()

@@ -324,6 +324,67 @@
     line-height: 1.5;
 }
 
+/* Authenticated user welcome card styling */
+.user-welcome-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.user-welcome-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.user-welcome-card .user-avatar {
+    width: 80px;
+    height: 80px;
+    background-color: #2f554f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 1.5rem;
+}
+
+.user-welcome-card h3 {
+    color: #2f554f;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.user-welcome-card p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+}
+
+.dashboard-btn {
+    background-color: #2f554f;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dashboard-btn:hover {
+    background-color: #3a6a62;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* Responsive design */
 @media (max-width: 992px) {
     .welcome-content {

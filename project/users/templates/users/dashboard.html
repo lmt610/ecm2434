@@ -33,7 +33,7 @@
             <p class="stat-label">Tasks Completed</p>
         </div>
         <div class="stat-card">
-            <h3 class="stat-value">{{ achievements_earned|default:"0" }}</h3>
+            <h3 class="stat-value">{{achievements_earned}}</h3>
             <p class="stat-label">Achievements Completed</p>
         </div>
         <div class="stat-card">
@@ -59,17 +59,21 @@
                 <h3 class="card-title">Active Tasks</h3>
             </div>
             <div class="card-content">
-                <p class="card-description">Your current sustainability challenges:</p>
                 <ul class="task-list">
-                    <li>Learn about renewable energy <span class="text-green-600">+10 pts</span></li>
-                    <li>Complete campus recycling route <span class="text-green-600">+20 pts</span></li>
-                    <li>Join a sustainability event <span class="text-green-600">+15 pts</span></li>
+                                        {% if tasks_total == 1 %}
+                                                <li> There is currently 1 active task! </li>
+                                        {% endif %}
+                                        {% if tasks_total != 1 %} 
+                        <li>There are currently {{tasks_total}} active tasks!</li>
+                                        {% endif %}
+                                        <li>You have completed {{tasks_completed}} tasks!</li>
+                    <li>Complete more tasks to earn points 🎯</li>
                 </ul>
                 <a href="{% url 'tasks' %}" class="btn-card">View All Tasks</a>
             </div>
         </div>
 
-        <!-- Team Progress Card -->
+        <!-- Team Card -->
         <div class="dashboard-card">
             <div class="card-header">
                 <div class="card-icon icon-teams">
@@ -77,88 +81,29 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
                 </div>
-                <h3 class="card-title">Team Progress</h3>
+                <h3 class="card-title">Teams</h3>
             </div>
             <div class="card-content">
                 <div class="recent-activities">
                     <div class="activity-item">
                         <span class="activity-dot"></span>
-                        <span>Weekly Challenge Progress: 75%</span>
+                                                {% if teams_total == 1 %}
+                                                        <span>There is 1 team competing!</span>
+                                                {% endif %}
+                                                {% if teams_total != 1 %}
+                            <span>There are {{teams_total}} teams competing!</span>
+                                                {% endif %}
                     </div>
                     <div class="activity-item">
                         <span class="activity-dot"></span>
-                        <span>Team Rank: #3 of 12</span>
+                        <span>Join Teams 🏆 </span>
                     </div>
                     <div class="activity-item">
                         <span class="activity-dot"></span>
-                        <span>Next Team Event: Tomorrow</span>
+                        <span>Gain points ✨</span>
                     </div>
                 </div>
                 <a href="{% url 'team_list' %}" class="btn-card">Team Dashboard</a>
-            </div>
-        </div>
-
-        <!-- Active Races Card -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <div class="card-icon icon-race">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </div>
-                <h3 class="card-title">Active Races</h3>
-            </div>
-            <div class="card-content">
-                <div class="recent-activities">
-                    <div class="activity-item">
-                        <span class="activity-dot"></span>
-                        <span>Forum → Innovation Centre</span>
-                    </div>
-                    <div class="activity-item">
-                        <span class="activity-dot"></span>
-                        <span>Library → Sports Park</span>
-                    </div>
-                </div>
-                <a href="{% url 'race' %}" class="btn-card">View All Races</a>
-            </div>
-        </div>
-
-        <!-- Quick Check-in Card -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <div class="card-icon icon-location">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                    </svg>
-                </div>
-                <h3 class="card-title">Quick Check-in</h3>
-            </div>
-            <div class="card-content">
-                <p class="card-description">Enter your location code to check in:</p>
-                <form class="location-form" onsubmit="return false;">
-                    <input type="text" class="location-input" placeholder="Enter location code" required>
-                    <button type="submit" class="btn-card">Check In</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Achievements Card -->
-        <div class="dashboard-card">
-            <div class="card-header">
-                <div class="card-icon icon-achievements">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                    </svg>
-                </div>
-                <h3 class="card-title">Recent Achievements</h3>
-            </div>
-            <div class="card-content">
-                <ul class="task-list">
-                    <li>Early Explorer 🏆</li>
-                    <li>Team Player 🏅</li>
-                    <li>Green Pioneer 🌟</li>
-                </ul>
-                <button class="btn-card" onclick="alert('Coming soon!')">View All Achievements</button>
             </div>
         </div>
 
@@ -170,20 +115,112 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
                     </svg>
                 </div>
-                <h3 class="card-title">Leaderboard</h3>
+                <h3 class="card-title">User Leaderboard</h3>
             </div>
             <div class="card-content">
                 <div class="recent-activities">
                     <div class="activity-item">
                         <span class="activity-dot"></span>
-                        <span>Your Rank: #15 of 128</span>
+                                                {% if users_total == 1 %}
+                                                        <span>There is 1 user in the running!</span>
+                                                {% endif %}
+                                                {% if users_total != 1 %}
+                                <span>There are {{users_total}} users in the running!</span>
+                        {% endif %}
+                                        </div>
+                    <div class="activity-item">
+                        <span class="activity-dot"></span>
+                        <span>Explore nature to gain more points 🌱</span>
                     </div>
                     <div class="activity-item">
                         <span class="activity-dot"></span>
-                        <span>Points to Next Rank: 45</span>
+                        <span>Gain points to reach 1st place 🥇</span>
                     </div>
                 </div>
-                <a href="{% url 'user_leaderboard' %}" class="btn-card">View Full Leaderboard</a>
+                <a href="{% url 'user_leaderboard' %}" class="btn-card">View User Leaderboard</a>
+            </div>
+        </div>
+
+        <!-- Team Leaderboard Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon icon-teams">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">Team Leaderboard</h3>
+            </div>
+            <div class="card-content">
+                <div class="recent-activities">
+                    <div class="activity-item">
+                                        <span class="activity-dot"></span>
+                                        <span>First Place: ⭐{{team_first}}⭐</span>
+                                        </div>
+                                        <div class="activity-item">
+                                                <span class="activity-dot"></span>
+                                                <span>Second Place: {{team_second}}</span>
+                                    </div>
+                                        <div class="activity-item">
+                        <span class="activity-dot"></span>
+                        <span>Third Place: {{team_third}}</span>
+                    </div>
+                </div>
+                <a href="{% url 'team_leaderboard' %}" class="btn-card">View Team Leaderboard</a>
+            </div>
+        </div>
+
+        <!-- Achievements Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon icon-achievements">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">Achievements</h3>
+            </div>
+            <div class="card-content">
+                <ul class="task-list">
+                    <li>You have earned {{achievements_earned}} out of {{achievements_total}} achievements!</li>
+                    <li>Complete Races 🏅</li>
+                    <li>Earn Achievements 🌟</li>
+                </ul>
+                <a href="{% url 'achievements' %}" class="btn-card">View All Achievements</a>
+            </div>
+        </div>
+
+        <!-- Race Leaderboard Card -->
+        <div class="dashboard-card">
+            <div class="card-header">
+                <div class="card-icon icon-race">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <h3 class="card-title">Race Leaderboard</h3>
+            </div>
+            <div class="card-content">
+                <div class="recent-activities">
+                    <div class="activity-item">
+                        <span class="activity-dot"></span>
+                        <span>Your Fastest Race: {{fastest_race_name}}</span>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-dot"></span>
+                        <span>Your Best Time: {{fastest_race_time}} seconds</span>
+                    </div>
+                    <div class="activity-item"></span>
+                        <span class="activity-dot"></span>
+                                {% if race_entries_total == 1 %}
+                                        <span>You have ran 1 race!</span>
+                                {% endif %}
+                                         {% if race_entries_total != 1 %}
+                                <span>You have ran {{race_entries_total}} races!</span>
+                        {% endif %}
+                        </div>
+                </div>
+                <a href="{% url 'race_leaderboard' %}" class="btn-card">View Race Leaderboard</a>
             </div>
         </div>
     </div>

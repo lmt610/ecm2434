@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'templates/global_styles.css' %}">
     <style>
         /* Global Reset */
         body, html {
@@ -340,7 +341,8 @@
                     <li><a href="{% url 'race' %}">Races</a></li>
                     <li><a href="{% url 'tasks' %}">Tasks</a></li>
                     <li><a href="{% url 'team_list' %}">Teams</a></li>
-                    <li><a href="{% url 'team_leaderboard' %}">Leaderboard</a></li>
+                    <li><a href="{% url 'user_leaderboard' %}">Leaderboard</a></li>
+                    <li><a href="{% url 'achievements' %}">Achievements</a></li>
                 {% endif %}
             </ul>
 
@@ -349,8 +351,15 @@
                     <div class="user-menu">
                         <span>{{ user.username }}</span>
                         <div class="user-menu-content">
-                            <a href="{% url 'settings' %}">Settings</a>
-                            <a href="{% url 'logout' %}">Logout</a>
+                            {% if user.is_staff %}
+                                <a href="{% url 'admin:index' %}">Admin</a>
+                            {% endif %} 
+                            <a href="{% url 'settings' %}">
+                                <i class="fas fa-cog"></i> Settings
+                            </a>
+                            <a href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
                         </div>
                     </div>
                 {% else %}

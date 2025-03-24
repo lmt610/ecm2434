@@ -275,7 +275,7 @@ input:checked + .slider:before {
     background-color: white;
     border-radius: 16px;
     width: 90%;
-    max-width: 500px;
+    max-width: 700px;
     animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     overflow: hidden;
@@ -589,4 +589,50 @@ input:checked + .slider:before {
     color: #dc3545;
     font-size: 12px;
     margin-top: 4px;
+}
+
+/* Data Export Section */
+.data-export-section {
+    margin-top: 24px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.data-export-section h4 {
+    color: #2f554f;
+    font-size: 18px;
+    margin-bottom: 12px;
+}
+
+.data-export-section p {
+    color: #6b7280;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.download-data-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #2f554f;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.download-data-btn:hover {
+    background-color: #3a6a62;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.download-data-btn i {
+    font-size: 18px;
 }

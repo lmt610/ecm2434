@@ -207,7 +207,7 @@
     background-color: white;
     border-radius: 16px;
     width: 90%;
-    max-width: 500px;
+    max-width: 700px;
     animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
     overflow: hidden;
