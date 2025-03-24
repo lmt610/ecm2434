@@ -25,8 +25,7 @@ def populate_database(sender, **kwargs):
     reed_pond_loc, _ = Location.objects.get_or_create(name="Reed Pond", latitude=50.733950, longitude=-3.537296)
     lemon_grove_loc, _ = Location.objects.get_or_create(name="Lemon Grove", latitude=50.735097, longitude=-3.530182)
     east_park_brook_loc, _ = Location.objects.get_or_create(name="East Park Brook", latitude=50.737770, longitude=-3.525151)
-    locX, adminTest = Location.objects.get_or_create(name="St John's road (Test)", latitude=50.729075, longitude=-3.512862)
-    locY, adminTest = Location.objects.get_or_create(name="Innovation centre (Test)", latitude=50.738326, longitude=-3.531160)
+ 
 
     # Create a default races if none exist
     if not Race.objects.filter(title="Forum (North) to Armory (A)").exists():
@@ -58,21 +57,6 @@ def populate_database(sender, **kwargs):
             end=east_park_brook_loc,
             medal_requirements=[150, 180, 300],
             tags="uphill"
-        )
-    if  not Race.objects.filter(title="St John's road (Test)").exists(): 
-        Race.objects.create(
-            title="St John's road (Test)",
-            start=locX,
-            end=locX,
-            medal_requirements=[5, 10, 15],
-        )
-
-    if not Race.objects.filter(title="Innovation centre (Test)").exists(): 
-        Race.objects.create(
-            title="Innovation centre (Test)",
-            start=locY,
-            end=locY,
-            medal_requirements=[5, 10, 15],
         )
         print("Database populated with initial race data")
 
