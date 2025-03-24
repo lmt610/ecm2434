@@ -115,9 +115,15 @@ class TeamPointsTestCase(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(username="user1", password="password")
         self.user2 = User.objects.create_user(username="user2", password="password")
-        self.profile1 = Profile.objects.create(user=self.user1, points=10)
-        self.profile2 = Profile.objects.create(user=self.user2, points=20)
+        self.profile1, created = Profile.objects.get_or_create(user=self.user1, defaults={'points': 10})
+        self.profile2, created = Profile.objects.get_or_create(user=self.user2, defaults={'points': 20})
         self.team = Team.objects.create(name="testTeam", admin=self.user1)
+
+        # Ensures the points have been updated in setUp
+        self.profile1.points = 10
+        self.profile2.points = 20
+        self.profile1.save()
+        self.profile2.save()
     
     def test_team_init(self):
         self.team.update_points()

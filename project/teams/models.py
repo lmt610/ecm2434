@@ -14,7 +14,7 @@ class Team(models.Model):
         return str(self.name)
     
     def update_points(self):
-        total_points = Profile.objects.filter(user_in=self.members.all()).aggregate(models.Sum('points'))['points_sum']
+        total_points = Profile.objects.filter(user__in=self.members.all()).aggregate(models.Sum('points'))['points__sum']
         self.points = total_points if total_points else 0
         self.save()
 
