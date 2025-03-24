@@ -113,7 +113,7 @@ def populate_database_with_achievements(sender, **kwargs):
                 ["distance", ">", "1.0"]
             ]
         )
-    Achievement.objects.creget_or_createate(
+    Achievement.objects.get_or_create(
             title="Double Crown",
             description="Hold the top leaderboard position on two races",
             main_condition_model="COUNT_RACES",
