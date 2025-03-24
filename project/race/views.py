@@ -150,6 +150,10 @@ def update_streak(user):
     else:
         streak.current_streak = 1 #reset the streak
 
+    #update longest_streak
+    streak.longest_streak = max(streak.longest_streak, streak.current_streak)
+
+    #update date_of_last_race and save
     streak.date_of_last_race = localdate()
     streak.save()
 

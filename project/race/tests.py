@@ -1,10 +1,11 @@
 import json
 from django.test import TestCase
 from django.urls import reverse
-from django.utils.timezone import now, timedelta
-from race.models import Race, User, RaceEntry, Location
+from django.utils.timezone import now, timedelta, localdate
+from race.models import Race, User, RaceEntry, Location, Streak
 from users.models import Profile
 from django.contrib.auth.models import User
+from race.views import update_streak 
 
 
 class RaceMenuPageTests(TestCase):
@@ -262,3 +263,39 @@ class ExeploreTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['status'], "error")
         self.assertEqual(response.json()['message'], "Invalid request method")
+
+class StreakTests(TestCase):
+
+    def setUp(self):
+        self.username = 'raceuser'
+        self.password = 'raceuserpassword'
+        self.user = User.objects.create_user(username=self.username, password=self.password)
+        self.profile, created = Profile.objects.get_or_create(user=self.user)
+
+    def test_new_streak(self):
+        update_streak(self.user)
+        streak = Streak.objects.get(user=self.user)
+        self.assertEqual(streak.current_streak, 1)
+        self.assertEqual(streak.date_of_last_race, localdate())
+    
+    def test_continue_streak(self):
+        streak = Streak.objects.create(user=self.user, current_streak=4, date_of_last_race=localdate() - timedelta(days=1))
+        update_streak(self.user)
+        streak.refresh_from_db()
+        self.assertEqual(streak.current_streak, 5)
+        self.assertEqual(streak.date_of_last_race, localdate())
+
+    def test_reset_streak(self):
+        streak = Streak.objects.create(user=self.user, current_streak=10, date_of_last_race=localdate() - timedelta(days=2))
+        update_streak(self.user)
+        streak.refresh_from_db()
+        self.assertEqual(streak.current_streak, 1) 
+        self.assertEqual(streak.date_of_last_race, localdate())
+    
+    def test_only_one_streak_update(self):
+        streak = Streak.objects.create(user=self.user, current_streak=2, date_of_last_race=localdate())
+        update_streak(self.user)
+        streak.refresh_from_db()
+        self.assertEqual(streak.current_streak, 2)
+        self.assertEqual(streak.date_of_last_race, localdate())
+
