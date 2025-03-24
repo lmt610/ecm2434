@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from race.models import validate_list_of_strings
+from users.models import Profile 
 
 class Team(models.Model):
     name = models.CharField(max_length=100)
@@ -11,6 +12,11 @@ class Team(models.Model):
 
     def __str__(self):
         return str(self.name)
+    
+    def update_points(self):
+        total_points = Profile.objects.filter(user_in=self.members.all()).aggregate(models.Sum('points'))['points_sum']
+        self.points = total_points if total_points else 0
+        self.save()
 
 class TeamJoinRequest(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -26,3 +32,4 @@ class TeamJoinRequest(models.Model):
 
     def __str__(self):
         return f'Join request for {self.user.username} to {self.team.name}'
+
