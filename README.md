@@ -111,7 +111,7 @@ To run a specific test class, use the full import path. E.g.
 ```sh
 python manage.py test project.users.tests.test_views.LoginViewTest
 ```
-Example tests relevant to sprint 1 assessment:
+Example tests class paths:
 - All login and signup tests - `users`
     - login page - `users.tests.test_views.LoginViewTest`, `users.tests.test_forms.LoginFormTest`
     - sign up    - `users.tests.test_views.RegisterViewTest`, `users.tests.test_forms.UserRegistrationFormTest`
