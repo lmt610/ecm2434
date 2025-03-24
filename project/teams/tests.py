@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from users.models import Profile
 from .models import Team, TeamJoinRequest
 from .forms import TeamForm  
 
@@ -9,7 +10,7 @@ class TeamTests(TestCase):
         self.client = Client()
         self.user = User.objects.create_user(username='testuser', password='password')
         self.admin_user = User.objects.create_user(username='adminuser', password='password', is_superuser=True) 
-        self.client.force_login(self.user)
+        self.client.force_login(self.user)       
 
     def test_team_list_view(self):
         team1 = Team.objects.create(name='Team A', admin=self.admin_user)
@@ -109,3 +110,38 @@ class TeamTests(TestCase):
         team = Team.objects.create(name='Test Team', admin=self.admin_user)
         join_request = TeamJoinRequest.objects.create(team=team, user=self.user)
         self.assertEqual(str(join_request), f'Join request for {self.user.username} to {team.name}')
+
+class TeamPointsTestCase(TestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user(username="user1", password="password")
+        self.user2 = User.objects.create_user(username="user2", password="password")
+        self.profile1 = Profile.objects.create(user=self.user1, points=10)
+        self.profile2 = Profile.objects.create(user=self.user2, points=20)
+        self.team = Team.objects.create(name="testTeam", admin=self.user1)
+    
+    def test_team_init(self):
+        self.team.update_points()
+        self.assertEqual(self.team.points, 0)
+
+    def test_team_points_init(self):
+        self.team.members.add(self.user1, self.user2)
+        self.team.update_points()
+        self.assertEqual(self.team.points, 30)
+    
+    def test_team_points_change_added(self):
+        self.team.members.add(self.user1, self.user2)
+        self.team.update_points()
+
+        self.profile1.points = 20
+        self.profile1.save()
+
+        self.team.update_points()
+        self.assertEqual(self.team.points, 40)
+    
+    def test_team_points_change_removed(self):
+        self.team.members.add(self.user1, self.user2)
+        self.team.update_points()
+
+        self.team.members.remove(self.user1)
+        self.team.update_points()
+        self.assertEqual(self.team.points, 20)
