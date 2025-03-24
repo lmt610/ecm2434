@@ -12,7 +12,7 @@ class Profile(models.Model):
     other_field = models.CharField(max_length=100, default='default value')  
     points = models.IntegerField(default=0)
     exeplore_mode_distance_traveled = models.IntegerField(default=0)
-    streak = models.OneToOneField(Streak, one_delete=models.CASCADE, null=True, blank=True)
+    streak = models.OneToOneField(Streak, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.user.username
