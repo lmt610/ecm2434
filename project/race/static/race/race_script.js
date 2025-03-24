@@ -284,6 +284,9 @@ function addExePlorePoints() {
     .then(response => response.json())
     .then(data => {
         document.getElementById("pointsNotif").textContent = "You just earned " + data.points + " points!";
+        setTimeout(() => {
+			showNatureFact(data.nature_fact);
+		}, 4500);
         return data.points > 0;
     })
     .catch(error => {

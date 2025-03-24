@@ -136,7 +136,9 @@ def add_exeplore_points(request):
         update_streak(request.user)
         user.save()
 
-        return JsonResponse({"points": points_to_add})
+        nature_fact = get_random_nature_fact()
+
+        return JsonResponse({"points": points_to_add, "nature_fact": nature_fact})
     
     return JsonResponse({"status": "error", "message": "Invalid request method"}, status=400)
 
