@@ -28,3 +28,7 @@ class TeamAdmin(admin.ModelAdmin):
             return render(request, 'admin/teams/create_team.html', {'form': form, 'team_admin': self})
         
     create_team_action.short_description = "Create New Team" 
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        obj.update_points()

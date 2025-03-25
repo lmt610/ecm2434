@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ExePLORE - Manage Team{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'teams/teams_details_styles.css' %}">
+<style>
+    .manage-team-container {
+        max-width: 750px;
+        margin: 40px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+        color: #2f554f;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #4b5563;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    
+    .form-group input:focus {
+        outline: none;
+        border-color: #2f554f;
+        box-shadow: 0 0 0 3px rgba(47, 85, 79, 0.1);
+    }
+    
+    .member-management {
+        margin-top: 40px;
+    }
+    
+    .member-management h2 {
+        color: #2f554f;
+        margin-bottom: 15px;
+        font-size: 20px;
+    }
+    
+    .member-list {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .member-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        background-color: #f9fafb;
+        border-radius: 6px;
+        margin-bottom: 8px;
+    }
+    
+    .member-name {
+        font-weight: 500;
+    }
+    
+    .admin-tag {
+        background-color: #2f554f;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        margin-left: 8px;
+    }
+    
+    .remove-button {
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    .remove-button:hover {
+        background-color: #dc2626;
+    }
+    
+    .remove-button:disabled {
+        background-color: #9ca3af;
+        cursor: not-allowed;
+    }
+    
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+    
+    .save-button {
+        background-color: #2f554f;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .save-button:hover {
+        background-color: #3a6a62;
+        transform: translateY(-2px);
+    }
+    
+    .back-link {
+        display: inline-block;
+        padding: 10px 24px;
+        background-color: #e5e7eb;
+        color: #4b5563;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .back-link:hover {
+        background-color: #d1d5db;
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="manage-team-container">
+    <h1>Manage Team: {{ team.name }}</h1>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_name">Team Name</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="error-message">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="member-management">
+            <h2>Team Members</h2>
+            <ul class="member-list">
+                {% for member in team.members.all %}
+                    <li class="member-item">
+                        <div>
+                            <span class="member-name">{{ member.username }}</span>
+                            {% if member == team.admin %}
+                                <span class="admin-tag">Admin</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if member != team.admin %}
+                            <form method="POST" action="{% url 'remove_team_member' team.pk member.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="remove-button">Remove</button>
+                            </form>
+                        {% else %}
+                            <button class="remove-button" disabled>Admin</button>
+                        {% endif %}
+                    </li>
+                {% empty %}
+                    <li>No members yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="buttons">
+            <a href="{% url 'team_detail' team.pk %}" class="back-link">Back to Team</a>
+            <button type="submit" class="save-button">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

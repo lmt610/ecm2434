@@ -6,7 +6,9 @@ let showUserLocationOnMap = false;
 let currentPosition = null;
 if(navigator.geolocation){       
 	// variables to allow older geolocation data if it is more accurate
-	navigator.geolocation.watchPosition(updatePosition, showError);
+    if(LocationTrackingPreferance){
+        navigator.geolocation.watchPosition(updatePosition, showError);
+    }
 } else {
     alert("Geolocation is not supported by this browser.")
 }
@@ -33,7 +35,6 @@ function resetRace() {
     let start_time = new Date(startTime).toISOString();
     let end_time = Date.now()
     end_time = new Date(end_time).toISOString();
-    // Send time to the backend before reloading
     fetch('/race/update-race-time/', {
         method: 'POST',
         headers: {
@@ -45,12 +46,45 @@ function resetRace() {
     .then(response => response.json())
     .then(data => {
         console.log("Time submitted:", data);
-        location.reload(); // Reload page after successful submission
+        
+        if (data.nature_fact) {
+            showNatureFact(data.nature_fact);
+        } else {
+            location.reload();
+        }
     })
     .catch(error => {
         console.error("Error:", error);
-        location.reload(); // Still reload even if an error occurs
+        location.reload();
     });
+}
+
+function showNatureFact(fact) {
+    const factModal = document.createElement('div');
+    factModal.className = 'nature-fact-modal';
+    
+    factModal.innerHTML = `
+        <div class="nature-fact-content">
+            <h3>Nature Fact!</h3>
+            <p>${fact}</p>
+            <div class="nature-fact-icon">🌿</div>
+            <button class="continue-button">Continue</button>
+        </div>
+    `;
+    
+    document.body.appendChild(factModal);
+    
+    factModal.querySelector('.continue-button').addEventListener('click', function() {
+        factModal.classList.add('fade-out');
+        setTimeout(() => {
+            document.body.removeChild(factModal);
+            location.reload(); // Reload page after user sees the fact
+        }, 500);
+    });
+    
+    setTimeout(() => {
+        factModal.classList.add('fade-in');
+    }, 10);
 }
 
 // update the current position if the new position is more accurate
@@ -136,31 +170,35 @@ function checkEndLocation(position) {
 }
 
 function toggleShowUserOnMap(){
-    if (typeof map !== 'undefined' && map !== null) {
-        showUserLocationOnMap = !showUserLocationOnMap;
-		if (playerLocationMarker != null){
-            map.removeLayer(playerLocationMarker);
+    if (LocationTrackingPreferance){
+        if (typeof map !== 'undefined' && map !== null) {
+            showUserLocationOnMap = !showUserLocationOnMap;
+            if (playerLocationMarker != null){
+                map.removeLayer(playerLocationMarker);
+            }
+            bounds = L.latLngBounds(
+                [raceData.start.lat, raceData.start.lng],
+                [raceData.end.lat, raceData.end.lng]
+            );
+            if(showUserLocationOnMap){
+                const lat = currentPosition.coords.latitude;
+                const long = currentPosition.coords.longitude;
+                const acc = currentPosition.coords.accuracy;
+                playerLocationMarker = L.circle([lat, long], {
+                    color: 'red',      
+                    fillColor: 'red',   
+                    fillOpacity: 0.5,    
+                    radius: acc       
+                }).addTo(map);
+                bounds.extend([lat,long]);
+            }
+            // fit the user location and race points on the map view
+            map.fitBounds(bounds, { padding: [50, 50] });
+        } else {
+            console.error("Map not initialized yet");
         }
-		bounds = L.latLngBounds(
-			[raceData.start.lat, raceData.start.lng],
-            [raceData.end.lat, raceData.end.lng]
-		);
-		if(showUserLocationOnMap){
-			const lat = currentPosition.coords.latitude;
-			const long = currentPosition.coords.longitude;
-			const acc = currentPosition.coords.accuracy;
-			playerLocationMarker = L.circle([lat, long], {
-				color: 'red',      
-				fillColor: 'red',   
-				fillOpacity: 0.5,    
-				radius: acc       
-			}).addTo(map);
-			bounds.extend([lat,long]);
-		}
-        // fit the user location and race points on the map view
-        map.fitBounds(bounds, { padding: [50, 50] });
-    } else {
-        console.error("Map not initialized yet");
+    }else{
+        alert("location tracking is turned off in settings")
     }
 }
 
@@ -246,6 +284,9 @@ function addExePlorePoints() {
     .then(response => response.json())
     .then(data => {
         document.getElementById("pointsNotif").textContent = "You just earned " + data.points + " points!";
+        setTimeout(() => {
+			showNatureFact(data.nature_fact);
+		}, 4500);
         return data.points > 0;
     })
     .catch(error => {

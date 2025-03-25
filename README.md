@@ -7,10 +7,13 @@ ExePlore is a web application that allows users to run races between real locati
 - [Authors](#Authors)
 - [Features](#Features)
 - [Project Structure](#Project-structure)
-- [Dependencies](#Dependencies)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Populating-database](#Populating-databases)
+- [Depployed App Demo](#Live-Deployment-Demo-Link )
+- [Process Documents](#Process)
+- [Running the App Locally](#Running-the-app-locally )
+  - [Dependencies](#Dependencies)
+  - [Installation](#installation)
+  - [Usage](#usage)
+  - [Populating-database](#Populating-databases)
 
 
 ## Authors 
@@ -35,11 +38,31 @@ The project takes advantage of the modular nature of Django apps. Sections of th
 - race
 - leaderboard
 - tasks
+- achievements
   
 Within each app:
 - Django Python files sit at root
 - Static folder is used for CSS, JS, images etc...
 - Templates folder is used for HTML files
+
+## Live-Deployment-Demo-Link
+The project demo can be found here: 
+  https://ecm2434-fy7q.onrender.com/
+  
+**NOTE: Upon opening this page, The server will take a few minuets to boot the project. Please allow for this time.**
+
+## Process
+A kanban board was used during production to organise and manage tasks. 
+
+Link to Kanban Board: https://trello.com/b/ak80OHzE/exeplore-group-software-eng-project-natywinat
+  
+  
+  Github was used to host our code. 
+
+Link to Github: https://github.com/lmt610/ecm2434
+
+# Running-The-App-Locally 
+
 ## Dependencies
 Python library dependencies are stored in `requirements.txt`. This project
 uses Django 5, the minimum supported version of Python is `3.10`.
@@ -88,11 +111,13 @@ To run a specific test class, use the full import path. E.g.
 ```sh
 python manage.py test project.users.tests.test_views.LoginViewTest
 ```
-Example tests relevant to sprint 1 assessment:
+Example tests class paths:
 - All login and signup tests - `users`
     - login page - `users.tests.test_views.LoginViewTest`, `users.tests.test_forms.LoginFormTest`
     - sign up    - `users.tests.test_views.RegisterViewTest`, `users.tests.test_forms.UserRegistrationFormTest`
     - race page  - `race.tests.RaceMenuPageTests`, `race.tests.CalculateDistanceViewTest`, `race.tests.UpdateRaceTimeViewTest`
+
+
 ## Populating-databases
 The databases can be populated with mock data by running commands in your terminal.
 To create teams and users, navigate to the project directory and enter:

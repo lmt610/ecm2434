@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}ExePLORE - Create Team{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'teams/teams_styles.css' %}">
+<style>
+    .create-team-form-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+    }
+    
+    .create-team-form-container h1 {
+        text-align: center;
+        color: #2f554f;
+        margin-bottom: 25px;
+        font-size: 28px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #4b5563;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+    
+    .form-group input:focus {
+        border-color: #2f554f;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(47, 85, 79, 0.1);
+    }
+    
+    .submit-button {
+        background-color: #2f554f;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 10px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    
+    .submit-button:hover {
+        background-color: #3a6a62;
+        transform: translateY(-2px);
+    }
+    
+    .error-message {
+        color: #ef4444;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    
+    .cancel-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #6b7280;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.3s ease;
+    }
+    
+    .cancel-link:hover {
+        color: #4b5563;
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="create-team-form-container">
+    <h1>Create New Team</h1>
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_name">Team Name</label>
+            {{ form.name }}
+            {% if form.name.errors %}
+                <div class="error-message">{{ form.name.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <button type="submit" class="submit-button">Create Team</button>
+        <a href="{% url 'team_list' %}" class="cancel-link">Cancel and return to teams</a>
+    </form>
+</div>
+{% endblock %}
