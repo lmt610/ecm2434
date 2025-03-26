@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from users.models import Profile, UserSettings
 from teams.models import Team
-from django.db.models import F, ExpressionWrapper, DurationField
+from django.db.models import F, ExpressionWrapper, DurationField, IntegerField
 from django.db.models.functions import Extract
 from django.db import models
 from race.models import Race, RaceEntry
@@ -69,11 +69,8 @@ def race_leaderboard(request):
     # annotate entries with their duration (seconds to complete a race to 2 decimal places)
     ordered_entries = race_entries.annotate(
         duration=Cast(
-            Round(
-                ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField()) / 1000000,
-                2
-            ),
-            output_field=FloatField()
+            Extract(F('end_time') - F('start_time'), 'epoch'),
+            output_field=IntegerField()
         )
     ).order_by("duration")
     ordered_entries = ordered_entries.select_related("user", "race")
