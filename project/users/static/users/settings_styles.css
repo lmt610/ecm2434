@@ -477,27 +477,6 @@ input:checked + .slider:before {
     }
 }
 
-/* Responsive Adjustments */
-@media (max-width: 640px) {
-    .modal-content {
-        width: 95%;
-        margin: 20px;
-        max-height: calc(100vh - 40px);
-    }
-
-    .modal-header {
-        padding: 20px 24px;
-    }
-
-    .modal-body {
-        padding: 24px;
-    }
-
-    .modal-footer {
-        padding: 20px 24px;
-    }
-}
-
 /* Focus States for Accessibility */
 .modal input:focus,
 .modal button:focus {
@@ -635,4 +614,215 @@ input:checked + .slider:before {
 
 .download-data-btn i {
     font-size: 18px;
+}
+
+/* Mobile Navigation Styles */
+.mobile-settings-nav {
+    display: none;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.mobile-nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.mobile-nav-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2D5A27;
+}
+
+.mobile-nav-header .toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.mobile-nav-header .toggle-icon.open {
+    transform: rotate(180deg);
+}
+
+.mobile-nav-list {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.mobile-nav-list.open {
+    max-height: 300px;
+}
+
+.mobile-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    cursor: pointer;
+    color: #666;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.mobile-nav-item:last-child {
+    border-bottom: none;
+}
+
+.mobile-nav-item.active {
+    color: #2D5A27;
+    font-weight: 500;
+}
+
+.mobile-nav-item svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .settings-wrapper {
+        grid-template-columns: 200px 1fr;
+        gap: 20px;
+    }
+    
+    .settings-content {
+        padding-right: 10px;
+    }
+    
+    .settings-header h1 {
+        font-size: 22px;
+    }
+    
+    .card-header h2 {
+        font-size: 16px;
+    }
+    
+    .nav-item {
+        padding: 10px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .settings-wrapper {
+        grid-template-columns: 1fr;
+        padding: 0 15px;
+        margin: 15px auto;
+    }
+    
+    .settings-nav {
+        display: none;
+    }
+    
+    .mobile-settings-nav {
+        display: block;
+    }
+    
+    .settings-content {
+        padding-right: 0;
+    }
+    
+    .card-content {
+        padding: 20px;
+    }
+    
+    .setting-toggle {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .setting-toggle .switch {
+        margin-left: auto;
+    }
+    
+    .form-group .btn-secondary {
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    .modal-header {
+        padding: 20px;
+    }
+    
+    .modal-body {
+        padding: 20px;
+        max-height: calc(80vh - 140px);
+    }
+    
+    .modal-footer {
+        padding: 15px 20px;
+        flex-direction: column;
+    }
+    
+    .modal-footer button {
+        width: 100%;
+    }
+    
+    .legal-links {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settings-header h1 {
+        font-size: 20px;
+    }
+    
+    .settings-card {
+        margin-bottom: 15px;
+    }
+    
+    .card-header {
+        padding: 15px 20px;
+    }
+    
+    .card-content {
+        padding: 15px;
+    }
+    
+    .form-group input {
+        padding: 10px;
+    }
+    
+    .btn-primary, .btn-secondary, .btn-danger {
+        padding: 10px 20px;
+        width: 100%;
+    }
+    
+    .data-export-section {
+        padding: 15px;
+    }
+    
+    .download-data-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .modal-content {
+        width: 95%;
+        border-radius: 12px;
+    }
+    
+    .modal-header h2 {
+        font-size: 18px;
+    }
+    
+    .setting-toggle {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .setting-toggle span {
+        max-width: 75%;
+    }
 }

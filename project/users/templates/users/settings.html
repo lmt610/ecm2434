@@ -9,7 +9,7 @@
 
 {% block content %}
 <div class="settings-wrapper">
-    <!-- Settings Navigation -->
+    <!-- Desktop Settings Navigation -->
     <nav class="settings-nav">
         <div class="nav-item active" data-tab="account">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -24,6 +24,28 @@
             About
         </div>
     </nav>
+
+    <!-- Mobile Settings Navigation -->
+    <div class="mobile-settings-nav">
+        <div class="mobile-nav-header">
+            <h3 id="current-tab-name">Account</h3>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="toggle-icon"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="mobile-nav-list">
+            <div class="mobile-nav-item active" data-tab="account">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Account
+            </div>
+            <div class="mobile-nav-item" data-tab="privacy">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Privacy
+            </div>
+            <div class="mobile-nav-item" data-tab="about">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                About
+            </div>
+        </div>
+    </div>
 
     <!-- Settings Content -->
     <main class="settings-content">
@@ -408,6 +430,42 @@
             });
             document.getElementById(tabId).classList.add('active');
         });
+    });
+    
+    /*** Mobile Tab Switching ***/
+    document.querySelectorAll('.mobile-nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            // Update all navigation items (mobile and desktop)
+            document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(navItem => {
+                navItem.classList.remove('active');
+            });
+            
+            // Add active class to clicked mobile item and corresponding desktop item
+            item.classList.add('active');
+            const tabId = item.getAttribute('data-tab');
+            document.querySelector(`.nav-item[data-tab="${tabId}"]`).classList.add('active');
+            
+            // Update tab display
+            document.querySelectorAll('.settings-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update mobile nav header text
+            document.getElementById('current-tab-name').textContent = item.textContent.trim();
+            
+            // Close mobile dropdown after selection
+            document.querySelector('.mobile-nav-list').classList.remove('open');
+            document.querySelector('.toggle-icon').classList.remove('open');
+        });
+    });
+    
+    /*** Mobile Menu Toggle ***/
+    document.querySelector('.mobile-nav-header').addEventListener('click', () => {
+        const navList = document.querySelector('.mobile-nav-list');
+        const toggleIcon = document.querySelector('.toggle-icon');
+        navList.classList.toggle('open');
+        toggleIcon.classList.toggle('open');
     });
     
     /*** CSRF Token Handling ***/
