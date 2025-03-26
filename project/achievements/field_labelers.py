@@ -1,5 +1,5 @@
 from django.db.models import F, ExpressionWrapper, DurationField, CharField, IntegerField, Func, FloatField, Count, Window, Case, When, Value 
-from django.db.models.functions import Round, Cast, Radians, Sqrt, Cos, Power, Sin, ATan2, RowNumber
+from django.db.models.functions import Extract, Round, Cast, Radians, Sqrt, Cos, Power, Sin, ATan2, RowNumber
 from race.models import RaceEntry
 
 def get_labeler_for_field(model_name, field_name):
@@ -31,10 +31,7 @@ def add_label_race_medal(race_queryset):
 def add_label_race_duration(race_queryset):
     return race_queryset.annotate(
         duration=Cast(
-            Round(
-                ExpressionWrapper(F('end_time') - F('start_time'), output_field=DurationField()) / Value(1000000),
-                0
-            ),
+            Extract(F('end_time') - F('start_time'), 'epoch'),
             output_field=IntegerField()
         )
     )
