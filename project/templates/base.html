@@ -33,7 +33,7 @@
             box-sizing: border-box;
         }
 
-        /* Enhanced Header Styles */
+        /* Header Styles */
         .exeplore-header {
             background-color: #2f554f !important;
             background-image: linear-gradient(to right, #2f554f, #3a6a62) !important;
@@ -287,6 +287,349 @@
             position: relative;
         }
 
+        /* Burger Menu Button */
+        .burger-menu {
+            display: none !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            width: 30px !important;
+            height: 22px !important;
+            cursor: pointer !important;
+            margin-left: auto !important;
+            margin-right: 1rem !important;
+            z-index: 1002 !important;
+            position: relative !important;
+            transition: all 0.3s ease !important;
+            background: transparent !important;
+            border: none !important;
+            outline: none !important;
+            padding: 0 !important;
+        }
+
+        .burger-menu:focus {
+            outline: 2px solid rgba(255, 255, 255, 0.5) !important;
+            outline-offset: 3px !important;
+            border-radius: 4px !important;
+        }
+
+        .burger-menu span {
+            display: block !important;
+            width: 100% !important;
+            height: 3px !important;
+            background-color: white !important;
+            border-radius: 4px !important;
+            transition: transform 0.3s ease,
+                        opacity 0.2s ease,
+                        background-color 0.3s ease !important;
+            transform-origin: center !important;
+            position: relative !important;
+            will-change: transform, opacity !important;
+        }
+
+        .burger-menu.active span:nth-child(1) {
+            transform: translateY(9.5px) rotate(45deg) !important;
+        }
+
+        .burger-menu.active span:nth-child(2) {
+            opacity: 0 !important;
+            transform: translateX(-10px) !important;
+        }
+
+        .burger-menu.active span:nth-child(3) {
+            transform: translateY(-9.5px) rotate(-45deg) !important;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed !important;
+            top: 74px !important; /* Same as header height */
+            right: 0 !important;
+            width: 300px !important;
+            height: calc(100vh - 74px) !important;
+            background-color: #2f554f !important;
+            background-image: linear-gradient(135deg, #2f554f 0%, #3a6a62 100%) !important;
+            z-index: 999 !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 1.5rem !important;
+            box-shadow: -4px 0 25px rgba(0,0,0,0.2) !important;
+            transform: translateX(100%) !important;
+            opacity: 0.95 !important;
+            /* Add subtle frosted glass effect */
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0) !important;
+        }
+
+        .mobile-menu::-webkit-scrollbar {
+            width: 6px !important;
+        }
+
+        .mobile-menu::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1) !important;
+            border-radius: 3px !important;
+        }
+
+        .mobile-menu::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3) !important;
+            border-radius: 3px !important;
+        }
+
+        .mobile-menu::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5) !important;
+        }
+
+        /* Mobile Nav Links */
+        .mobile-nav-links {
+            list-style: none !important;
+            padding: 0 !important;
+            margin: 0 0 1.5rem 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+        }
+
+        .mobile-nav-links a {
+            color: white !important;
+            text-decoration: none !important;
+            font-size: 1.05rem !important;
+            font-weight: 500 !important;
+            padding: 0.875rem 1.125rem !important;
+            border-radius: 10px !important;
+            display: flex !important;
+            align-items: center !important;
+            transition: all 0.3s ease !important;
+            background-color: rgba(255,255,255,0.1) !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            position: relative !important;
+            overflow: hidden !important;
+            z-index: 1 !important;
+        }
+
+        .mobile-nav-links a:hover, 
+        .mobile-nav-links a:focus {
+            background-color: rgba(255,255,255,0.2) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+        }
+
+        .mobile-nav-links a:active {
+            transform: translateY(0) !important;
+            background-color: rgba(255,255,255,0.25) !important;
+        }
+
+        .mobile-nav-links a i {
+            font-size: 1.1rem !important;
+            min-width: 24px !important;
+            text-align: center !important;
+            margin-right: 0.75rem !important;
+            opacity: 0.9 !important;
+        }
+
+        /* Mobile link touch ripple effect */
+        .mobile-nav-links a:after {
+            content: "" !important;
+            position: absolute !important;
+            top: 50% !important;
+            left: 50% !important;
+            width: 5px !important;
+            height: 5px !important;
+            background: rgba(255, 255, 255, 0.5) !important;
+            opacity: 0 !important;
+            border-radius: 100% !important;
+            transform: scale(1, 1) translate(-50%, -50%) !important;
+            transform-origin: 50% 50% !important;
+            z-index: -1 !important;
+        }
+
+        .mobile-nav-links a.ripple:after {
+            animation: ripple 0.7s ease-out !important;
+        }
+
+        @keyframes ripple {
+            0% {
+                opacity: 0.5 !important;
+            }
+            100% {
+                transform: scale(30, 30) translate(-50%, -50%) !important;
+                opacity: 0 !important;
+            }
+        }
+
+        /* Active mobile link styling */
+        .mobile-nav-links a.active {
+            background-color: rgba(255,255,255,0.25) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2) !important;
+            border-left: 3px solid #ffffff !important;
+        }
+
+        /* Mobile Auth Buttons */
+        .mobile-auth-buttons {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+            margin-top: auto !important;
+            padding-top: 1.5rem !important;
+        }
+
+        .mobile-menu .auth-button {
+            width: 100% !important;
+            padding: 1rem !important;
+            font-size: 1.05rem !important;
+            border-radius: 10px !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .mobile-menu .auth-button:active {
+            transform: scale(0.98) !important;
+        }
+
+        .mobile-menu .login-button {
+            background-color: #ffffff !important;
+            color: #2f554f !important;
+            font-weight: 600 !important;
+        }
+
+        .mobile-menu .login-button:hover,
+        .mobile-menu .login-button:focus {
+            background-color: #ecfdf5 !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        }
+
+        .mobile-menu .register-button {
+            background-color: rgba(255,255,255,0.15) !important;
+            color: #ffffff !important;
+            border: 2px solid rgba(255,255,255,0.3) !important;
+        }
+
+        .mobile-menu .register-button:hover,
+        .mobile-menu .register-button:focus {
+            background-color: rgba(255,255,255,0.25) !important;
+            border-color: rgba(255,255,255,0.5) !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+        }
+
+        /* User Menu in Mobile View */
+        .mobile-user-menu {
+            background-color: rgba(255,255,255,0.15) !important;
+            border-radius: 12px !important;
+            padding: 1.25rem !important;
+            margin-bottom: 1.5rem !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+        }
+
+        .mobile-user-menu-header {
+            display: flex !important;
+            align-items: center !important;
+            color: white !important;
+            font-weight: 600 !important;
+            margin-bottom: 1rem !important;
+            font-size: 1.1rem !important;
+            padding-bottom: 0.75rem !important;
+            border-bottom: 1px solid rgba(255,255,255,0.2) !important;
+        }
+
+        .mobile-user-menu-header i {
+            font-size: 1.25rem !important;
+            margin-right: 0.75rem !important;
+            opacity: 0.9 !important;
+        }
+
+        .mobile-user-menu-content {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+        }
+
+        .mobile-user-menu-content a {
+            display: flex !important;
+            align-items: center !important;
+            padding: 0.875rem 1rem !important;
+            gap: 0.75rem !important;
+            color: rgba(255,255,255,0.9) !important;
+            text-decoration: none !important;
+            background-color: rgba(255,255,255,0.1) !important;
+            border-radius: 8px !important;
+            transition: all 0.3s ease !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        .mobile-user-menu-content a:hover,
+        .mobile-user-menu-content a:focus {
+            background-color: rgba(255,255,255,0.2) !important;
+            color: white !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+        }
+
+        .mobile-user-menu-content a:active {
+            transform: translateY(0) !important;
+        }
+
+        .mobile-user-menu-content a i {
+            font-size: 1.1rem !important;
+            min-width: 24px !important;
+            text-align: center !important;
+            opacity: 0.9 !important;
+        }
+
+        /* Overlay with improved animation */
+        .menu-overlay {
+            position: fixed !important;
+            top: 74px !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: calc(100vh - 74px) !important;
+            background-color: rgba(0,0,0,0.5) !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: opacity 0.4s ease, visibility 0.4s ease !important;
+            z-index: 998 !important;
+            backdrop-filter: blur(3px) !important;
+            -webkit-backdrop-filter: blur(3px) !important;
+        }
+
+        .menu-overlay.active {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* Staggered Animation for Menu Items */
+        .mobile-nav-links li {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition-delay: calc(0.05s * var(--item-index, 0));
+        }
+
+        .mobile-menu.active .mobile-nav-links li {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Animation for User Menu and Auth Buttons */
+        .mobile-user-menu, 
+        .mobile-auth-buttons {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transition-delay: 0.3s;
+        }
+
+        .mobile-menu.active .mobile-user-menu,
+        .mobile-menu.active .mobile-auth-buttons {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .exeplore-header {
@@ -303,61 +646,139 @@
         }
 
         @media (max-width: 768px) {
+            .exeplore-header {
+                height: 70px !important;
+            }
+            
+            .mobile-menu {
+                top: 70px !important;
+                height: calc(100vh - 70px) !important;
+            }
+            
+            .menu-overlay {
+                top: 70px !important;
+                height: calc(100vh - 70px) !important;
+            }
+            
             .exeplore-header .nav-links {
                 display: none !important;
             }
 
+            .burger-menu {
+                display: flex !important;
+            }
+
             .exeplore-header .auth-buttons {
-                margin-left: 1rem !important;
+                display: none !important;
             }
 
             .exeplore-header .site-title {
                 font-size: 1.25rem !important;
             }
+            
+            .exeplore-header .header-logo img {
+                height: 40px !important;
+            }
+        }
 
-            .exeplore-header .user-menu {
-                min-width: 140px !important;
+        @media (max-width: 480px) {
+            .exeplore-header {
+                padding: 0.75rem 1rem !important;
+                height: 64px !important;
             }
             
-            .exeplore-header .auth-button {
-                padding: 0.625rem 1rem !important;
-                font-size: 0.9rem !important;
+            .mobile-menu {
+                top: 64px !important;
+                height: calc(100vh - 64px) !important;
+                width: 85% !important;
+                padding: 1.25rem !important;
             }
+            
+            .menu-overlay {
+                top: 64px !important;
+                height: calc(100vh - 64px) !important;
+            }
+            
+            .exeplore-header .header-logo {
+                gap: 0.75rem !important;
+            }
+            
+            .exeplore-header .header-logo img {
+                height: 36px !important;
+            }
+            
+            .exeplore-header .site-title {
+                font-size: 1.15rem !important;
+            }
+            
+            .burger-menu {
+                margin-right: 0.5rem !important;
+            }
+        }
+
+        /* Skip to main content link for accessibility */
+        .skip-to-content {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #2f554f;
+            color: white;
+            padding: 8px 16px;
+            z-index: 1100;
+            transition: top 0.3s ease;
+            border-radius: 0 0 4px 0;
+            text-decoration: none;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .skip-to-content:focus {
+            top: 0;
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Skip to content link -->
+    <a href="#main-content" class="skip-to-content">Skip to main content</a>
+    
     <header class="exeplore-header">
         <a href="{% url 'welcome' %}" class="header-logo">
             <img src="{% static 'race/images/UniversityOfExeterLogo.png' %}" alt="University of Exeter Logo">
             <span class="site-title">ExePLORE</span>
         </a>
         
+        <!-- Burger Menu Button -->
+        <button class="burger-menu" id="burger-menu" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
         <nav class="main-nav">
-            <ul class="nav-links">
+            <ul class="nav-links" role="menubar">
                 {% if user.is_authenticated %}
-                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                    <li><a href="{% url 'race' %}">Races</a></li>
-                    <li><a href="{% url 'tasks' %}">Tasks</a></li>
-                    <li><a href="{% url 'team_list' %}">Teams</a></li>
-                    <li><a href="{% url 'user_leaderboard' %}">Leaderboard</a></li>
-                    <li><a href="{% url 'achievements' %}">Achievements</a></li>
+                    <li role="none"><a href="{% url 'dashboard' %}" role="menuitem">Dashboard</a></li>
+                    <li role="none"><a href="{% url 'race' %}" role="menuitem">Races</a></li>
+                    <li role="none"><a href="{% url 'tasks' %}" role="menuitem">Tasks</a></li>
+                    <li role="none"><a href="{% url 'team_list' %}" role="menuitem">Teams</a></li>
+                    <li role="none"><a href="{% url 'user_leaderboard' %}" role="menuitem">Leaderboard</a></li>
+                    <li role="none"><a href="{% url 'achievements' %}" role="menuitem">Achievements</a></li>
                 {% endif %}
             </ul>
 
             <div class="auth-buttons">
                 {% if user.is_authenticated %}
-                    <div class="user-menu">
+                    <div class="user-menu" tabindex="0" role="button" aria-haspopup="true" aria-expanded="false">
                         <span>{{ user.username }}</span>
-                        <div class="user-menu-content">
+                        <div class="user-menu-content" role="menu">
                             {% if user.is_staff %}
-                                <a href="{% url 'admin:index' %}">Admin</a>
+                                <a href="{% url 'admin:index' %}" role="menuitem">Admin</a>
                             {% endif %} 
-                            <a href="{% url 'settings' %}">
+                            <a href="{% url 'settings' %}" role="menuitem">
                                 <i class="fas fa-cog"></i> Settings
                             </a>
-                            <a href="{% url 'logout' %}">
+                            <a href="{% url 'logout' %}" role="menuitem">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
                         </div>
@@ -372,15 +793,185 @@
                 {% endif %}
             </div>
         </nav>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" id="mobile-menu" role="menu" aria-hidden="true">
+            {% if user.is_authenticated %}
+                <div class="mobile-user-menu">
+                    <div class="mobile-user-menu-header">
+                        <i class="fas fa-user-circle"></i> {{ user.username }}
+                    </div>
+                    <div class="mobile-user-menu-content">
+                        {% if user.is_staff %}
+                            <a href="{% url 'admin:index' %}" role="menuitem">
+                                <i class="fas fa-shield-alt"></i> Admin
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'settings' %}" role="menuitem">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <a href="{% url 'logout' %}" role="menuitem">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+                
+                <ul class="mobile-nav-links">
+                    <li style="--item-index: 0;"><a href="{% url 'dashboard' %}" role="menuitem"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li style="--item-index: 1;"><a href="{% url 'race' %}" role="menuitem"><i class="fas fa-flag-checkered"></i> Races</a></li>
+                    <li style="--item-index: 2;"><a href="{% url 'tasks' %}" role="menuitem"><i class="fas fa-tasks"></i> Tasks</a></li>
+                    <li style="--item-index: 3;"><a href="{% url 'team_list' %}" role="menuitem"><i class="fas fa-users"></i> Teams</a></li>
+                    <li style="--item-index: 4;"><a href="{% url 'user_leaderboard' %}" role="menuitem"><i class="fas fa-trophy"></i> Leaderboard</a></li>
+                    <li style="--item-index: 5;"><a href="{% url 'achievements' %}" role="menuitem"><i class="fas fa-medal"></i> Achievements</a></li>
+                </ul>
+            {% else %}
+                <div class="mobile-auth-buttons">
+                    <a href="{% url 'login' %}" class="auth-button login-button" role="menuitem">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </a>
+                    <a href="{% url 'register' %}" class="auth-button register-button" role="menuitem">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Overlay with blur effect -->
+        <div class="menu-overlay" id="menu-overlay"></div>
     </header>
 
-    <main class="exeplore-content">
+    <main class="exeplore-content" id="main-content">
         {% block content %}{% endblock %}
     </main>
 
     <footer class="site-footer">
         {% block footer %}{% endblock %}
     </footer>
+
+    <!-- JavaScript for burger menu functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const burgerMenu = document.getElementById('burger-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+            const mobileLinks = document.querySelectorAll('.mobile-nav-links a, .mobile-user-menu-content a, .mobile-auth-buttons a');
+            const body = document.body;
+            let scrollPosition = 0;
+            
+            const currentUrl = window.location.pathname;
+            
+            mobileLinks.forEach(link => {
+                if (link.getAttribute('href') === currentUrl) {
+                    link.classList.add('active');
+                }
+                
+                link.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    this.classList.add('ripple');
+                    
+                    setTimeout(() => {
+                        this.classList.remove('ripple');
+                    }, 700);
+                    
+                    toggleMenu(false);
+                });
+            });
+            
+            function toggleMenu(forceState = null) {
+                const isActive = forceState !== null ? forceState : !mobileMenu.classList.contains('active');
+                
+                burgerMenu.classList.toggle('active', isActive);
+                mobileMenu.classList.toggle('active', isActive);
+                menuOverlay.classList.toggle('active', isActive);
+                
+                burgerMenu.setAttribute('aria-expanded', isActive);
+                mobileMenu.setAttribute('aria-hidden', !isActive);
+                
+                if (isActive) {
+                    scrollPosition = window.pageYOffset;
+                    body.style.overflow = 'hidden';
+                    body.style.position = 'fixed';
+                    body.style.top = `-${scrollPosition}px`;
+                    body.style.width = '100%';
+                } else {
+                    body.style.removeProperty('overflow');
+                    body.style.removeProperty('position');
+                    body.style.removeProperty('top');
+                    body.style.removeProperty('width');
+                    window.scrollTo(0, scrollPosition);
+                }
+            }
+            
+            burgerMenu.addEventListener('click', function() {
+                toggleMenu();
+            });
+            
+            menuOverlay.addEventListener('click', function() {
+                toggleMenu(false);
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    toggleMenu(false);
+                }
+            });
+            
+            const userMenu = document.querySelector('.user-menu');
+            if (userMenu) {
+                userMenu.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        this.classList.toggle('hover');
+                        e.preventDefault();
+                    }
+                });
+                
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && userMenu.classList.contains('hover')) {
+                        userMenu.classList.remove('hover');
+                    }
+                });
+                
+                document.addEventListener('click', function(e) {
+                    if (!userMenu.contains(e.target)) {
+                        userMenu.classList.remove('hover');
+                    }
+                });
+            }
+            
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+                    toggleMenu(false);
+                }
+            });
+            
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, {passive: true});
+            
+            document.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, {passive: true});
+            
+            function handleSwipe() {
+                const swipeThreshold = 100; // Minimum distance for swipe to be registered
+                
+                if (touchEndX < touchStartX - swipeThreshold && !mobileMenu.classList.contains('active')) {
+                    toggleMenu(true);
+                }
+                
+                if (touchEndX > touchStartX + swipeThreshold && mobileMenu.classList.contains('active')) {
+                    toggleMenu(false);
+                }
+            }
+        });
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>
