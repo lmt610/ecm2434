@@ -154,3 +154,28 @@ if 'test' in sys.argv:
     TESTING = True
 else:
     TESTING = False
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://sys.stdout',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'ERROR',  
+            'propagate': True,
+        },
+        'django.request': { #for HTTP request errors
+            'handlers': ['console'],
+            'level': 'ERROR',  
+            'propagate': False,
+        },
+    },
+}
+
