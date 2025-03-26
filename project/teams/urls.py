@@ -12,5 +12,5 @@ urlpatterns = [
     path('<int:pk>/approve_join_request/<int:request_id>/', views.approve_join_request, name='approve_join_request'),
     path('<int:pk>/reject_join_request/<int:request_id>/', views.reject_join_request, name='reject_join_request'),
     path('<int:pk>/manage/', views.manage_team, name='manage_team'),
-    path('<int:team_pk>/remove_member/<int:user_pk>/', views.remove_team_member, name='remove_team_member'),
+    path('<int:team_pk>/remove_team_member/<int:user_pk>/', views.remove_team_member, name='remove_team_member'),
 ]

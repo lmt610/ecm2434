@@ -150,14 +150,14 @@ def manage_team(request, pk):
 @login_required
 def remove_team_member(request, team_pk, user_pk):
     team = get_object_or_404(Team, pk=team_pk)
-    
+    print(f"user to remove team: {team}")
     # Check if current user is the team admin
     if request.user != team.admin:
         messages.error(request, "You don't have permission to remove members.")
         return redirect('team_detail', pk=team_pk)
         
     user_to_remove = get_object_or_404(User, pk=user_pk)
-    
+    print(f"user to remove: {user_to_remove}")
     # Cannot remove the admin
     if user_to_remove == team.admin:
         messages.error(request, "You cannot remove the team admin.")
@@ -165,8 +165,9 @@ def remove_team_member(request, team_pk, user_pk):
         
     if request.method == 'POST':
         team.members.remove(user_to_remove)
+        print("A")
         messages.success(request, f"{user_to_remove.username} has been removed from the team.")
-        
+    print("B")
     return redirect('team_detail', pk=team_pk)
 
 def is_superuser(user):
