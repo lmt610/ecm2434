@@ -70,7 +70,7 @@ def race_leaderboard(request):
     ordered_entries = race_entries.annotate(
         duration=Cast(
             Extract(F('end_time') - F('start_time'), 'epoch'),
-            output_field=IntegerField()
+            output_field=FloatField()
         )
     ).order_by("duration")
     ordered_entries = ordered_entries.select_related("user", "race")
