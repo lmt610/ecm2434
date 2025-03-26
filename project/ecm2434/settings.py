@@ -90,12 +90,10 @@ WSGI_APPLICATION = 'ecm2434.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-            #replace value with the render URL
             default='postgresql://postgres:postgres@localhost:5432/ecm2434', 
             conn_max_age=600
         )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

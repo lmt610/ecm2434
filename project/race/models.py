@@ -56,7 +56,6 @@ class RaceEntry(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     medal = models.CharField(max_length=6, default='None')
     num_completions=models.IntegerField(default=0)
-    rank = models.IntegerField(null=True, blank=True) 
     updated_at = models.DateTimeField(auto_now=True)
     
     def save(self, *args, **kwargs):
@@ -87,13 +86,6 @@ class RaceEntry(models.Model):
                 break
         else:
             self.medal = "None"
-
-    def assign_ranks():
-        race_entries = RaceEntry.objects.all().order_by('duration')  # Sort by race duration
-        for i, entry in enumerate(race_entries):
-            entry.rank = i + 1  # 1st place gets rank 1, 2nd place gets rank 2, etc.
-            entry.save()
-
 
     @classmethod
     def get_num_completed_races(cls,user):
