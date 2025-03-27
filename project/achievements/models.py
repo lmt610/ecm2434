@@ -90,7 +90,7 @@ class Achievement(models.Model):
 
     def has_user_completed(self, user):
         if self.main_condition_model == 'COUNT_RACES':
-            base_query = RaceEntry.objects.filter(user=user)
+            base_query = RaceEntry.objects.filter(user=user, start_time__isnull=False)
         elif self.main_condition_model == 'COUNT_TEAMS':
             base_query = Team.objects.filter(members=user)
         else:
