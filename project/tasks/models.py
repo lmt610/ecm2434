@@ -29,12 +29,14 @@ class Task(models.Model):
             count = RaceEntry.objects.filter(
                 user=user,
                 race=self.race,
+                start_time__isnull=False,
                 updated_at__gte=self.created_at  
             ).count()
             return count
         else:
             count = RaceEntry.objects.filter(
                 user=user,
+                start_time__isnull=False,
                 updated_at__gte=self.created_at 
             ).count()
             return count
@@ -43,6 +45,7 @@ class Task(models.Model):
         if self.task_type == 'single':
             return RaceEntry.objects.filter(
                 user=user,
+                start_time__isnull=False,
                 race=self.race,
                 updated_at__gte=self.created_at 
             ).exists()
