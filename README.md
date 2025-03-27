@@ -13,6 +13,7 @@ ExePlore is a web application that allows users to run races between real locati
   - [Dependencies](#Dependencies)
   - [Installation](#installation)
   - [Usage](#usage)
+    - [Tests](#Tests) 
   - [Populating-database](#Populating-databases)
 
 
@@ -99,17 +100,22 @@ python manage.py runserver
 When the server is running, you can view the website at http://127.0.0.1:8000
 You can access the admin panel by going to http://127.0.0.1:8000/admin and logging in with the credentials
 you set up earlier
-To run all tests with test labels:
+### Tests
+To run all unit tests with test labels use:
 ```sh
 python manage.py test -v 2
 ```
-To run an app's tests:
+Tp run the system tests use:
+```
+python manage.py test system_tests
+```
+To run an app's unit tests use:
 ```sh
 python manage.py test app_name
 ```
 To run a specific test class, use the full import path. E.g.
 ```sh
-python manage.py test project.users.tests.test_views.LoginViewTest
+python manage.py test users.tests.test_views.LoginViewTest
 ```
 Example tests class paths:
 - All login and signup tests - `users`

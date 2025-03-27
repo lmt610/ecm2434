@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from users.models import Profile, UserSettings
 from teams.models import Team
-from django.db.models import F, ExpressionWrapper, DurationField, IntegerField
+from django.db.models import F, ExpressionWrapper, DurationField, IntegerField, Q
 from django.db.models.functions import Extract
 from django.db import models
 from race.models import Race, RaceEntry
@@ -62,7 +62,7 @@ def team_leaderboard(request):
 def race_leaderboard(request):
     race_title = request.GET.get("race_title")
     if race_title:
-        race_entries = RaceEntry.objects.filter(race__title__icontains=race_title)
+        race_entries = RaceEntry.objects.filter(race__title__icontains=race_title).exclude(Q(start_time__isnull=True) | Q(end_time__isnull=True))
     else:
         race_entries = RaceEntry.objects
     

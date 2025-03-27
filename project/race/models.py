@@ -89,7 +89,11 @@ class RaceEntry(models.Model):
 
     @classmethod
     def get_num_completed_races(cls,user):
-        return cls.objects.filter(user=user).count()
+        entrys = cls.objects.filter(user=user)
+        count=0
+        for entry in entrys:
+            count += entry.num_completions
+        return count
     
     @classmethod
     def get_total_distance_travled_by_user(cls,user):

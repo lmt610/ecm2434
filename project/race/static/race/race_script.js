@@ -279,7 +279,7 @@ function addExePlorePoints() {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCSRFToken(), //Include CSRF token
         },
-        body: JSON.stringify({start_latitude: raceData.start.lat, start_longitude: raceData.start.lng, end_latitude: raceData.end.lat, end_longitude: raceData.end.lng, user: loggedInUser})
+        body: JSON.stringify({race_id: raceID, user: loggedInUser})
     })
     .then(response => response.json())
     .then(data => {

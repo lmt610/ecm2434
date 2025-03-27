@@ -156,6 +156,7 @@
             {% if form.name.errors %}
                 <div class="error-message">{{ form.name.errors }}</div>
             {% endif %}
+            <button type="submit" class="save-button">Save Name</button>
         </div>
         
         <div class="member-management">
@@ -169,14 +170,12 @@
                                 <span class="admin-tag">Admin</span>
                             {% endif %}
                         </div>
-                        
+    </form>
                         {% if member != team.admin %}
                             <form method="POST" action="{% url 'remove_team_member' team.pk member.pk %}">
                                 {% csrf_token %}
                                 <button type="submit" class="remove-button">Remove</button>
                             </form>
-                        {% else %}
-                            <button class="remove-button" disabled>Admin</button>
                         {% endif %}
                     </li>
                 {% empty %}
@@ -187,8 +186,6 @@
         
         <div class="buttons">
             <a href="{% url 'team_detail' team.pk %}" class="back-link">Back to Team</a>
-            <button type="submit" class="save-button">Save Changes</button>
         </div>
-    </form>
 </div>
 {% endblock %}
